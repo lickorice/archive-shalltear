@@ -1,7 +1,19 @@
 Shalltear
-v0.0
-☐ add user databasing complete with
-  ☐ user id
-  ☐ user level
-  ☐ user exp
-  ☐ user cash
+v0.1 alpha -- DONE
+v0.2 alpha
+☐ add money system
+  ☐ add gambling
+  ☐ add shops
+    ☐ purchase customizable roles
+      ☐ with online separation
+      ☐ without online separation
+      ☐ with online sep., higher than VIP
+    ☐ purchase VIP
+
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+Archive:
+  ✔ add user databasing complete with @done(2018-09-15 20:10)
+  ✔ user id @done(2018-09-15 20:10)
+  ✔ user level @done(2018-09-15 20:10)
+  ✔ user exp @done(2018-09-15 20:10)
+  ✔ user cash @done(2018-09-15 20:10)

@@ -1,7 +1,7 @@
 import sqlite3
 
 database_directory = 'data/.db'
-baseExperience, factor = 50, 1.1
+baseExperience, factor = 50, 1.5
 
 db = sqlite3.connect(database_directory)
 
@@ -20,6 +20,13 @@ class LickDB():
                         targetExp INTEGER)
         """)
         db.commit()
+        c.execute("""
+        CREATE TABLE IF NOT EXISTS weights_db(
+                        id INTEGER PRIMARY KEY,
+                        chnID TEXT UNIQUE,
+                        xpINC INTEGER)
+        """)
+        db.commit()
 
     def insertUser(self, userID):
         """This inserts a user into the database."""
@@ -27,6 +34,14 @@ class LickDB():
         c = db.cursor()
         c.execute('''INSERT INTO primary_db(userID, cash, level, experience, targetExp)
                     VALUES(?, 0, 1, 0, ?)''', (userID, baseExperience,))
+        db.commit()
+
+    def insertChannel(self, chnID, xpINC):
+        """This inserts a channel into the database."""
+        print("Inserting channel [{}] to the database...".format(chnID))
+        c = db.cursor()
+        c.execute('''INSERT INTO weights_db(chnID, xpINC)
+                    VALUES(?, ?)''', (chnID, xpINC,))
         db.commit()
 
     def getCash(self, userID):
@@ -61,6 +76,14 @@ class LickDB():
         tExp = c.fetchone()
         return tExp[0]
 
+    def getWeight(self, chnID):
+        """This returns a channel's experience incrementation."""
+        c = db.cursor()
+        c.execute('''SELECT xpINC FROM weights_db WHERE chnID =?''',
+                  (chnID,))
+        xExp = c.fetchone()
+        return xExp[0]
+
     def updateExp(self, userID, xp=2):
         # updates cash number of user
         curXP = self.getExp(userID)
@@ -87,3 +110,20 @@ class LickDB():
                   (residual, userID))
         db.commit()
         return newLvl
+
+    def updateCash(self, userID, cash):
+        # updates cash number of user
+        curCash = self.getCash(userID)
+        newCash = curCash + cash
+        c = db.cursor()
+        c.execute('''UPDATE primary_db SET cash = ? WHERE userID = ?''',
+                  (newCash, userID))
+        db.commit()
+        return newCash
+
+    def updateWeight(self, chnID, weight):
+        # updates cash number of user
+        c = db.cursor()
+        c.execute('''UPDATE weights_db SET xpINC = ? WHERE chnID = ?''',
+                  (weight, chnID))
+        db.commit()

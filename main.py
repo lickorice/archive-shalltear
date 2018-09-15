@@ -4,8 +4,8 @@ import asyncio
 from data import ldb
 import sqlite3
 
-startup_extensions = ["xp", "admin"]
-version = '0.1 alpha'
+startup_extensions = ["xp", "admin", "economy"]
+version = '0.2 alpha'
 
 bot = commands.Bot(command_prefix='s!')
 bot.remove_command('help')
@@ -24,7 +24,7 @@ async def on_ready():
 async def on_member_join(mbr):
     """Input here what the bot does when a user joins."""
     try:
-        lkdb.insertUser(mbr.id, 0)
+        lkdb.insertUser(mbr.id)
         print("Successfully registered {}.".format(mbr.name))
     except sqlite3.IntegrityError:
         print("{} is already registered.".format(mbr.name))

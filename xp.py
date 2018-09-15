@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.utils import get
 from data import ldb
 import datetime
+import asyncio
 
 lkdb = ldb.LickDB()
 doctxt = "developed by Lickorice | Carlos Panganiban | cgpanganiban@up.edu.ph"
@@ -47,6 +48,11 @@ class Xp():
             inline=True
         )
         embed.add_field(
+            name="EXP needed for next level",
+            value=lkdb.getTarg(a.id),
+            inline=True
+        )
+        embed.add_field(
             name="Gil",
             value=str(lkdb.getCash(a.id)) + ' 💰',
             inline=True
@@ -72,12 +78,30 @@ class Xp():
         time_diff = cursecs-curtime
         if time_diff >= cooldown:
             xptime[a.id] = (datetime.datetime.utcnow() - epoch).total_seconds()
-            cur = lkdb.updateExp(userID=message.author.id)
-            targetExp = lkdb.getTarg(message.author.id)
+            try:
+                cur = lkdb.updateExp(a.id, lkdb.getWeight(message.channel.id))
+            except TypeError:
+                return
+            targetExp = lkdb.getTarg(a.id)
             if cur >= targetExp:
                 cur -= targetExp
-                await self.bot.send_message(message.channel, "Naglevel up ka na gago, level {} ka na!".format(lkdb.updateLvl(message.author.id, residual=cur)))
-            print(message.author.name, cur, targetExp)
+                newlvl = lkdb.updateLvl(a.id, residual=cur)
+                embed = discord.Embed(title="Level Up!", color=0xff1155)
+                embed.add_field(
+                    name="Name",
+                    value=a.name,
+                    inline=True
+                )
+                embed.add_field(
+                    name="Level",
+                    value=newlvl,
+                    inline=True
+                )
+                embed.set_thumbnail(url=a.avatar_url)
+                m = await self.bot.send_message(message.channel, embed=embed)
+                await asyncio.sleep(10)
+                await self.bot.delete_message(m)
+            print(a.id, cur, targetExp)
 
 
 def setup(bot):
