@@ -111,6 +111,7 @@ class Admin():
             inline=False,
             value=uptime_str
         )
+        embed.set_footer(text=str_messages['str_author-info'])
         await self.bot.send_message(ctx.message.channel, embed=embed)
 
 
