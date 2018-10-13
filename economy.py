@@ -1,8 +1,10 @@
 from discord.ext import commands
+from discord.utils import get
 from data import ldb
-import sqlite3
-import random
-import asyncio
+import sqlite3, random, asyncio, json
+
+with open('assets/str_msgs.json') as f:
+    str_messages = json.load(f)
 
 lkdb = ldb.LickDB()
 # costs:
@@ -61,8 +63,9 @@ class Economy():
 
     @commands.command(pass_context=True)
     async def grant(self, ctx, target_user=None, cash=0):
+        """This command is used to grant a user money."""
         if not ctx.message.author.server_permissions.administrator:
-            await self.bot.say("**Insufficient permissions.**")
+            await self.bot.say(str_messages['str_insuf-perms'])
             return
         if target_user:
             try:
@@ -70,78 +73,81 @@ class Economy():
             except IndexError:
                 a = get(ctx.message.channel.server.members, id=target_user)
                 if not a:
-                    await self.bot.say("**No such user found.**")
+                    await self.bot.say(str_messages['str_user-not-found'])
                     return
         else:
             a = ctx.message.author
         lkdb.updateCash(a.id, int(cash))
         if cash >= 0:
-            mstr = "A golden ray of light pierces the sky and onto the earth, materializing Gil upon the spot where <@{}> stands. The great gods from above have given **{}** divine mercy and has given him **{} 💰!**".format(a.id, a.name, int(cash))
+            mstr = str_messages['str_grant-positive'].format(a.id, a.name, int(cash))
         else:
-            mstr = "A booming voice echoes within your mind, <@{}>! It demands your Gil and therefore magically disintegrated **{} 💰** from your account. *(You may also be in debt.)*".format(a.id, abs(int(cash)))
+            mstr = str_messages['str_grant-negative'].format(a.id, abs(int(cash)))
         await self.bot.say(mstr)
 
     @commands.command(pass_context=True)
     async def grantall(self, ctx, cash=0):
+        """This command is used to grant all users money."""
         if not ctx.message.author.server_permissions.administrator:
-            await self.bot.say("**Insufficient permissions.**")
+            await self.bot.say(str_messages['str_insuf-perms'])
             return
         if cash >= 0:
-            mstr = "The cloudy sky clears out within an instant and brings forth a godly, blinding light! It rains Gil! **Everyone gains {} 💰!**".format(int(cash))
+            mstr = str_messages['str_grant-all-positive'].format(int(cash))
             await self.bot.say(mstr)
         else:
-            mstr = "A gilded, platinum blade falls from the sky and strikes the earth! **{} 💰** is removed from everyone's account. *(You may also be in debt.)*".format(abs(int(cash)))
+            mstr = str_messages['str_grant-all-negative'].format(abs(int(cash)))
             await self.bot.say(mstr)
         for mbr in ctx.message.channel.server.members:
             if mbr.bot:
                 continue
             print(mbr.id, mbr.name)
             lkdb.updateCash(mbr.id, cash)
-            print("Giving {} to [{}]".format(cash, mbr.id))
 
     @commands.command(pass_context=True)
     async def give(self, ctx, target_user=None, cash=0):
+        """This command is used to give a user a certain amount of money."""
         if target_user:
             try:
                 a = ctx.message.mentions[0]
             except IndexError:
                 a = get(ctx.message.channel.server.members, id=target_user)
                 if not a:
-                    await self.bot.say("**No such user found.**")
+                    await self.bot.say(str_messages['str_user-not-found'])
                     return
         else:
             return
         _a = ctx.message.author
         if cash <= 0:
-            mstr = "**<@{}>, you entered an invalid amount.**".format(_a.id)
+            mstr = str_messages['str_invalid-amount'].format(_a.id)
             await self.bot.say(mstr)
             return
         if lkdb.getCash(_a.id) < cash:
-            mstr = "**<@{}>, insufficient funds.**".format(_a.id)
+            mstr = str_messages['str_insuf-funds'].format(_a.id)
             return
         lkdb.updateCash(_a.id, cash*-1)
         lkdb.updateCash(a.id, cash)
-        mstr = "<@{}>, you have received **{} 💰** from <@{}>".format(a.id, cash, _a.id)
+        mstr = str_messages['str_give'].format(a.id, cash, _a.id)
         await self.bot.say(mstr)
 
-    @commands.command(pass_context=True, aliases=['$'])
+    @commands.command(pass_context=True, aliases=['$', 'balance', 'money'])
     async def gil(self, ctx, target_user=None):
+        """This command is used to display a user's money."""
         if target_user:
             try:
                 a = ctx.message.mentions[0]
             except IndexError:
                 a = get(ctx.message.channel.server.members, id=target_user)
                 if not a:
-                    await self.bot.say("**No such user found.**")
+                    await self.bot.say(str_messages['str_user-not-found'])
                     return
         else:
             a = ctx.message.author
 
-        await self.bot.say('<@{}>, you currently have **{} 💰** Gil.'.format(a.id, lkdb.getCash(a.id)))
+        await self.bot.say(str_messages['str_balance'].format(a.id, lkdb.getCash(a.id)))
 
     async def on_command_error(self, error, ctx):
+        """This function is used to handle commands on cooldown."""
         if isinstance(error, commands.errors.CommandOnCooldown):
-            mstr = "**<@{}>, try again.** *({})*".format(ctx.message.author.id, error)
+            mstr = str_messages['str_cmd-error'].format(ctx.message.author.id, error)
             m = await self.bot.send_message(ctx.message.channel, mstr)
             await asyncio.sleep(5)
             self.bot.delete_message(m)

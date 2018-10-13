@@ -85,7 +85,7 @@ class LickDB():
         return xExp[0]
 
     def updateExp(self, userID, xp=2):
-        # updates cash number of user
+        """Updates EXP of user"""
         curXP = self.getExp(userID)
         newXP = curXP + xp
         c = db.cursor()
@@ -95,7 +95,7 @@ class LickDB():
         return newXP
 
     def updateLvl(self, userID, residual=0):
-        # updates cash number of user
+        """Updates level of user"""
         curLvl = self.getLvl(userID)
         newLvl = curLvl + 1
         newTarg = int(baseExperience * (newLvl ** factor))
@@ -112,7 +112,7 @@ class LickDB():
         return newLvl
 
     def updateCash(self, userID, cash):
-        # updates cash number of user
+        """Updates cash level of user"""
         curCash = self.getCash(userID)
         newCash = curCash + cash
         c = db.cursor()
@@ -122,7 +122,7 @@ class LickDB():
         return newCash
 
     def updateWeight(self, chnID, weight):
-        # updates cash number of user
+        """Updates EXP increment per channel"""
         c = db.cursor()
         c.execute('''UPDATE weights_db SET xpINC = ? WHERE chnID = ?''',
                   (weight, chnID))

@@ -1,9 +1,10 @@
-import discord
+import discord, datetime, asyncio, json
 from discord.ext import commands
 from discord.utils import get
 from data import ldb
-import datetime
-import asyncio
+
+with open('assets/str_msgs.json') as f:
+    str_messages = json.load(f)
 
 lkdb = ldb.LickDB()
 doctxt = "developed by Lickorice | Carlos Panganiban | cgpanganiban@up.edu.ph"
@@ -26,7 +27,7 @@ class Xp():
             except IndexError:
                 a = get(ctx.message.channel.server.members, id=target_user)
                 if not a:
-                    await self.bot.say("**No such user found.**")
+                    await self.bot.say(str_messages['str_user-not-found'])
                     return
         else:
             a = ctx.message.author

@@ -1,0 +1,20 @@
+{
+    "str_author-name": "Lickorice#5638",
+    "str_src-link": "http://bit.ly/shalltearBOT",
+    "str_logging-out": "**Logging out...**",
+    "str_insuf-perms": "**Insufficient permissions.**",
+    "str_cmd-error": "**<@{}>, try again.** *({})*",
+    "str_user-not-found": "**No such user found.**",
+    "str_about-title": "About the Bot",
+    "str_register-1": "**Attempting to register users...**",
+    "str_register-2": "**Attempting to register users...\n({}/{})**",
+    "str_register-3": "**{0}** of **{1}** users successfully registered.\nOut of all **{1}** users, **{2}** are bots.",
+    "str_grant-positive": "A golden ray of light pierces the sky and onto the earth, materializing Gil upon the spot where <@{}> stands. The great gods from above have given **{}** divine mercy and has given him **{} 💰!**",
+    "str_grant-negative": "A booming voice echoes within your mind, <@{}>! It demands your Gil and therefore magically disintegrated **{} 💰** from your account. *(You may also be in debt.)*",
+    "str_grant-all-positive": "The cloudy sky clears out within an instant and brings forth a godly, blinding light! It rains Gil! **Everyone gains {} 💰!**",
+    "str_grant-all-negative": "A gilded, platinum blade falls from the sky and strikes the earth! **{} 💰** is removed from everyone's account. *(You may also be in debt.)*",
+    "str_give": "<@{}>, you have received **{} 💰** from <@{}>",
+    "str_invalid-amount": "**<@{}>, you entered an invalid amount.**",
+    "str_insuf-funds": "**<@{}>, insufficient funds.**",
+    "str_balance": "<@{}>, you currently have **{} 💰** Gil."
+}
