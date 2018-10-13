@@ -4,6 +4,9 @@ from data import ldb
 
 with open('assets/str_msgs.json') as f:
     str_messages = json.load(f)
+
+with open('assets/obj_help.json') as f:
+    obj_help = json.load(f)
  
 lkdb = ldb.LickDB()
 start_time = time.time()
@@ -12,6 +15,27 @@ start_time = time.time()
 class Admin():
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(pass_context=True, aliases=["h"])
+    async def help(self, ctx, target_cmd=None):
+        mstr = str_messages['str_invalid-cmd']
+        if target_cmd is None:
+            mstr = ''
+            for cmd_group in obj_help:
+                mstr += '__**{}**__:\n'.format(cmd_group)
+                for cmd in obj_help[cmd_group]:
+                    _name = cmd['name']
+                    _desc = cmd['description']
+                    mstr += '`{}`\n{}\n\n'.format(_name, _desc)
+        else:
+            for cmd_group in obj_help:
+                for cmd in obj_help[cmd_group]:
+                    _name = cmd['name']
+                    _desc = cmd['description']
+                    if target_cmd in cmd['cmd']:
+                        mstr = '`{}`\n{}\n\n'.format(_name, _desc)
+                        break
+        await self.bot.say(mstr)
 
     @commands.command(pass_context=True)
     async def kill(self, ctx):
@@ -23,7 +47,7 @@ class Admin():
         await self.bot.logout()
 
     @commands.command(pass_context=True)
-    async def registerAll(self, ctx):
+    async def registerall(self, ctx):
         """This command is used to register all users into the database."""
         channel = ctx.message.channel
         if not ctx.message.author.server_permissions.administrator:
@@ -48,7 +72,7 @@ class Admin():
 
     @commands.command(pass_context=True)
     async def setchannel(self, ctx, weight):
-        """This command is used to set a channel's EXP weight."""
+        """This command is used to set a channel's EXP gain rate."""
         if not ctx.message.author.server_permissions.administrator:
             await self.bot.say(str_messages['str_insuf-perms'])
             return
@@ -67,7 +91,7 @@ class Admin():
         )
         await self.bot.send_message(ctx.message.channel, embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=['info'])
     async def about(self, ctx):
         """This command is used to get the 'about' section of the bot."""
         current_time = time.time()

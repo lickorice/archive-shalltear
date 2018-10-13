@@ -1,0 +1,68 @@
+{
+    "Administration/Core": [
+        {
+            "cmd": ["help", "h"],
+            "name": "help/h <command (optional)>",
+            "description": "This shows the bot's list of commands."
+        },
+        {
+            "cmd": ["profile"],
+            "name": "profile <user (optional)>",
+            "description": "This shows a user's profile, given an ID or a mention."
+        },
+        {
+            "cmd": ["kill"],
+            "name": "kill",
+            "description": "This command is used to log out the bot, or shut it down."
+        },
+        {
+            "cmd": ["registerall"],
+            "name": "registerall",
+            "description": "This command is used to register all users into the database."
+        },
+        {
+            "cmd": ["setchannel"],
+            "name": "setchannel <int>",
+            "description": "This command is used to set a channel's EXP gain rate."
+        },
+        {
+            "cmd": ["channelinfo"],
+            "name": "channelinfo",
+            "description": "This command is used to get a channel's EXP information."
+        },
+        {
+            "cmd": ["about"],
+            "name": "about",
+            "description": "This command is used to get a channel's EXP information."
+        }
+    ],
+    "Economy": [
+        {
+            "cmd": ["gil", "money", "balance"],
+            "name": "gil/money/balance/$ <user, optional>",
+            "description": "This command is used to display a user's money."
+        },
+        {
+            "cmd": ["give"],
+            "name": "give <user>",
+            "description": "This command is used to give a user a certain amount of money."
+        },
+        {
+            "cmd": ["grant"],
+            "name": "grant <user>",
+            "description": "This command is used to grant a user money."
+        },
+        {
+            "cmd": ["grantall"],
+            "name": "grantall",
+            "description": "This command is used to grant all users money."
+        }
+    ],
+    "Gambling": [
+        {
+            "cmd": ["quick", "ql", "lottery", "lotto"],
+            "name": "quick/ql/lottery/lotto",
+            "description": "Quick lottery game."
+        }
+    ]
+}

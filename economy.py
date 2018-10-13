@@ -21,7 +21,7 @@ class Economy():
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, aliases=['ql'])
+    @commands.command(pass_context=True, aliases=['ql', 'lottery', 'lotto'])
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def quick(self, ctx):
         """Quick lottery game."""

@@ -4,6 +4,7 @@
     "str_logging-out": "**Logging out...**",
     "str_insuf-perms": "**Insufficient permissions.**",
     "str_cmd-error": "**<@{}>, try again.** *({})*",
+    "str_invalid-cmd": "**Invalid command parameters.**",
     "str_user-not-found": "**No such user found.**",
     "str_about-title": "About the Bot",
     "str_register-1": "**Attempting to register users...**",
