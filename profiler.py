@@ -5,6 +5,9 @@ import requests, json
 from io import BytesIO
 
 with open('assets/str_titles.json') as f:
+    str_titles = json.load(f)
+
+def generate(user_name, avatar_url, user_level, user_xp):
     """
     This is a profile image generator, dev'd by Carlos Panganiban. 2018.
     It takes in the following arguments:
@@ -15,9 +18,7 @@ with open('assets/str_titles.json') as f:
         user_xp = (int, int) The user's current, and next level xp
     )
     """
-    str_titles = json.load(f)
 
-def generate(user_name, avatar_url, user_level, user_xp):
     if user_level >= 30:
         user_title = "The Conqueror of Servers"
     else:
@@ -41,7 +42,16 @@ def generate(user_name, avatar_url, user_level, user_xp):
         else:
             _y += 5
             name_size -= 5
-            font_username = ImageFont.truetype('ttf_rob-medium.ttf', name_size)
+            font_username = ImageFont.truetype('assets/ttf_rob-username.ttf', name_size)
+
+    draw.text((_x+1, _y), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x-1, _y), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x, _y-1), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x, _y+1), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x+1, _y+1), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x-1, _y-1), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x+1, _y-1), user_name, font=font_username, fill=strokecolor)
+    draw.text((_x-1, _y+1), user_name, font=font_username, fill=strokecolor)
 
     draw.text((_x, _y), user_name, font=font_username, fill=fillcolor)
     _x, _y = 130, 80

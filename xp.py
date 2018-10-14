@@ -1,4 +1,4 @@
-import discord, datetime, asyncio, json, requests, profiler
+import discord, datetime, asyncio, json, requests, profiler, sqlite3
 from PIL import Image
 from discord.ext import commands
 from discord.utils import get
@@ -39,34 +39,7 @@ class Xp():
         else:
             a = ctx.message.author
         chn = ctx.message.channel
-        # embed = discord.Embed(title="Profile", color=0xff1155)
-        # embed.add_field(
-        #     name="Name",
-        #     value=a.name,
-        #     inline=True
-        # )
-        # embed.add_field(
-        #     name="Level",
-        #     value=lkdb.getLvl(a.id),
-        #     inline=True
-        # )
-        # embed.add_field(
-        #     name="Experience",
-        #     value=lkdb.getExp(a.id),
-        #     inline=True
-        # )
-        # embed.add_field(
-        #     name="EXP needed for next level",
-        #     value=lkdb.getTarg(a.id),
-        #     inline=True
-        # )
-        # embed.add_field(
-        #     name="Gil",
-        #     value=str(lkdb.getCash(a.id)) + ' 💰',
-        #     inline=True
-        # )
-        # embed.set_thumbnail(url=a.avatar_url)
-        # embed.set_footer(text=doctxt)
+        print(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
         profiler.generate(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
         await self.bot.send_file(chn, 'temp/profile.png')
 
@@ -89,8 +62,16 @@ class Xp():
             xptime[a.id] = (datetime.datetime.utcnow() - epoch).total_seconds()
             try:
                 cur = lkdb.updateExp(a.id, lkdb.getWeight(message.channel.id))
-            except TypeError:
-                return
+                if cur == 0:
+                    return
+            except TypeError as e:
+                print(e)
+                try:
+                    print("New user detected.")
+                    lkdb.insertUser(a.id)
+                    cur = lkdb.updateExp(a.id, lkdb.getWeight(message.channel.id))
+                except sqlite3.IntegrityError:
+                    pass
             targetExp = lkdb.getTarg(a.id)
             if cur >= targetExp:
                 cur -= targetExp
@@ -108,7 +89,7 @@ class Xp():
                 m = await self.bot.send_file(message.channel, 'temp/levelup.png')
                 await asyncio.sleep(10)
                 await self.bot.delete_message(m)
-            print(a.id, cur, targetExp)
+            print(a.name, '\t', cur, targetExp)
 
 
 def setup(bot):
