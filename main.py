@@ -7,7 +7,7 @@ import sqlite3
 startup_extensions = ["xp", "admin", "economy"]
 version = '0.2 alpha'
 
-bot = commands.Bot(command_prefix='d!')
+bot = commands.Bot(command_prefix='s!')
 bot.remove_command('help')
 lkdb = ldb.LickDB()
 
