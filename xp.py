@@ -1,4 +1,4 @@
-import discord, datetime, asyncio, json, requests
+import discord, datetime, asyncio, json, requests, profiler
 from PIL import Image
 from discord.ext import commands
 from discord.utils import get
@@ -39,35 +39,36 @@ class Xp():
         else:
             a = ctx.message.author
         chn = ctx.message.channel
-        embed = discord.Embed(title="Profile", color=0xff1155)
-        embed.add_field(
-            name="Name",
-            value=a.name,
-            inline=True
-        )
-        embed.add_field(
-            name="Level",
-            value=lkdb.getLvl(a.id),
-            inline=True
-        )
-        embed.add_field(
-            name="Experience",
-            value=lkdb.getExp(a.id),
-            inline=True
-        )
-        embed.add_field(
-            name="EXP needed for next level",
-            value=lkdb.getTarg(a.id),
-            inline=True
-        )
-        embed.add_field(
-            name="Gil",
-            value=str(lkdb.getCash(a.id)) + ' 💰',
-            inline=True
-        )
-        embed.set_thumbnail(url=a.avatar_url)
-        embed.set_footer(text=doctxt)
-        await self.bot.send_message(chn, embed=embed)
+        # embed = discord.Embed(title="Profile", color=0xff1155)
+        # embed.add_field(
+        #     name="Name",
+        #     value=a.name,
+        #     inline=True
+        # )
+        # embed.add_field(
+        #     name="Level",
+        #     value=lkdb.getLvl(a.id),
+        #     inline=True
+        # )
+        # embed.add_field(
+        #     name="Experience",
+        #     value=lkdb.getExp(a.id),
+        #     inline=True
+        # )
+        # embed.add_field(
+        #     name="EXP needed for next level",
+        #     value=lkdb.getTarg(a.id),
+        #     inline=True
+        # )
+        # embed.add_field(
+        #     name="Gil",
+        #     value=str(lkdb.getCash(a.id)) + ' 💰',
+        #     inline=True
+        # )
+        # embed.set_thumbnail(url=a.avatar_url)
+        # embed.set_footer(text=doctxt)
+        profiler.generate(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
+        await self.bot.send_file(chn, 'temp/profile.png')
 
     async def on_message(self, message):
         """Updates exp and level per user."""
