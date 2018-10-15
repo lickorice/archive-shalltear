@@ -1,0 +1,16 @@
+{
+    "Shop": [
+        {
+            "name": "VIP Role",
+            "id": "00000",
+            "price": 2500,
+            "desc": "The most exclusive role in the server. Includes secret chat, among others."
+        },
+        {
+            "name": "PAGCOR Badge",
+            "id": "00001",
+            "price": 250,
+            "desc": "Show off your wealth by purchasing this badge."
+        },
+    ]
+}

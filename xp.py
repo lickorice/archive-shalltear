@@ -39,9 +39,11 @@ class Xp():
         else:
             a = ctx.message.author
         chn = ctx.message.channel
-        print(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
-        profiler.generate(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
-        await self.bot.send_file(chn, 'temp/profile.png')
+        try:
+            profiler.generate(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
+            await self.bot.send_file(chn, 'temp/profile.png')
+        except Exception as e:
+            print("ERROR! - {}".format(e))
 
     async def on_message(self, message):
         """Updates exp and level per user."""
