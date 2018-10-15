@@ -1,0 +1,38 @@
+{
+    "inventory": {
+        "319285994253975553": [
+            [
+                "00001",
+                true
+            ],
+            [
+                "00002",
+                true
+            ],
+            [
+                "00000",
+                true
+            ],
+            [
+                "00003",
+                true
+            ]
+        ],
+        "Carlos": [
+            [
+                "one",
+                1,
+                true
+            ]
+        ],
+        "Jake Paul": [
+            "Suicide Forest Leaf",
+            "Youtuber Shame"
+        ],
+        "Logan Paul": [],
+        "user_id": [
+            "00000",
+            "00001"
+        ]
+    }
+}

@@ -7,7 +7,10 @@ from io import BytesIO
 with open('assets/str_titles.json') as f:
     str_titles = json.load(f)
 
-def generate(user_name, avatar_url, user_level, user_xp):
+with open('assets/obj_badges.json') as f:
+    obj_badges = json.load(f)
+
+def generate(user_name, avatar_url, user_level, user_xp, badges):
     """
     This is a profile image generator, dev'd by Carlos Panganiban. 2018.
     It takes in the following arguments:
@@ -64,12 +67,12 @@ def generate(user_name, avatar_url, user_level, user_xp):
     template.paste(lvl_temp, (_x, _y))
     template.paste(lvl_temp_2, (_x, _y))
 
+    _x, _y = 30, 145
+    for badge in badges:
+        if badge[1] == False:
+            continue
+        badge_img = Image.open(obj_badges["Badges"][badge[0]]["img-url"])
+        template.paste(badge_img, (_x, _y), mask=badge_img)
+        _x += 40
     
     template.save('temp/profile.png')
-
-
-def main():
-    generate("Lickorice#6969", 'https://cdn.discordapp.com/avatars/319285994253975553/bafd915352039cbfaf66a40a9a2210c7.png', 50, (75, 100))
-
-if __name__ == '__main__':
-    main()

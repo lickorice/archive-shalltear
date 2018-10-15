@@ -1,16 +1,20 @@
 {
     "Shop": [
         {
-            "name": "VIP Role",
+            "name": "VIP Status",
             "id": "00000",
             "price": 2500,
+            "price-tag": "2500, Level 20",
+            "level-needed": 20,
             "desc": "The most exclusive role in the server. Includes secret chat, among others."
         },
         {
             "name": "PAGCOR Badge",
             "id": "00001",
             "price": 250,
+            "price-tag": "250",
+            "level-needed": 0,
             "desc": "Show off your wealth by purchasing this badge."
-        },
+        }
     ]
 }

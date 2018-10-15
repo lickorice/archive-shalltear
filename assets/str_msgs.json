@@ -18,5 +18,10 @@
     "str_give": "<@{}>, you have received **{} 💰** from <@{}>",
     "str_invalid-amount": "**<@{}>, you entered an invalid amount.**",
     "str_insuf-funds": "**<@{}>, insufficient funds.**",
-    "str_balance": "<@{}>, you currently have **{} 💰** Gil."
+    "str_balance": "<@{}>, you currently have **{} 💰** Gil.",
+    "str_badge-grant-success": "<@{}>, you have been given the **{}**.",
+    "str_badge-grant-failure": "**User already has that badge.**",
+    "str_badge-not-found": "**That badge doesn't exist.**",
+    "str_badge-equipped": "**{}** successfully equipped.",
+    "str_badge-unequipped": "**{}** successfully unequipped."
 }

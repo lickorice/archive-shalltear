@@ -2,7 +2,7 @@ import discord, datetime, asyncio, json, requests, profiler, sqlite3
 from PIL import Image
 from discord.ext import commands
 from discord.utils import get
-from data import ldb
+from data import ldb, linv
 from io import BytesIO
 
 with open('assets/str_msgs.json') as f:
@@ -14,6 +14,7 @@ bg_temp = Image.new('RGBA', (52, 52), (44, 47, 51, 255))
 bg2_temp = Image.open('assets/background-1.png')
 
 lkdb = ldb.LickDB()
+invMan = linv.LickInventory()
 doctxt = "developed by Lickorice | Carlos Panganiban | cgpanganiban@up.edu.ph"
 xptime = {"user": 0}
 epoch = datetime.datetime.utcfromtimestamp(0)
@@ -39,8 +40,11 @@ class Xp():
         else:
             a = ctx.message.author
         chn = ctx.message.channel
+
         try:
-            profiler.generate(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)))
+            invMan.init()
+            badgelist = invMan.get_items(a.id)
+            profiler.generate(a.name, a.avatar_url, lkdb.getLvl(a.id), (lkdb.getExp(a.id), lkdb.getTarg(a.id)), badgelist)
             await self.bot.send_file(chn, 'temp/profile.png')
         except Exception as e:
             print("ERROR! - {}".format(e))
