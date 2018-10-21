@@ -79,22 +79,27 @@ class Xp():
                 except sqlite3.IntegrityError:
                     pass
             targetExp = lkdb.getTarg(a.id)
-            if cur >= targetExp:
-                cur -= targetExp
-                newlvl = lkdb.updateLvl(a.id, residual=cur)
-                
-                # generate the image:
-                imgfile = requests.get(a.avatar_url)
-                pfp = Image.open(BytesIO(imgfile.content))
-                pfp = pfp.resize((52, 52), Image.BICUBIC)
-                bg_temp.paste(pfp, (0, 0))
-                img_temp.paste(bg_temp, img_offset, mask=bg_temp)
-                bg2_temp.paste(img_temp, (0,0), mask=img_temp)
-                bg2_temp.save('temp/levelup.png')
-                
-                m = await self.bot.send_file(message.channel, 'temp/levelup.png')
-                await asyncio.sleep(10)
-                await self.bot.delete_message(m)
+            try:
+                if cur >= targetExp:
+                    cur -= targetExp
+                    newlvl = lkdb.updateLvl(a.id, residual=cur)
+                    
+                    # generate the image:
+                    imgfile = requests.get(a.avatar_url)
+                    pfp = Image.open(BytesIO(imgfile.content))
+                    pfp = pfp.resize((52, 52), Image.BICUBIC)
+                    bg_temp.paste(pfp, (0, 0))
+                    img_temp.paste(bg_temp, img_offset, mask=bg_temp)
+                    bg2_temp.paste(img_temp, (0,0), mask=img_temp)
+                    bg2_temp.save('temp/levelup.png')
+                    
+                    m = await self.bot.send_file(message.channel, 'temp/levelup.png')
+                    await asyncio.sleep(10)
+                    await self.bot.delete_message(m)
+            except UnboundLocalError:
+                chnID = message.channel.id
+                lkdb.updateWeight(chnID, 2)
+                lkdb.insertChannel(chnID, 2)
             print(a.name, '\t', cur, targetExp)
 
 

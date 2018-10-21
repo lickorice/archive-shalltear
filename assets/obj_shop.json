@@ -6,6 +6,7 @@
             "price": 2500,
             "price-tag": "2500, Level 20",
             "level-needed": 20,
+            "icon-url": "assets/badges/00000.png",
             "desc": "The most exclusive role in the server. Includes secret chat, among others."
         },
         {
@@ -14,6 +15,7 @@
             "price": 250,
             "price-tag": "250",
             "level-needed": 0,
+            "icon-url": "assets/badges/00001.png",
             "desc": "Show off your wealth by purchasing this badge."
         }
     ]

@@ -4,9 +4,12 @@
     "str_src-link": "http://bit.ly/shalltearBOT",
     "str_logging-out": "**Logging out...**",
     "str_insuf-perms": "**Insufficient permissions.**",
+    "str_insuf-gil": "**Insufficient gil.**",
+    "str_insuf-lvl": "**Level too low.**",
     "str_cmd-error": "**<@{}>, try again.** *({})*",
     "str_invalid-cmd": "**Invalid command parameters.**",
     "str_user-not-found": "**No such user found.**",
+    "str_item-not-found": "**No such item found.**",
     "str_about-title": "About the Bot",
     "str_register-1": "**Attempting to register users...**",
     "str_register-2": "**Attempting to register users...\n({}/{})**",
@@ -21,7 +24,9 @@
     "str_balance": "<@{}>, you currently have **{} 💰** Gil.",
     "str_badge-grant-success": "<@{}>, you have been given the **{}**.",
     "str_badge-grant-failure": "**User already has that badge.**",
+    "str_badge-already-exists": "**You already have that badge.**",
     "str_badge-not-found": "**That badge doesn't exist.**",
-    "str_badge-equipped": "**{}** successfully equipped.",
-    "str_badge-unequipped": "**{}** successfully unequipped."
+    "str_badge-equipped": "**{}** successfullyW equipped.",
+    "str_badge-unequipped": "**{}** successfully unequipped.",
+    "str_vip-welcome": "<@{}>, welcome to the VIP channels! Please take note of the following rules: ```1. No screenshots of this channel are allowed. \n2. Everything that you say and hear, stays here.```*** Enjoy your stay in VIP!***"
 }

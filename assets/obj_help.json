@@ -11,6 +11,11 @@
             "description": "This shows a user's profile, given an ID or a mention."
         },
         {
+            "cmd": ["badges"],
+            "name": "badges [status / equip]",
+            "description": "By default or by using `status`, the command shows your current badges. Using `equip` will toggle if they are shown in your profile."
+        },
+        {
             "cmd": ["kill"],
             "name": "kill",
             "description": "This command is used to log out the bot, or shut it down."
@@ -41,6 +46,16 @@
             "cmd": ["gil", "money", "balance"],
             "name": "gil/money/balance/$ <user, optional>",
             "description": "This command is used to display a user's money."
+        },
+        {
+            "cmd": ["shop"],
+            "name": "shop",
+            "description": "This command is used to access the shop."
+        },
+        {
+            "cmd": ["buy"],
+            "name": "buy <item ID>",
+            "description": "This command is used to buy a shop item."
         },
         {
             "cmd": ["give"],
