@@ -26,7 +26,7 @@
     "str_badge-grant-failure": "**User already has that badge.**",
     "str_badge-already-exists": "**You already have that badge.**",
     "str_badge-not-found": "**That badge doesn't exist.**",
-    "str_badge-equipped": "**{}** successfullyW equipped.",
+    "str_badge-equipped": "**{}** successfully equipped.",
     "str_badge-unequipped": "**{}** successfully unequipped.",
     "str_vip-welcome": "<@{}>, welcome to the VIP channels! Please take note of the following rules: ```1. No screenshots of this channel are allowed. \n2. Everything that you say and hear, stays here.```*** Enjoy your stay in VIP!***"
 }
