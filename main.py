@@ -4,7 +4,7 @@ import asyncio
 from data import ldb
 import sqlite3
 
-startup_extensions = ["xp", "admin", "economy", "shop"]
+startup_extensions = ["xp", "admin", "economy", "shop", "memes"]
 version = '0.4 alpha'
 
 bot = commands.Bot(command_prefix='s!')
@@ -16,7 +16,7 @@ lkdb = ldb.LickDB()
 @asyncio.coroutine
 async def on_ready():
     """Input here what the bot does on startup."""
-    print("Shalltear has started.")
+    print("{} has started.".format(bot.user.name))
     lkdb.init()
 
 

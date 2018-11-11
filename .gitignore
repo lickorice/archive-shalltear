@@ -1,4 +1,5 @@
 .token
+.err_log
 data/.db
 data/inventory.json
 

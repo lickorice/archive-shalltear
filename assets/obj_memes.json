@@ -1,0 +1,47 @@
+{
+  "drake": {
+    "FILE_URL": "drake.png",
+    "ACTORS": [
+      [
+        236,
+        0,
+        210
+      ],
+      [
+        236,
+        213,
+        210
+      ]
+    ]
+  },
+  "insufferable": {
+    "FILE_URL": "insufferable.png",
+    "ACTORS": [
+      [
+        656,
+        573,
+        200
+      ]
+    ]
+  },
+  "cancer": {
+    "FILE_URL": "cancer.png",
+    "ACTORS": [
+      [
+        289,
+        156,
+        85
+      ]
+    ]
+  },
+  "whodidthis": {
+    "FILE_URL": "whodidthis.png",
+    "ACTORS": [
+      [
+        159,
+        159,
+        400
+      ]
+    ]
+  }
+}
