@@ -58,6 +58,7 @@ class Memes():
                 return
 
         for index in range(required_actors):
+            print(user_targets[index])
             user_id = user_targets[index][2:-1]
             print(user_id)
 
