@@ -58,12 +58,8 @@ class Memes():
                 return
 
         for index in range(required_actors):
-            print(user_targets[index])
-            user_id = user_targets[index][2:-1]
-            print(user_id)
-
-            target_user = get(ctx.message.channel.server.members, id=user_id)
-            print(target_user)
+            
+            target_user = ctx.message.mentions[index]
             x, y, size = meme_obj["ACTORS"][index]
             print(x, y, size)
 
