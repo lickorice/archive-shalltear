@@ -21,7 +21,7 @@
     "str_give": "<@{}>, you have received **{} 💰** from <@{}>",
     "str_invalid-amount": "**<@{}>, you entered an invalid amount.**",
     "str_insuf-funds": "**<@{}>, insufficient funds.**",
-    "str_meme-not-found": "**Meme not found!** If you want to suggest a meme, fill out this form: ",
+    "str_meme-not-found": "**Meme not found!** If you want to suggest a meme, email the developer: cgpanganiban@up.edu.ph",
     "str_meme-not-enough": "**Not enough actors!** You need {} actor{} for this meme to be generated.",
     "str_balance": "<@{}>, you currently have **{} 💰** Gil.",
     "str_badge-grant-success": "<@{}>, you have been given the **{}**.",
