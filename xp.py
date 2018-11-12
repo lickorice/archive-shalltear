@@ -100,7 +100,7 @@ class Xp():
                 chnID = message.channel.id
                 lkdb.updateWeight(chnID, 2)
                 lkdb.insertChannel(chnID, 2)
-            print(a.name, '\t', cur, targetExp)
+            # print(a.name, '\t', cur, targetExp)
 
 
 def setup(bot):
