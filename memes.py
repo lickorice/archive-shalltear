@@ -52,16 +52,18 @@ class Memes():
             await self.bot.say(str_messages["str_meme-not-enough"].format(required_actors, plurality))
             return
 
-        for target in user_targets:
-            if not target.startswith('<@'):
-                await self.bot.say(str_messages["str_user-not-found"])
-                return
+        if len(ctx.message.mentions) < required_actors:
+            await self.bot.say(str_messages["str_user-not-found"])
+            return
 
         for index in range(required_actors):
-            
-            target_user = ctx.message.mentions[index]
+            raw_id = user_targets[index]
+            user_id = raw_id[3:-1] if raw_id.startswith('<@!') else raw_id[2:-1]
+            target_user = get(ctx.message.channel.server.members, id=user_id)
+            # target_user = ctx.message.mentions[index]
+            # print(target_user, user_id)
             x, y, size = meme_obj["ACTORS"][index]
-            print(x, y, size)
+            # print(x, y, size)
 
             avatar_file = requests.get(target_user.avatar_url)
             avatar = Image.open(BytesIO(avatar_file.content))
