@@ -3,4 +3,7 @@
 data/.db
 data/inventory.json
 
+test.py
+test.in
+
 test/

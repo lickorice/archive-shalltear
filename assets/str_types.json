@@ -1,0 +1,14 @@
+{
+    "RATINGS" : [
+        "Literal Trash",
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Legendary",
+        "Divine"
+    ],
+    "TYPES" : [
+        "Normal",
+        "Fusion Card"
+    ]
+}
