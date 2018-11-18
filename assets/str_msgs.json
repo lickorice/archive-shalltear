@@ -15,6 +15,8 @@
     "str_gacha-series-dne": "**{}**, that series does not exist.",
     "str_gacha-sell-succ": "**{}**, you have successfully sold **{}** for **{}** gil.",
     "str_gacha-sell-fail": "**{}**, you don't have that card.",
+    "str_gacha-no-dupe": "**{}**, you don't have any dupes to sell.",
+    "str_gacha-yes-dupe": "**{}**, you have sold **{}** dupe{} for **{}** gil.",
     "str_user-not-found": "**No such user found.**",
     "str_item-not-found": "**No such item found.**",
     "str_about-title": "About the Bot",

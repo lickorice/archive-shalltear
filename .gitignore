@@ -2,6 +2,7 @@
 .err_log
 data/.db
 data/inventory.json
+data/gacha.db
 
 test.py
 test.in

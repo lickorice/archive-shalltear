@@ -104,7 +104,7 @@ class GachaDB():
         if seriesID == None:
             c.execute("SELECT * FROM cards_db")
         else:
-            c.execute("SELECT * FROM cards_db WHERE seriesID ?", (int(seriesID),))
+            c.execute("SELECT * FROM cards_db WHERE seriesID = ?", (int(seriesID),))
 
         raw_cards = c.fetchall()
         cards = []

@@ -34,10 +34,10 @@ prob_setting = {
 card_price = {
     0: 1,
     1: 2,
-    2: 5,
-    3: 7,
-    4: 10,
-    5: 50
+    2: 3,
+    3: 5,
+    4: 7,
+    5: 20
 }
 
 class Gacha():
@@ -82,7 +82,6 @@ class Gacha():
             card_id = card_index[index]
             card_results.append(gdb.fetch_card(card_id))
             gdb.insert_card(a.id, card_id)
-        print("working")
 
         for card in card_results:
             e = discord.Embed(color=0xff1155, title="You got a new card!")
@@ -140,12 +139,19 @@ class Gacha():
 
 
     @commands.command(pass_context=True, aliases=['mc'])
-    async def mycards(self, ctx):
+    async def mycards(self, ctx, target_user=None):
         """This command is used to see cards."""
 
-        a = ctx.message.author
+        if target_user != None:
+            a = ctx.message.mentions[0]
+        elif target_user == None or a == None:
+            a = ctx.message.author
 
         all_cards = gdb.get_all_cards(a.id)
+
+        if len(all_cards) == 0:
+            await self.bot.say("**{}**, you currently don't have any cards. Redeem one with **s!fc**.".format(a.name))
+            return
 
         card_str = ''
 
@@ -203,7 +209,7 @@ class Gacha():
             await self.bot.say(str_messages["str_gacha-series-dne"].format(a.name))
             return
 
-        all_cards = gdb.fetch_all_cards(seriesID=series_id)
+        all_cards = gdb.fetch_all_cards(seriesID=id_found)
 
         card_str = ''
         for card in all_cards:
@@ -246,6 +252,153 @@ class Gacha():
         a = ctx.message.author
 
         all_cards = gdb.get_all_cards(a.id)
+
+        # check dupes
+        card_ids = [card[0] for card in all_cards]
+        dupe_ids = {card_id: -1 for card_id in card_ids if card_ids.count(card_id) > 1}
+
+
+        for card_id in card_ids:
+            if card_ids.count(card_id) > 1:
+                dupe_ids[card_id] += 1
+
+        if len(dupe_ids) == 0:
+            await self.bot.say(str_messages["str_gacha-no-dupe"].format(a.name))
+            return
+
+        dupes, total_value = 0, 0
+        for card_id in dupe_ids:
+            for iterations in range(dupe_ids[card_id]):
+                dupes += 1
+                price = card_price[gdb.fetch_card(card_id)["RATING"]]
+                total_value += price
+                ldb.updateCash(a.id, price)
+                gdb.sell_card(a.id, card_id)
+
+        plurality = 's' if dupes != 1 else ''
+        await self.bot.say(str_messages["str_gacha-yes-dupe"].format(a.name, dupes, plurality, total_value))
+
+    @commands.command(pass_context=True, aliases=['t'])
+    async def trade(self, ctx, target_user):
+        """This command is used to trade cards."""
+        a = ctx.message.author
+        b = ctx.message.mentions[0]
+
+        if a.id == b.id:
+            await self.bot.say("Nice try, kiddo ;)")
+            return
+
+        a_card_selected = None
+        b_card_selected = None
+
+        all_cards = gdb.fetch_all_cards()
+        all_cards = {card["NAME"].lower(): card["ID"] for card in all_cards}
+        all_owned_ids = gdb.get_all_cards(a.id)
+        all_owned_ids = [card[0] for card in all_owned_ids]
+
+        if b == None:
+            await self.bot.say(str_messages["str_user-not-found"])
+            return
+        
+        await self.bot.say("**<@{}>**, please enter card name you want to trade:".format(a.id))
+        
+        # wait for message
+        while True:
+            trade_proposal = await self.bot.wait_for_message(timeout=10, author=a)
+
+            if trade_proposal == None:
+                await self.bot.say("Trade has timed out after 10 seconds. Cancelling...")
+                return
+
+            if trade_proposal.content.lower().startswith('s!'):
+                continue
+
+            if trade_proposal.content.lower() not in all_cards:
+                await self.bot.say(str_messages["str_gacha-card-dne"].format(a.name))
+                continue
+
+            if all_cards[trade_proposal.content.lower()] not in all_owned_ids:
+                await self.bot.say(str_messages["str_gacha-sell-fail"].format(a.name))
+                continue
+            else:
+                a_card_selected = gdb.fetch_card(all_cards[trade_proposal.content.lower()])
+                break;
+
+        all_owned_ids = gdb.get_all_cards(b.id)
+        all_owned_ids = [card[0] for card in all_owned_ids]
+
+        await self.bot.say("**<@{}>**, please enter card name you want to trade:".format(b.id))
+        # wait for message
+        while True:
+            trade_proposal = await self.bot.wait_for_message(timeout=10, author=b)
+
+            if trade_proposal == None:
+                await self.bot.say("Trade has timed out after 10 seconds. Cancelling...")
+                return
+
+            if trade_proposal.content.lower() not in all_cards:
+                await self.bot.say(str_messages["str_gacha-card-dne"].format(b.name))
+                continue
+
+            if all_cards[trade_proposal.content.lower()] not in all_owned_ids:
+                await self.bot.say(str_messages["str_gacha-sell-fail"].format(b.name))
+                continue
+            else:
+                b_card_selected = gdb.fetch_card(all_cards[trade_proposal.content.lower()])
+                break;
+
+        await self.bot.say("<@{}>, **{}** wants to trade **{}** for **{}**. Do you accept? **(y/n)**".format(a.id, b.name, b_card_selected["NAME"], a_card_selected["NAME"]))
+        # wait for message
+        while True:
+            response = await self.bot.wait_for_message(timeout=10, author=a)
+            if response.content.lower() == 'y':
+                await self.bot.say("**Trade accepted**. **{}** has been exchanged for **{}**.".format(a_card_selected["NAME"], b_card_selected["NAME"]))
+                gdb.sell_card(a.id, a_card_selected["ID"])
+                gdb.sell_card(b.id, b_card_selected["ID"])
+                gdb.insert_card(a.id, b_card_selected["ID"])
+                gdb.insert_card(b.id, a_card_selected["ID"])
+                return
+            elif response.content.lower() == 'n':
+                await self.bot.say("**Trade cancelled.**")
+                return
+            else:
+                await self.bot.say("**Invalid response.** Try again.")
+                continue
+
+    @commands.command(pass_context=True, aliases=['gc'])
+    async def givecard(self, ctx, target_user, *card_name):
+        """This command is used to trade cards."""
+
+        a = ctx.message.author
+        b = ctx.message.mentions[0]
+
+        if a.id == b.id:
+            await self.bot.say("Lol.")
+            return
+
+        card_name = ' '.join(card_name)
+        card_selected = gdb.fetch_card(card_name)
+        owner_cards = gdb.get_all_cards(a.id)
+        owner_cards = [card[0] for card in owner_cards]
+        if card_selected["ID"] not in owner_cards:
+            await self.bot.say(str_messages["str_gacha-sell-fail"].format(a.name))
+            return
+
+        await self.bot.say("<@{}> are you sure you want to give **{}** to <@{}>? **(y/n)**".format(a.id, card_selected["NAME"], b.id))
+
+        while True:
+            response = await self.bot.wait_for_message(timeout=10, author=a)
+            if response.content.lower() == 'y':
+                await self.bot.say("**{}** has been given to **{}**.".format(card_selected["NAME"], b.name))
+                gdb.sell_card(a.id, card_selected["ID"])
+                gdb.insert_card(b.id, card_selected["ID"])
+                return
+            elif response.content.lower() == 'n':
+                await self.bot.say("**Successfully cancelled.**")
+                return
+            else:
+                await self.bot.say("**Invalid response.** Try again.")
+                continue
 
 
 def setup(bot):
