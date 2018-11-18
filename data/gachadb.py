@@ -74,7 +74,7 @@ class GachaDB():
 
         c = db.cursor()
         c.execute('''SELECT * FROM cards_db WHERE id = ? OR name LIKE ?''',
-                  (target_card_int, target_card+'%'))
+                  (target_card_int, '{}%'.format(target_card)))
         card = c.fetchone()
         if card == None:
             return False

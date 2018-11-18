@@ -74,6 +74,7 @@ class Gacha():
             card_total += prob_setting[card["RATING"]]
             card_index.extend([card["ID"] for i in range(prob_setting[card["RATING"]])])
         
+
         card_results = []
 
         for i in range(3):
@@ -81,6 +82,7 @@ class Gacha():
             card_id = card_index[index]
             card_results.append(gdb.fetch_card(card_id))
             gdb.insert_card(a.id, card_id)
+        print("working")
 
         for card in card_results:
             e = discord.Embed(color=0xff1155, title="You got a new card!")
@@ -244,7 +246,6 @@ class Gacha():
         a = ctx.message.author
 
         all_cards = gdb.get_all_cards(a.id)
-
 
 
 def setup(bot):
