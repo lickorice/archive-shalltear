@@ -40,6 +40,8 @@ card_price = {
     5: 20
 }
 
+temp_embed_messages = {}
+
 class Gacha():
     def __init__(self, bot):
         self.bot = bot
@@ -74,7 +76,6 @@ class Gacha():
             card_total += prob_setting[card["RATING"]]
             card_index.extend([card["ID"] for i in range(prob_setting[card["RATING"]])])
         
-
         card_results = []
 
         for i in range(3):
@@ -88,7 +89,7 @@ class Gacha():
             e.set_image(url=card["IMG"])
             e.add_field(
                 name="{}".format(card["NAME"]),
-                value="{}\n{}\n{}\nID:\t{}\n{}".format("⭐"*card["RATING"], '**{}**'.format(card_ratings[card["RATING"]]), card_series[card["SERIES_ID"]],  card["ID"], card_types[card["CARD_TYPE"]]),
+                value="{}\n{}\n{}\nID:\t{}\n{}".format("⭐"*card["RATING"], '**{}**'.format(card_ratings[card["RATING"]]), card_series[card["SERIES_ID"]][0],  card["ID"], card_types[card["CARD_TYPE"]]),
                 inline=False
             )
             e.set_footer(text="Rolled by {}".format(a.name), icon_url=a.avatar_url)
@@ -131,7 +132,7 @@ class Gacha():
             e.set_image(url=card["IMG"])
             e.add_field(
                 name="{}".format(card["NAME"]),
-                value="{}\n{}\n{}\nID:\t{}\n{}".format("⭐"*card["RATING"], '**{}**'.format(card_ratings[card["RATING"]]), card_series[card["SERIES_ID"]],  card["ID"], card_types[card["CARD_TYPE"]]),
+                value="{}\n{}\n{}\nID:\t{}\n{}".format("⭐"*card["RATING"], '**{}**'.format(card_ratings[card["RATING"]]), card_series[card["SERIES_ID"]][0],  card["ID"], card_types[card["CARD_TYPE"]]),
                 inline=False
             )
             e.set_footer(text="Rolled by {}".format(a.name), icon_url=a.avatar_url)
@@ -141,6 +142,8 @@ class Gacha():
     @commands.command(pass_context=True, aliases=['mc'])
     async def mycards(self, ctx, target_user=None):
         """This command is used to see cards."""
+
+        author = ctx.message.author
 
         if target_user != None:
             a = ctx.message.mentions[0]
@@ -153,9 +156,15 @@ class Gacha():
             await self.bot.say("**{}**, you currently don't have any cards. Redeem one with **s!fc**.".format(a.name))
             return
 
+        ranges = [(i, i+10) for i in range(0, len(all_cards), 10)]
+        pages = [i for i in range(1, len(ranges)+1)]
+
+        current_page = 0
+
+        # generate embed:
         card_str = ''
 
-        for card in sorted(all_cards):
+        for card in sorted(all_cards)[ranges[current_page][0]:ranges[current_page][1]]:
             card_object = gdb.fetch_card(card[0])
             card_str += '{} {}\n'.format(card_object["NAME"], "★"*card_object["RATING"])
 
@@ -166,8 +175,16 @@ class Gacha():
             name='All Cards ({})'.format(len(all_cards)),
             value= card_str
         )
+        e.set_footer(
+            text="Page {}/{}".format(pages[current_page], max(pages))
+        )
 
-        await self.bot.send_message(ctx.message.channel, embed=e)
+        msg = await self.bot.send_message(ctx.message.channel, embed=e)
+        
+        if max(pages) != 1:
+            await self.bot.add_reaction(msg, '◀')
+            await self.bot.add_reaction(msg, '▶')
+        temp_embed_messages[author.id] = [msg, all_cards, current_page, a.id, "mc"]
 
     @commands.command(pass_context=True, aliases=['vc'])
     async def viewcard(self, ctx, *target_card):
@@ -186,7 +203,7 @@ class Gacha():
         e.set_image(url=card["IMG"])
         e.add_field(
             name="{}".format(card["NAME"]),
-            value="{}\n{}\n{}\nID:\t{}\n{}".format("⭐"*card["RATING"], '**{}**'.format(card_ratings[card["RATING"]]), card_series[card["SERIES_ID"]],  card["ID"], card_types[card["CARD_TYPE"]]),
+            value="{}\n{}\n{}\nID:\t{}\n{}".format("⭐"*card["RATING"], '**{}**'.format(card_ratings[card["RATING"]]), card_series[card["SERIES_ID"]][0],  card["ID"], card_types[card["CARD_TYPE"]]),
             inline=False
         )
         await self.bot.send_message(ctx.message.channel, embed=e)
@@ -201,7 +218,7 @@ class Gacha():
 
         id_found = -1
         for series_id in card_series:
-            if card_series[series_id].lower() == target_series.lower():
+            if card_series[series_id][0].lower() == target_series.lower():
                 id_found = series_id
                 break
 
@@ -211,19 +228,40 @@ class Gacha():
 
         all_cards = gdb.fetch_all_cards(seriesID=id_found)
 
+        ranges = [(i, i+10) for i in range(0, len(all_cards), 10)]
+        pages = [i for i in range(1, len(ranges)+1)]
+
+        current_page = 0
+
+        owned_cards = gdb.get_all_cards(a.id)
+        owned_cards = [card[0] for card in owned_cards]
+
+        owned_count = len(['a' for card in all_cards if card["ID"] in owned_cards])
+
         card_str = ''
-        for card in all_cards:
+        for card in all_cards[ranges[current_page][0]:ranges[current_page][1]]:
+            if card["ID"] in owned_cards:
+                card_str += '~~***{} {}***~~\n'.format(card["NAME"], '★'*card["RATING"])
+                continue
             card_str += '{} {}\n'.format(card["NAME"], '★'*card["RATING"])
         card_str = card_str.rstrip()
 
         e = discord.Embed(color=0xff1155, title="Search Results")
+        e.set_thumbnail(url=card_series[id_found][1])
         e.add_field(
-            name="{}".format(card_series[id_found]),
+            name="{} ({}/{})".format(card_series[id_found][0], owned_count, len(all_cards)),
             value=card_str,
             inline=False
         )
+        e.set_footer(
+            text="Page {}/{}".format(pages[current_page], max(pages))
+        )
 
-        await self.bot.send_message(ctx.message.channel, embed=e)
+        msg = await self.bot.send_message(ctx.message.channel, embed=e)
+        if max(pages) != 1:
+            await self.bot.add_reaction(msg, '◀')
+            await self.bot.add_reaction(msg, '▶')
+        temp_embed_messages[a.id] = [msg, all_cards, current_page, id_found, "vs"]
 
     @commands.command(pass_context=True, aliases=['sc'])
     async def sellcard(self, ctx, *target_card):
@@ -399,6 +437,150 @@ class Gacha():
             else:
                 await self.bot.say("**Invalid response.** Try again.")
                 continue
+
+    async def on_reaction_add(self, reaction, user):
+
+        if user.bot:
+            return
+
+        a = user
+
+        if a.id not in temp_embed_messages:
+            return
+            if reaction.message != temp_embed_messages[a.id][0]:
+                return
+
+        msg, all_cards, current_page, og_id, m_type = temp_embed_messages[a.id]
+
+        if reaction.emoji == '▶':
+            current_page += 1
+        elif reaction.emoji == '◀':
+            current_page -= 1
+        else:
+            return
+
+        ranges = [(i, i+10) for i in range(0, len(all_cards), 10)]
+        pages = [i for i in range(1, len(ranges)+1)]
+
+        current_page %= max(pages)
+
+        # generate embed:
+        card_str = ''
+
+        if m_type == 'mc':
+            
+            for card in sorted(all_cards)[ranges[current_page][0]:ranges[current_page][1]]:
+                card_object = gdb.fetch_card(card[0])
+                card_str += '{} {}\n'.format(card_object["NAME"], "★"*card_object["RATING"])
+
+            card_str = card_str.rstrip()
+
+            b = get(reaction.message.channel.server.members, id=og_id)
+            e = discord.Embed(color = 0xff1155, title="{}'s Inventory".format(b.name))
+            e.add_field(
+                name='All Cards ({})'.format(len(all_cards)),
+                value= card_str
+            )
+        elif m_type == 'vs':
+
+            owned_cards = gdb.get_all_cards(a.id)
+            owned_cards = [card[0] for card in owned_cards]
+
+            owned_count = len(['a' for card in all_cards if card["ID"] in owned_cards])
+
+            for card in all_cards[ranges[current_page][0]:ranges[current_page][1]]:
+                if card["ID"] in owned_cards:
+                    card_str += '~~***{} {}***~~\n'.format(card["NAME"], '★'*card["RATING"])
+                    continue
+                card_str += '{} {}\n'.format(card["NAME"], '★'*card["RATING"])
+            card_str = card_str.rstrip()
+
+            e = discord.Embed(color=0xff1155, title="Search Results")
+            e.set_thumbnail(url=card_series[og_id][1])
+            e.add_field(
+                name="{} ({}/{})".format(card_series[og_id][0], owned_count, len(all_cards)),
+                value=card_str,
+                inline=False
+            )
+        e.set_footer(
+            text="Page {}/{}".format(pages[current_page], max(pages))
+        )
+
+        await self.bot.edit_message(msg, embed=e)
+        
+        temp_embed_messages[a.id][2] = current_page
+
+    async def on_reaction_remove(self, reaction, user):
+
+        if user.bot:
+            return
+
+        a = user
+
+        if a.id not in temp_embed_messages:
+            return
+            if reaction.message != temp_embed_messages[a.id][0]:
+                return
+
+        msg, all_cards, current_page, og_id, m_type = temp_embed_messages[a.id]
+
+        if reaction.emoji == '▶':
+            current_page += 1
+        elif reaction.emoji == '◀':
+            current_page -= 1
+        else:
+            return
+
+        ranges = [(i, i+10) for i in range(0, len(all_cards), 10)]
+        pages = [i for i in range(1, len(ranges)+1)]
+
+        current_page %= max(pages)
+
+        # generate embed:
+        card_str = ''
+
+        if m_type == 'mc':
+            
+            for card in sorted(all_cards)[ranges[current_page][0]:ranges[current_page][1]]:
+                card_object = gdb.fetch_card(card[0])
+                card_str += '{} {}\n'.format(card_object["NAME"], "★"*card_object["RATING"])
+
+            card_str = card_str.rstrip()
+
+            b = get(reaction.message.channel.server.members, id=og_id)
+            e = discord.Embed(color = 0xff1155, title="{}'s Inventory".format(b.name))
+            e.add_field(
+                name='All Cards ({})'.format(len(all_cards)),
+                value= card_str
+            )
+        elif m_type == 'vs':
+
+            owned_cards = gdb.get_all_cards(a.id)
+            owned_cards = [card[0] for card in owned_cards]
+
+            owned_count = len(['a' for card in all_cards if card["ID"] in owned_cards])
+
+            for card in all_cards[ranges[current_page][0]:ranges[current_page][1]]:
+                if card["ID"] in owned_cards:
+                    card_str += '~~***{} {}***~~\n'.format(card["NAME"], '★'*card["RATING"])
+                    continue
+                card_str += '{} {}\n'.format(card["NAME"], '★'*card["RATING"])
+            card_str = card_str.rstrip()
+
+            e = discord.Embed(color=0xff1155, title="Search Results")
+            e.set_thumbnail(url=card_series[og_id][1])
+            e.add_field(
+                name="{} ({}/{})".format(card_series[og_id][0], owned_count, len(all_cards)),
+                value=card_str,
+                inline=False
+            )
+        e.set_footer(
+            text="Page {}/{}".format(pages[current_page], max(pages))
+        )
+
+        await self.bot.edit_message(msg, embed=e)
+        
+        temp_embed_messages[a.id][2] = current_page
 
 
 def setup(bot):
