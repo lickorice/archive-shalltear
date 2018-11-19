@@ -229,6 +229,10 @@ class Gacha():
 
         all_cards = gdb.fetch_all_cards(seriesID=id_found)
 
+        decorated_cards = [(card["NAME"], card) for card in all_cards]
+        decorated_cards.sort()
+        all_cards = [card for (trash, card) in all_cards]
+
         ranges = [(i, i+10) for i in range(0, len(all_cards), 10)]
         pages = [i for i in range(1, len(ranges)+1)]
 
