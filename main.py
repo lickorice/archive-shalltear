@@ -5,7 +5,7 @@ from data import ldb
 import sqlite3
 
 startup_extensions = ["xp", "admin", "economy", "shop", "memes", "gacha"]
-version = '0.4 alpha'
+version = '0.5 alpha'
 
 bot = commands.Bot(command_prefix='s!')
 bot.remove_command('help')

@@ -1,4 +1,4 @@
-import discord, sqlite3, datetime, time, json, random
+import discord, sqlite3, datetime, time, json, random, re
 from discord.utils import get
 from discord.ext import commands
 from data import gachadb, ldb
@@ -215,10 +215,11 @@ class Gacha():
         a = ctx.message.author
 
         target_series = ' '.join(target_series)
+        target_series = re.compile('.*'+target_series+'.*')
 
         id_found = -1
         for series_id in card_series:
-            if card_series[series_id][0].lower() == target_series.lower():
+            if target_series.match(card_series[series_id][0].lower()):
                 id_found = series_id
                 break
 
