@@ -12,8 +12,8 @@ with open('assets/obj_badges.json') as f:
 with open('assets/obj_shop.json') as f:
     obj_shop = json.load(f)
 
-VIP_ROLE_ID = "443742098705874944"
-VIP_CHANNEL = "442677527115464705"
+VIP_ROLE_ID = "444142897290412053"
+VIP_CHANNEL = "444150135664934912"
  
 lkdb = ldb.LickDB()
 invMan = linv.LickInventory()
