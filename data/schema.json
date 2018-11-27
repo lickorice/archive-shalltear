@@ -1,0 +1,77 @@
+{
+    "user": [
+        {
+            "TABLE_NAME": "users",
+
+            "user_id": "INTEGER UNIQUE",
+            "user_level": "INTEGER",
+            "user_xp": "INTEGER",
+            "user_xp_to_next": "INTEGER",
+            "user_gil": "INTEGER",
+            "user_materia": "INTEGER",
+            "user_bg_id": "INTEGER"
+        },
+        {
+            "TABLE_NAME": "inventory",
+
+            "owner_id": "INTEGER",
+            "item_id": "INTEGER",
+            "item_equipped": "BOOLEAN"
+        },
+        {
+            "TABLE_NAME": "activities",
+
+            "user_id": "INTEGER UNIQUE",
+            "can_free_pack": "BOOLEAN",
+            "can_daily": "BOOLEAN",
+            "count_free_gil": "INTEGER",
+            "count_commands": "INTEGER",
+            "count_rolls": "INTEGER",
+            "count_cards": "INTEGER"
+        }
+    ],
+    "gacha": [
+        {
+            "TABLE_NAME": "cards",
+
+            "card_id": "INTEGER UNIQUE",
+            "card_type": "INTEGER",
+            "card_rating": "INTEGER",
+            "card_cost": "INTEGER",
+            "card_salvage": "INTEGER",
+            "card_name": "STRING",
+            "card_url": "STRING",
+            "card_series_id": "INTEGER",
+            "card_is_flagship": "BOOLEAN"
+        },
+        {
+            "TABLE_NAME": "set_cards",
+
+            "shard_id": "INTEGER",
+            "target_id": "INTEGER"
+        },
+        {
+            "TABLE_NAME": "progress",
+
+            "user_id": "INTEGER",
+            "series_id": "INTEGER",
+            "is_complete": "BOOLEAN",
+            "current_cards": "INTEGER",
+            "target_cards": "INTEGER"
+        },
+        {
+            "TABLE_NAME": "rank",
+
+            "user_id": "INTEGER UNIQUE",
+            "unique_cards": "INTEGER",
+            "equivalent_rank": "INTEGER"
+        }
+    ],
+    "utils": [
+        {
+            "TABLE_NAME": "disabled_channels_xp",
+
+            "channel_id": "INTEGER UNIQUE"
+        }
+    ]
+}
