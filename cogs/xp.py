@@ -1,23 +1,139 @@
-import discord, json, datetime
+import discord, json, datetime, math, profiler, requests
+from PIL import Image
+from io import BytesIO
 from discord.ext import commands
 from data import db_users
 
 with open("assets/str_msgs.json") as f:
     msg_strings = json.load(f)
 
-# Logging functions here:
-
-def log(string):
-    print("{}{}".format(datetime.datetime.now().strftime("(%Y-%m-%d)[%H:%M:%S]"), string))
-
-# Start of program logic:
+with open("assets/obj_badges.json") as f:
+    obj_badges = json.load(f)
 
 class XPCog:
     def __init__(self, bot):
         self.bot = bot
 
     async def on_message(self, message):
-        log(message)
+        """Main on_message method on collecting message data."""
+        if message.author.bot:
+            return
+        points = int(math.log(len(message.content), 2))
+        user_db = db_users.UserHelper(is_logged=False)
+        user_db.connect()
+        try:
+            if user_db.add_xp(message.author.id, points):
+                user_db.next_level(message.author.id)
+                
+                # generate the image:
+
+                profiler.level_generate(message.author.avatar_url)
+
+                level_image = discord.File('temp/levelup.png')
+
+                await message.channel.send(file=level_image, delete_after=10)
+                
+        except IndexError:
+            user_db.new_user(message.author.id)
+            user_db.add_xp(message.author.id, points)
+        user_db.close()
+
+    @commands.command(aliases=['p'])
+    async def profile(self, ctx, target_user=None):
+        """Shows the user profile of yourself, or a target user."""
+        if target_user:
+            try:
+                a = ctx.message.mentions[0]
+            except IndexError:
+                a = self.bot.get_user(int(target_user))
+                if not a:
+                    await ctx.channel.send(msg_strings['str_user-not-found'])
+                    return
+        else:
+            a = ctx.message.author
+
+        user_db = db_users.UserHelper(is_logged=False)
+        user_db.connect()
+        equipped_badges = user_db.get_items(a.id, True)
+        try:
+            current_user = user_db.get_user(a.id)['users']
+        except IndexError:
+            await ctx.channel.send(msg_strings["str_user-not-found"])
+            return
+        user_db.close()
+
+        equipped_badges = list(map(lambda x: str(x["item_id"]), equipped_badges))
+        level = current_user["user_level"]
+        xp = (current_user["user_xp"], current_user["user_xp_to_next"])
+
+        profiler.profile_generate(a.name, a.avatar_url, level, xp, equipped_badges)
+        profile_image = discord.File("temp/profile.png")
+        await ctx.channel.send(file=profile_image)
+
+    @commands.command()
+    async def equip(self, ctx, item_id):
+        if item_id not in list(obj_badges.keys()):
+            await ctx.channel.send(msg_strings["str_badge-not-found"])
+            return
+
+        user_db = db_users.UserHelper(is_logged=False)
+        user_db.connect()
+        result = user_db.toggle_item(ctx.message.author.id, int(item_id))
+        user_db.close()
+
+        badge_name = obj_badges[item_id]["name"]
+
+        if result == 1:
+            await ctx.channel.send(
+                msg_strings["str_badge-equipped"].format(badge_name)
+                )
+        elif result == 2:
+            await ctx.channel.send(
+                msg_strings["str_badge-unequipped"].format(badge_name)
+                )
+        elif result == 3:
+            await ctx.channel.send(
+                msg_strings["str_badge-not-yours"].format(ctx.message.author.id)
+                )
+
+    @commands.command()
+    async def badges(self, ctx):
+        user_db = db_users.UserHelper(is_logged=False)
+        user_db.connect()
+        badges = user_db.get_items(ctx.message.author.id)
+        equipped_badges = user_db.get_items(ctx.message.author.id, True)
+        user_db.close()
+
+        badges = sorted(
+            badges,
+            key = lambda badge: badge["item_id"]
+        )
+
+        badge_str = ''
+        
+        if len(badges) == 0:
+            badge_str = "You have no badges yet."
+        else:
+            for badge in badges:
+                if badge in equipped_badges:
+                    badge_str += '`ID: {}` **{}**\n'.format(
+                        badge["item_id"],
+                        obj_badges[str(badge["item_id"])]["name"],
+                        )
+                else:
+                    badge_str += '`ID: {}` {}\n'.format(
+                        badge["item_id"],
+                        obj_badges[str(badge["item_id"])]["name"],
+                        )
+
+        badge_str = badge_str.rstrip()
+
+        embed = discord.Embed(
+            title=ctx.message.author.display_name,
+            color=0xff1155
+        )
+        embed.add_field(name="Your Badges", value=badge_str)
+        await ctx.channel.send(embed=embed)
 
         
 def setup(bot):

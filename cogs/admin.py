@@ -47,11 +47,41 @@ class AdminCog:
         if ctx.author.id != owner_id:
             await ctx.channel.send(msg_strings["str_insuf-perms"])
         users_db = db_users.UserHelper()
-        users_db.connect()
+        if not users_db.connect():
+            log("[-ERR-] Database failed to connect.")
+        reg_count, bot_count, all_count = 0, 0, 0
         for member in self.bot.get_all_members():
-            users_db.new_user(member.id)
+            if not member.bot:
+                users_db.new_user(member.id)
+                reg_count += 1
+            else:
+                bot_count += 1
+            all_count += 1
         users_db.close()
 
+        await ctx.channel.send(
+            msg_strings["str_register-3"].format(all_count, reg_count, bot_count)
+            )
+
+    async def on_member_join(self, member):
+        if member.bot:
+            return
+        log("[-EVT-] New user joined. ({})".format(member.name))
+        users_db = db_users.UserHelper()
+        if not users_db.connect():
+            log("[-ERR-] Database failed to connect.")
+        users_db.new_user(member.id)
+        users_db.close()
+    
+    @commands.command(aliases=['gb'])
+    async def grantbadge(self, ctx, item_id):
+        """Grants a badge. (Owner)"""
+        if ctx.message.author.id != owner_id:
+            return
+        user_db = db_users.UserHelper()
+        user_db.connect()
+        user_db.add_item(ctx.message.author.id, int(item_id))
+        user_db.close()
 
         
 def setup(bot):

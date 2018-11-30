@@ -10,7 +10,24 @@ with open('assets/str_titles.json') as f:
 with open('assets/obj_badges.json') as f:
     obj_badges = json.load(f)
 
-def generate(user_name, avatar_url, user_level, user_xp, badges):
+
+def level_generate(avatar_url):
+    img_offset = 24, 24
+    img_temp = Image.open('assets/img_level-up-template.png')
+    bg_temp = Image.new('RGBA', (52, 52), (44, 47, 51, 255))
+    bg2_temp = Image.open('assets/background-1.png')
+
+    imgfile = requests.get(avatar_url)
+    pfp = Image.open(BytesIO(imgfile.content))
+    pfp = pfp.resize((52, 52), Image.BICUBIC)
+    bg_temp.paste(pfp, (0, 0))
+    img_temp.paste(bg_temp, img_offset, mask=bg_temp)
+    bg2_temp.paste(img_temp, (0,0), mask=img_temp)
+    bg2_temp.save('temp/levelup.png')
+    pass
+
+
+def profile_generate(user_name, avatar_url, user_level, user_xp, badges):
     """
     This is a profile image generator, dev'd by Carlos Panganiban. 2018.
     It takes in the following arguments:
@@ -69,9 +86,7 @@ def generate(user_name, avatar_url, user_level, user_xp, badges):
 
     _x, _y = 30, 145
     for badge in badges:
-        if badge[1] == False:
-            continue
-        badge_img = Image.open(obj_badges["Badges"][badge[0]]["img-url"])
+        badge_img = Image.open(obj_badges[badge]["img-url"])
         template.paste(badge_img, (_x, _y), mask=badge_img)
         _x += 40
     

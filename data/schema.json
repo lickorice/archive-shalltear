@@ -22,6 +22,7 @@
             "TABLE_NAME": "activities",
 
             "user_id": "INTEGER UNIQUE",
+            "can_receive_xp": "BOOLEAN",
             "can_free_pack": "BOOLEAN",
             "can_daily": "BOOLEAN",
             "count_free_gil": "INTEGER",
@@ -43,6 +44,13 @@
             "card_url": "STRING",
             "card_series_id": "INTEGER",
             "card_is_flagship": "BOOLEAN"
+        },
+        {
+            "TABLE_NAME": "inventory",
+
+            "owner_id": "INTEGER",
+            "item_id": "INTEGER",
+            "item_equipped": "BOOLEAN"
         },
         {
             "TABLE_NAME": "set_cards",

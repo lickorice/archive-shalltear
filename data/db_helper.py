@@ -1,8 +1,18 @@
+"""
+An easier way to CRUD stuff in tables of a certain database
+using SQLite. It is recommended to use this as a parent class
+for another database helper.
+
+(coded by lickorice, 2018)
+"""
+
 import sqlite3, json, time, datetime, os
 
 # Logging functions here:
 
-def log(string):
+def log(string, logged=True):
+    if not logged:
+        return
     print("{}{}".format(datetime.datetime.now().strftime("(%Y-%m-%d)[%H:%M:%S]"), string))
 
 def dict_factory(cursor, row):
@@ -15,30 +25,31 @@ def dict_factory(cursor, row):
 
 class DBHelper():
     def __init__(self, database_path, is_logged=True):
+        """
+        Args:
+            database_path (str): The path to your database, it will print a log message if the database does not exist.
+            is_logged (:obj:`bool`, optional): shows verbose logs of the operations.
+        """
         self.database_path = database_path
         self.is_logged = is_logged
 
     def connect(self):
         """This function connects to a database."""
-        log("[-DB--] Connecting to database...")
         if not os.path.isfile(self.database_path):
-            log("[-DB--] Database failed to connect. '{}' does not exist.".format(self.database_path))
+            log("[-ERR-] Database failed to connect. '{}' does not exist.".format(self.database_path), self.is_logged)
             return False
         self.current_db = sqlite3.connect(self.database_path)
         self.current_db.row_factory = dict_factory
-        log("[-DB--] Database successfully connected at '{}'.".format(self.database_path))
         return True
 
     def close(self):
         """This function closes the connection."""
         self.current_db.close()
         self.current_db = None
-        log("[-DB--] Database at '{}' successfully closed.".format(self.database_path))
         return
 
     def insert_row(self, table_name, **kwargs):
         """This function inserts a row in a table."""
-        log("[-DB--] Attempting to write to a table named '{}'.".format(table_name))
 
         exec_str = 'INSERT INTO {}('+'{}, '*len(kwargs)+') '
         exec_str += 'VALUES ('+'?, '*len(kwargs)+')'
@@ -57,7 +68,7 @@ class DBHelper():
             log('[-ERR-] ' + str(e).capitalize())
             return
 
-        log("[-DB--] Successfully inserted a row in table '{}'.".format(table_name))
+        log("[-DB--] Successfully inserted new row to table '{}'.".format(table_name), self.is_logged)
 
     def fetch_rows(self, table_name, strict=True, **kwargs):
         """This function returns all the matches of a certain row"""
@@ -93,6 +104,7 @@ class DBHelper():
         input_columns = tuple([kwargs[i] for i in kwargs])
 
         self.commit(exec_str, input_columns)
+        log("[-DB--] Successfully removed a row in table '{}'".format(table_name), self.is_logged)
 
     def update_column(self, table_name, column_name, column_value, **kwargs):
         """
@@ -110,6 +122,7 @@ class DBHelper():
         exec_str = exec_str.format(*columns)
         
         self.commit(exec_str, input_columns)
+        log("[-DB--] Successfully updated a row in table '{}'".format(table_name), self.is_logged)
 
     def commit(self, string, column_tuple):
         c = self.current_db.cursor()

@@ -1,4 +1,18 @@
+"""
+A database maker that makes databases from a given schema.json
+file. By default, it saves to a db/ directory where this .py is
+in. You may change this with the `db_directory` variable.
+
+Also, it saves the .db file with the name of the database;
+for example, if the database is named "numbers", the
+corresponding .db file will also be named "numbers.db".
+
+(coded by lickorice, 2018)
+"""
+
 import sqlite3, json
+
+db_directory = 'db/'
 
 with open('schema.json') as f:
     schemas_json = json.load(f)
@@ -24,7 +38,7 @@ def db_gen():
     """This creates a database made from the schema.json"""
     for database in schemas_json:
         exec_strings = exec_string_generate(schemas_json[database])
-        target_db = sqlite3.connect('db/{}.db'.format(database))
+        target_db = sqlite3.connect('{}{}.db'.format(db_directory, database))
         c = target_db.cursor()
         for exec_str in exec_strings:
             c.execute(exec_str)
