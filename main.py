@@ -5,6 +5,8 @@ import sys, traceback
 
 initial_extensions = [
     'cogs.admin',
+    'cogs.core',
+    'cogs.economy',
     'cogs.xp'
     ]
 

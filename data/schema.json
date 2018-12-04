@@ -81,5 +81,13 @@
 
             "channel_id": "INTEGER UNIQUE"
         }
+    ],
+    "misc": [
+        {
+            "TABLE_NAME": "lottery",
+
+            "guild_id": "INTEGER UNIQUE",
+            "pot_amount": "INTEGER"
+        }
     ]
 }

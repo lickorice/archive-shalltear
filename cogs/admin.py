@@ -2,7 +2,7 @@ import discord, json, datetime
 from discord.ext import commands
 from data import db_users
 
-owner_id = 319285994253975553
+owner_id = 319285994253975553 # Lickorice
 
 with open("assets/str_msgs.json") as f:
     msg_strings = json.load(f)
@@ -26,21 +26,6 @@ class AdminCog:
         else:
             await ctx.channel.send(msg_strings["str_insuf-perms"])
 
-    @commands.command(aliases=['info'])
-    async def about(self, ctx):
-        """This command shows information about the bot."""
-        embed = discord.Embed(title=msg_strings['str_about-title'], color=0xff1155)
-        embed.add_field(
-            name="Author",
-            value=msg_strings['str_author-name']
-        )
-        embed.add_field(
-            name="Source Code",
-            value=msg_strings['str_src-link']
-        )
-        embed.set_footer(text=msg_strings['str_author-info'])
-        await ctx.channel.send(embed=embed)
-
     @commands.command()
     async def registerall(self, ctx):
         """Adds all users (Owner)."""
@@ -62,16 +47,6 @@ class AdminCog:
         await ctx.channel.send(
             msg_strings["str_register-3"].format(all_count, reg_count, bot_count)
             )
-
-    async def on_member_join(self, member):
-        if member.bot:
-            return
-        log("[-EVT-] New user joined. ({})".format(member.name))
-        users_db = db_users.UserHelper()
-        if not users_db.connect():
-            log("[-ERR-] Database failed to connect.")
-        users_db.new_user(member.id)
-        users_db.close()
     
     @commands.command(aliases=['gb'])
     async def grantbadge(self, ctx, item_id):
@@ -82,6 +57,22 @@ class AdminCog:
         user_db.connect()
         user_db.add_item(ctx.message.author.id, int(item_id))
         user_db.close()
+
+    @commands.command(aliases=['gg'])
+    async def grantgil(self, ctx, gil_amount):
+        """Grants all users Gil. (Owner)"""
+        if ctx.message.author.id != owner_id:
+            return
+        user_db = db_users.UserHelper()
+        user_db.connect()
+        for member in self.bot.get_all_members():
+            if not member.bot:
+                user_db.add_gil(member.id, int(gil_amount))
+        user_db.close()
+        send_str = 'str_grant-all-positive' if int(gil_amount) > 0 else 'str_grant-all-negative'
+        await ctx.channel.send(
+            msg_strings[send_str].format(gil_amount)
+        )
 
         
 def setup(bot):

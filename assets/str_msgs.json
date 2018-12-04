@@ -7,8 +7,13 @@
     "str_insuf-gil": "**Insufficient gil.**",
     "str_insuf-lvl": "**Level too low.**",
     "str_cmd-error": "**<@{}>, try again.** *({})*",
+    "str_timeout": "**<@{}>, you timed out.**",
     "str_on-cooldown": "**{}**, free booster packs are only claimable once per hour. The next interval you can claim one will be in **{}** minute{}.",
     "str_invalid-cmd": "**Invalid command parameters.**",
+    "str_lottery-no": "**{}**, please enter a number from 0-999.",
+    "str_lottery-win": "<@{}>, **congratulations!** You won the jackpot of **{} 💰** gil!.",
+    "str_lottery-loss": "**{}**, sadly, you lost.",
+    "str_lottery-pot": "The current jackpot for the lottery is **{} 💰** gil.",
     "str_gacha-insuf-funds": "**{}**, you do not have enough Gil to afford a booster pack. A pack costs **{}** Gil.",
     "str_gacha-funds-deduct": "**{}**, **{}** gil have been deducted from your account.",
     "str_gacha-card-dne": "**{}**, that card does not exist.",
@@ -33,6 +38,7 @@
     "str_meme-not-found": "**Meme not found!**",
     "str_meme-not-enough": "**Not enough actors!** You need {} actor{} for this meme to be generated.",
     "str_balance": "<@{}>, you currently have **{} 💰** Gil.",
+    "str_bg-not-found": "**That background doesn't exist.**",
     "str_badge-grant-success": "<@{}>, you have been given the **{}**.",
     "str_badge-grant-failure": "**User already has that badge.**",
     "str_badge-already-exists": "**You already have that badge.**",
@@ -40,5 +46,6 @@
     "str_badge-equipped": "**{}** successfully equipped.",
     "str_badge-unequipped": "**{}** successfully unequipped.",
     "str_badge-not-yours": "<@{}>, you don't have that badge.",
-    "str_vip-welcome": "<@{}>, welcome to the VIP channels! Please take note of the following rules: ```1. No screenshots of this channel are allowed. \n2. Everything that you say and hear, stays here.```*** Enjoy your stay in VIP!***"
+    "str_vip-welcome": "<@{}>, welcome to the VIP channels! Please take note of the following rules: ```1. No screenshots of this channel are allowed. \n2. Everything that you say and hear, stays here.```*** Enjoy your stay in VIP!***",
+    "str_am-i-a-joke": "**<@{}>, am I a joke to you?** https://cdn.discordapp.com/attachments/443734016257163264/519524509020061736/joke.png"
 }

@@ -18,7 +18,10 @@ class XPCog:
         """Main on_message method on collecting message data."""
         if message.author.bot:
             return
-        points = int(math.log(len(message.content), 2))
+        try:
+            points = int(math.log(len(message.content), 2))
+        except ValueError:
+            points = 1
         user_db = db_users.UserHelper(is_logged=False)
         user_db.connect()
         try:
@@ -38,6 +41,7 @@ class XPCog:
             user_db.add_xp(message.author.id, points)
         user_db.close()
 
+    @commands.cooldown(1, 60)
     @commands.command(aliases=['p'])
     async def profile(self, ctx, target_user=None):
         """Shows the user profile of yourself, or a target user."""
@@ -62,16 +66,18 @@ class XPCog:
             return
         user_db.close()
 
+        bg_id = current_user["user_bg_id"]
         equipped_badges = list(map(lambda x: str(x["item_id"]), equipped_badges))
         level = current_user["user_level"]
         xp = (current_user["user_xp"], current_user["user_xp_to_next"])
 
-        profiler.profile_generate(a.name, a.avatar_url, level, xp, equipped_badges)
+        profiler.profile_generate(a.name, a.avatar_url, level, xp, equipped_badges, bg_id)
         profile_image = discord.File("temp/profile.png")
         await ctx.channel.send(file=profile_image)
 
     @commands.command()
     async def equip(self, ctx, item_id):
+        """Followed by the ID, you can equip a badge."""
         if item_id not in list(obj_badges.keys()):
             await ctx.channel.send(msg_strings["str_badge-not-found"])
             return
@@ -98,6 +104,7 @@ class XPCog:
 
     @commands.command()
     async def badges(self, ctx):
+        """Shows the user's badges."""
         user_db = db_users.UserHelper(is_logged=False)
         user_db.connect()
         badges = user_db.get_items(ctx.message.author.id)
@@ -134,6 +141,20 @@ class XPCog:
         )
         embed.add_field(name="Your Badges", value=badge_str)
         await ctx.channel.send(embed=embed)
+
+    @commands.command()
+    async def changebg(self, ctx, bg_id):
+        with open('assets/obj_bgs.json') as f:
+            bgs = list(map(int, json.load(f).keys()))
+        try:
+            if int(bg_id) not in bgs:
+                await ctx.channel.send(msg_strings["str_bg-not-found"])
+            user_db = db_users.UserHelper()
+            user_db.connect()
+            user_db.change_bg(ctx.message.author.id, int(bg_id))
+        except ValueError:
+            await ctx.channel.send(msg_strings["str_invalid-cmd"])
+        user_db.close()
 
         
 def setup(bot):

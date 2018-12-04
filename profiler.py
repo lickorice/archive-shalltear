@@ -27,7 +27,7 @@ def level_generate(avatar_url):
     pass
 
 
-def profile_generate(user_name, avatar_url, user_level, user_xp, badges):
+def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
     """
     This is a profile image generator, dev'd by Carlos Panganiban. 2018.
     It takes in the following arguments:
@@ -43,8 +43,16 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges):
         user_title = "The Conqueror of Servers"
     else:
         user_title = str_titles[str(user_level)]
-    template = Image.open('assets/img_profile-template.png')
-    
+
+    if bg_id != 0:    
+        with open("assets/obj_bgs.json") as f:
+            bgs = json.load(f)
+        template = Image.open(bgs[str(bg_id)]["img_url"])
+        picplate = Image.open('assets/img_profile-template.png')
+        template.paste(picplate, (0, 0), picplate)
+    else:
+        template = Image.open('assets/img_profile-template.png')
+
     avatar_file = requests.get(avatar_url)
     avatar = Image.open(BytesIO(avatar_file.content))
     avatar = avatar.resize((90, 90), Image.BILINEAR)

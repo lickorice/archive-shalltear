@@ -24,7 +24,7 @@ class UserHelper(db_helper.DBHelper):
             user_level=1,
             user_xp=0,
             user_xp_to_next=50,
-            user_gil=0,
+            user_gil=10,
             user_materia=0,
             user_bg_id=0
             )
