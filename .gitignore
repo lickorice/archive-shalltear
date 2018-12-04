@@ -4,6 +4,7 @@
 data/.db
 data/inventory.json
 data/gacha.db
+data/db
 
 test.py
 test.in

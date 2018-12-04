@@ -24,5 +24,12 @@ for row in in_db.fetch_rows("primary_db", False, userID="%"):
             user_db.add_item(user_id, int(item_id), item_equipped)
     except KeyError:
         pass
+    user_items = user_db.get_items(user_id)
+    user_items = list(set(list(map(lambda x: (x["item_id"], x["item_equipped"]), user_items))))
+    # print(user_items)
+    for item in user_items:
+        user_db.remove_item(user_id, item[0])
+        user_db.add_item(user_id, item[0], bool(item[1]))
+
 user_db.close()
 in_db.close()
