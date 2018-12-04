@@ -129,9 +129,7 @@ class EconomyCog:
             current_number = random.randint(0, 9)
             string[i] = ':{}:'.format(numdict[current_number])
             await msg.edit(content=''.join(string))
-            num_total += current_number*(10**2-i)
-            if lottery_entry//(10**2-i) == current_number:
-                await asyncio.sleep(1)
+            num_total += current_number*(10**(2-i))
 
         if num_total == lottery_entry:
             helper_db = db_helper.DBHelper("data/db/misc.db", False)
