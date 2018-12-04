@@ -21,6 +21,7 @@ class EconomyCog:
 
     @commands.command(aliases=['g', 'bal', 'money', '$'])
     async def gil(self, ctx, target_user=None):
+        """Check your own gil, or another user's gil."""
         string = "**{}**, you currently have **{}** 💰 gil." if target_user != None else "**{}** currently has **{}** 💰 gil."
         a = await msg_utils.get_target_user(ctx, target_user)
         if a == None:
@@ -34,6 +35,7 @@ class EconomyCog:
 
     @commands.command()
     async def give(self, ctx, target_user=None, gil="no"):
+        """Transfer your gil to another user."""
         a = ctx.message.author
         try:
             if int(gil) == "no":
@@ -85,7 +87,7 @@ class EconomyCog:
     @commands.command(aliases=['lt'])
     @commands.cooldown(2, 10)
     async def lottery(self, ctx, number=None):
-        """This plays the lottery game"""
+        """Take your chances with the lottery!"""
 
         author = ctx.message.author
 

@@ -16,15 +16,15 @@ class UserHelper(db_helper.DBHelper):
         self.database_path = 'data/db/user.db'
         self.is_logged = is_logged
 
-    def new_user(self, user_id):
+    def new_user(self, user_id, user_level=1, user_xp=0, user_xp_to_next=50, user_gil=10, user_materia=0):
         """Adds a new user to the database (user_id unique)."""
         self.insert_row(
             table_name="users",
             user_id=user_id,
-            user_level=1,
-            user_xp=0,
-            user_xp_to_next=50,
-            user_gil=10,
+            user_level=user_level,
+            user_xp=user_xp,
+            user_xp_to_next=user_xp_to_next,
+            user_gil=user_gil,
             user_materia=0,
             user_bg_id=0
             )
@@ -64,13 +64,13 @@ class UserHelper(db_helper.DBHelper):
             return True
         return False
 
-    def add_item(self, user_id, item_id):
+    def add_item(self, user_id, item_id, item_equipped=False):
         """Adds an item to the user account, given an id."""
         self.insert_row(
             table_name="inventory",
             owner_id=user_id,
             item_id=item_id,
-            item_equipped=True
+            item_equipped=item_equipped
         )
 
     def remove_item(self, user_id, item_id):

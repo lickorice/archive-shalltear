@@ -144,6 +144,7 @@ class XPCog:
 
     @commands.command()
     async def changebg(self, ctx, bg_id):
+        """Change the background of your profile."""
         with open('assets/obj_bgs.json') as f:
             bgs = list(map(int, json.load(f).keys()))
         try:
