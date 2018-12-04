@@ -85,7 +85,7 @@ class EconomyCog:
         await ctx.channel.send(msg_strings["str_lottery-pot"].format(current_pot))
 
     @commands.command(aliases=['lt'])
-    @commands.cooldown(2, 10)
+    @commands.cooldown(2, 10, type=commands.BucketType.user)
     async def lottery(self, ctx, number=None):
         """Take your chances with the lottery!"""
 

@@ -41,7 +41,7 @@ class XPCog:
             user_db.add_xp(message.author.id, points)
         user_db.close()
 
-    @commands.cooldown(1, 60)
+    @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command(aliases=['p'])
     async def profile(self, ctx, target_user=None):
         """Shows the user profile of yourself, or a target user."""
