@@ -17,6 +17,26 @@
     "3":    {
         "name": "Automata Engineer",
         "img-url": "assets/badges/00003.png",
-        "description": "This is part of the development team for Shalltear!."
-    }
+        "description": "This member is a part of the development team for Shalltear!."
+    },
+    "4":    {
+        "name": "Russian Communist",
+        "img-url": "assets/badges/00004.png",
+        "description": "Seize the means of production!"
+    },
+    "5":    {
+        "name": "American Capitalist",
+        "img-url": "assets/badges/00005.png",
+        "description": "The only good communist is a dead communist."
+    }, 
+    "6":    {
+        "name": "Chinese Socialist",
+        "img-url": "assets/badges/00006.png",
+        "description": "You have accepted the state as your lord and savior."
+    },
+    "7":    {
+        "name": "",
+        "img-url": "assets/badges/00007.png",
+        "description": ""
+    } 
 }

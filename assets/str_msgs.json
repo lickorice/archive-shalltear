@@ -46,6 +46,9 @@
     "str_badge-equipped": "**{}** successfully equipped.",
     "str_badge-unequipped": "**{}** successfully unequipped.",
     "str_badge-not-yours": "<@{}>, you don't have that badge.",
+    "str_badge-already-yours": "<@{}>, you already have that badge.",
+    "str_badge-full": "<@{}>, you have equipped the maximum number of badges (11), please unequip some badges before equipping a new one.",
+    "str_badge-bought": "<@{}>, you have successfully bought **{}**!.",
     "str_vip-welcome": "<@{}>, welcome to the VIP channels! Please take note of the following rules: ```1. No screenshots of this channel are allowed. \n2. Everything that you say and hear, stays here.```*** Enjoy your stay in VIP!***",
     "str_am-i-a-joke": "**<@{}>, am I a joke to you?** https://cdn.discordapp.com/attachments/443734016257163264/519524509020061736/joke.png"
 }

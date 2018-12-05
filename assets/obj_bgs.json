@@ -13,5 +13,32 @@
     },
     "5": {
         "img_url": "assets/bgs/5.png"
+    },
+    "6": {
+        "img_url": "assets/bgs/6.png"
+    },
+    "7": {
+        "img_url": "assets/bgs/7.png"
+    },
+    "8": {
+        "img_url": "assets/bgs/8.png"
+    },
+    "9": {
+        "img_url": "assets/bgs/9.png"
+    },
+    "10": {
+        "img_url": "assets/bgs/10.png"
+    },
+    "11": {
+        "img_url": "assets/bgs/11.png"
+    },
+    "12": {
+        "img_url": "assets/bgs/12.png"
+    },
+    "13": {
+        "img_url": "assets/bgs/13.png"
+    },
+    "14": {
+        "img_url": "assets/bgs/14.png"
     }
 }

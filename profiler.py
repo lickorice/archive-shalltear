@@ -44,14 +44,7 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
     else:
         user_title = str_titles[str(user_level)]
 
-    if bg_id != 0:    
-        with open("assets/obj_bgs.json") as f:
-            bgs = json.load(f)
-        template = Image.open(bgs[str(bg_id)]["img_url"])
-        picplate = Image.open('assets/img_profile-template.png')
-        template.paste(picplate, (0, 0), picplate)
-    else:
-        template = Image.open('assets/img_profile-template.png')
+    template = Image.open('assets/img_profile-template.png')
 
     avatar_file = requests.get(avatar_url)
     avatar = Image.open(BytesIO(avatar_file.content))
@@ -98,4 +91,11 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
         template.paste(badge_img, (_x, _y), mask=badge_img)
         _x += 40
     
-    template.save('temp/profile.png')
+    if bg_id != 0:    
+        with open("assets/obj_bgs.json") as f:
+            bgs = json.load(f)
+        background = Image.open(bgs[str(bg_id)]["img_url"])
+        background.paste(template, (0, 50), template)
+        background.save('temp/profile.png')
+    else:
+        template.save('temp/profile.png')
