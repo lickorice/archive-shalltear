@@ -73,7 +73,7 @@ class GambingCog:
     async def lottery(self, ctx, tickets='1'):
         """
         This purchases a number (by default, one) tickets for the server-wide lottery.
-        A winner is drawn every fifteen minutes.
+        A winner is drawn every ten minutes.
         """
         user_db = db_users.UserHelper(False)
         user_db.connect()
