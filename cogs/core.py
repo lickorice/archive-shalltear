@@ -1,13 +1,13 @@
-import discord, json, datetime, time
+import discord, json, datetime, time, conf
 from discord.ext import commands
 from data import db_users
-
-owner_id = 319285994253975553 # Lickorice
 
 with open("assets/str_msgs.json") as f:
     msg_strings = json.load(f)
 
 start_time = time.time()
+
+config = conf.Config()
 
 # Logging functions here:
 
@@ -19,16 +19,16 @@ def log(string):
 class CoreCog:
     def __init__(self, bot):
         self.bot = bot
-        
-    async def on_command_error(self, ctx, error):
-        if type(error) == type(discord.ext.commands.errors.CommandNotFound()):
-            return
-        await ctx.channel.send(msg_strings["str_cmd-error"].format(ctx.message.author.id, error))
+
+    # async def on_command_error(self, ctx, error):
+    #     if type(error) == type(discord.ext.commands.errors.CommandNotFound()):
+    #         return
+    #     await ctx.channel.send(msg_strings["str_cmd-error"].format(ctx.message.author.id, error))
 
     @commands.command()
     async def ping(self, ctx):
         """This command shows the latency of the bot."""
-        await ctx.channel.send('Pong! ({})'.format(round(self.bot.latency, 1)))
+        await ctx.channel.send('Pong! ({}ms)'.format(int(round(self.bot.latency, 3) * 1000)))
 
     @commands.command(aliases=['info'])
     async def about(self, ctx):

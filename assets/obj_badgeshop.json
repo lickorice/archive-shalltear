@@ -1,0 +1,21 @@
+{
+    "0": {
+        "name": "VIP Status",
+        "ipm_exclusive": true,
+        "price": 2500,
+        "price-tag": "IPM-Exclusive, 2500 gil, Level 20",
+        "level-needed": 20,
+        "icon-url": "assets/badges/00000.png",
+        "desc": "(IPM Collective Exclusive) The most exclusive role in the server. Includes secret chat, among others."
+    },
+    "1": {
+        "name": "PAGCOR Badge",
+        "ipm_exclusive": false,
+        "id": "00001",
+        "price": 250,
+        "price-tag": "250 gil",
+        "level-needed": 0,
+        "icon-url": "assets/badges/00001.png",
+        "desc": "Show off your wealth by purchasing this badge."
+    }
+}

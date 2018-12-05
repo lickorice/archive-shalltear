@@ -1,8 +1,8 @@
-import discord, json, datetime
+import discord, json, datetime, conf
 from discord.ext import commands
 from data import db_users
 
-owner_id = 319285994253975553 # Lickorice
+config = conf.Config()
 
 with open("assets/str_msgs.json") as f:
     msg_strings = json.load(f)
@@ -21,7 +21,7 @@ class AdminCog:
     @commands.command(aliases=['k'])
     async def kill(self, ctx):
         """Logout command (Owner)."""
-        if ctx.author.id == owner_id:
+        if ctx.author.id == config.OWNER_ID:
             await self.bot.logout()
         else:
             await ctx.channel.send(msg_strings["str_insuf-perms"])
@@ -29,7 +29,7 @@ class AdminCog:
     @commands.command()
     async def registerall(self, ctx):
         """Adds all users (Owner)."""
-        if ctx.author.id != owner_id:
+        if ctx.author.id != config.OWNER_ID:
             await ctx.channel.send(msg_strings["str_insuf-perms"])
         users_db = db_users.UserHelper()
         if not users_db.connect():
@@ -51,7 +51,7 @@ class AdminCog:
     @commands.command(aliases=['gb'])
     async def grantbadge(self, ctx, item_id):
         """Grants a badge. (Owner)"""
-        if ctx.message.author.id != owner_id:
+        if ctx.message.author.id != config.OWNER_ID:
             return
         user_db = db_users.UserHelper()
         user_db.connect()
@@ -61,7 +61,7 @@ class AdminCog:
     @commands.command(aliases=['gg'])
     async def grantgil(self, ctx, gil_amount):
         """Grants all users Gil. (Owner)"""
-        if ctx.message.author.id != owner_id:
+        if ctx.message.author.id != config.OWNER_ID:
             return
         user_db = db_users.UserHelper()
         user_db.connect()
