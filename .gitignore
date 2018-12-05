@@ -2,9 +2,7 @@
 .vscode
 .err_log
 data/.db
-data/inventory.json
-data/gacha.db
-data/db
+data/db/
 
 test.py
 test.in
