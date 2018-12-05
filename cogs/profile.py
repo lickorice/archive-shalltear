@@ -10,7 +10,7 @@ with open("assets/str_msgs.json") as f:
 with open("assets/obj_badges.json") as f:
     obj_badges = json.load(f)
 
-class XPCog:
+class Profiles:
     def __init__(self, bot):
         self.bot = bot
 
@@ -84,7 +84,10 @@ class XPCog:
 
         user_db = db_users.UserHelper(is_logged=False)
         user_db.connect()
-        result = user_db.toggle_item(ctx.message.author.id, int(item_id))
+        equipped_badges = user_db.get_items(ctx.author.id, is_equipped=True)
+        if len(equipped_badges) >= 11:
+            await ctx.send(msg_strings["str_badge-full"].format(ctx.author.id))
+        result = user_db.toggle_item(ctx.author.id, int(item_id))
         user_db.close()
 
         badge_name = obj_badges[item_id]["name"]
@@ -159,4 +162,4 @@ class XPCog:
 
         
 def setup(bot):
-    bot.add_cog(XPCog(bot))
+    bot.add_cog(Profiles(bot))

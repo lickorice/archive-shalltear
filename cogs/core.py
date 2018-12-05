@@ -16,7 +16,7 @@ def log(string):
 
 # Start of program logic:
 
-class CoreCog:
+class Core:
     def __init__(self, bot):
         self.bot = bot
 
@@ -27,12 +27,12 @@ class CoreCog:
 
     @commands.command()
     async def ping(self, ctx):
-        """This command shows the latency of the bot."""
+        """Shows the latency of the bot."""
         await ctx.channel.send('Pong! ({}ms)'.format(int(round(self.bot.latency, 3) * 1000)))
 
     @commands.command(aliases=['info'])
     async def about(self, ctx):
-        """This command shows information about the bot."""
+        """Shows information about the bot."""
         difference = int(round(time.time() - start_time))
         uptime_str = str(datetime.timedelta(seconds=difference))
         embed = discord.Embed(title=msg_strings['str_about-title'], color=0xff1155)
@@ -64,4 +64,4 @@ class CoreCog:
     
         
 def setup(bot):
-    bot.add_cog(CoreCog(bot))
+    bot.add_cog(Core(bot))

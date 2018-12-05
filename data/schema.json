@@ -12,6 +12,12 @@
             "user_bg_id": "INTEGER"
         },
         {
+            "TABLE_NAME": "backgrounds",
+
+            "owner_id": "INTEGER",
+            "bg_id": "INTEGER"
+        },
+        {
             "TABLE_NAME": "inventory",
 
             "owner_id": "INTEGER",

@@ -14,7 +14,7 @@ def log(string):
 
 # Start of program logic:
 
-class AdminCog:
+class Administration:
     def __init__(self, bot):
         self.bot = bot
 
@@ -50,7 +50,7 @@ class AdminCog:
     
     @commands.command(aliases=['gb'])
     async def grantbadge(self, ctx, item_id):
-        """Grants a badge. (Owner)"""
+        """Grants a badge (Owner)."""
         if ctx.message.author.id != config.OWNER_ID:
             return
         user_db = db_users.UserHelper()
@@ -60,7 +60,7 @@ class AdminCog:
 
     @commands.command(aliases=['gg'])
     async def grantgil(self, ctx, gil_amount):
-        """Grants all users Gil. (Owner)"""
+        """Grants all users Gil (Owner)."""
         if ctx.message.author.id != config.OWNER_ID:
             return
         user_db = db_users.UserHelper()
@@ -76,4 +76,4 @@ class AdminCog:
 
         
 def setup(bot):
-    bot.add_cog(AdminCog(bot))
+    bot.add_cog(Administration(bot))

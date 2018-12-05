@@ -15,7 +15,7 @@ def log(string):
 
 # Start of program logic:
 
-class EconomyCog:
+class Economy:
     def __init__(self, bot):
         self.bot = bot
 
@@ -71,4 +71,4 @@ class EconomyCog:
 
         
 def setup(bot):
-    bot.add_cog(EconomyCog(bot))
+    bot.add_cog(Economy(bot))

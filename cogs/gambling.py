@@ -16,7 +16,7 @@ def log(string):
 
 # Start of program logic:
 
-class GambingCog:
+class Gambling:
     def __init__(self, bot):
         self.bot = bot
 
@@ -49,7 +49,7 @@ class GambingCog:
 
     @commands.command()
     async def tickets(self, ctx):
-        """This views the current tickets in the server's lottery."""
+        """Views the current tickets in the server's lottery."""
         try:
             ticket_dict = current_tickets[ctx.guild.id]
             if len(ticket_dict) == 0:
@@ -72,7 +72,7 @@ class GambingCog:
     @commands.command(aliases=["lt"])
     async def lottery(self, ctx, tickets='1'):
         """
-        This purchases a number (by default, one) tickets for the server-wide lottery.
+        Purchases a number (by default, one) tickets for the server-wide lottery.
         A winner is drawn every ten minutes.
         """
         user_db = db_users.UserHelper(False)
@@ -114,7 +114,7 @@ class GambingCog:
 
     @commands.command(aliases=['sspot'])
     async def stakespot(self, ctx):
-        """This shows the current lottery jackpot."""
+        """Shows the current lottery jackpot."""
         helper_db = db_helper.DBHelper("data/db/misc.db", False)
         helper_db.connect()
         try:
@@ -217,4 +217,4 @@ class GambingCog:
 
         
 def setup(bot):
-    bot.add_cog(GambingCog(bot))
+    bot.add_cog(Gambling(bot))
