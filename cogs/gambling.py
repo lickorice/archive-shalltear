@@ -95,7 +95,8 @@ class GambingCog:
             return
 
         user_db.add_gil(ctx.author.id, -(tickets*2))
-        await ctx.send("**{}**, you successfully bought **{} tickets** for **{} 💰 gil**.".format(ctx.author.display_name, tickets, tickets*2))
+        p = '' if len(tickets) == 1 else 's'
+        await ctx.send("**{}**, you successfully bought **{} ticket{}** for **{} 💰 gil**.".format(ctx.author.display_name, p, tickets, tickets*2))
         if ctx.guild.id not in current_tickets:
             current_tickets[ctx.guild.id] = {ctx.author.id: tickets}
             await self.drawtimer(ctx)
