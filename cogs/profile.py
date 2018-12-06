@@ -148,18 +148,56 @@ class Profiles:
     @commands.command()
     async def changebg(self, ctx, bg_id):
         """Change the background of your profile."""
-        with open('assets/obj_bgs.json') as f:
-            bgs = list(map(int, json.load(f).keys()))
         try:
-            if int(bg_id) not in bgs:
-                await ctx.channel.send(msg_strings["str_bg-not-found"])
-            user_db = db_users.UserHelper()
-            user_db.connect() # TODO: outstanding .connect() method. deprecate this please
-            user_db.change_bg(ctx.message.author.id, int(bg_id))
+            bg_id = int(bg_id)
+        except ValueError:
+            await ctx.send(msg_strings["str_invalid-cmd"])
+            return
+
+        user_db = db_users.UserHelper()
+        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
+        bgs = [int(bg["bg_id"]) for bg in user_db.get_backgrounds(ctx.author.id)]
+        
+        with open('assets/obj_bgs.json') as f:
+            all_bgs = json.load(f)
+        if str(bg_id) not in all_bgs and bg_id != 0:
+            await ctx.channel.send(msg_strings["str_bg-not-found"])
+            return
+
+        try:
+            if bg_id not in bgs and bg_id != 0:
+                await ctx.channel.send(msg_strings["str_bg-not-yours"].format(ctx.author.name))
+                user_db.close()
+                return
+            user_db.change_bg(ctx.message.author.id, bg_id)
         except ValueError:
             await ctx.channel.send(msg_strings["str_invalid-cmd"])
+            user_db.close()
+            return
         user_db.close()
 
+        bg_name = all_bgs[str(bg_id)]["name"] if bg_id != 0 else "the default (none)"
+        await ctx.send(msg_strings["str_bg-changed"].format(ctx.author.display_name, bg_name))
+
+    @commands.cooldown(1, 60, type=commands.BucketType.user)
+    @commands.command()
+    async def previewbg(self, ctx, bg_id):
+        """Previews a background given its ID."""
+        try:
+            bg_id = int(bg_id)
+        except ValueError:
+            await ctx.send(msg_strings["str_invalid-cmd"])
+            return
+        
+        with open('assets/obj_bgs.json') as f:
+            all_bgs = json.load(f)
+        
+        if str(bg_id) not in all_bgs:
+            await ctx.send(msg_strings["str_bg-not-found"])
+        profiler.profile_generate(ctx.author.name, ctx.author.avatar_url, 20, (1, 2), [], int(bg_id))
+        profile_image = discord.File("temp/profile.png")
+        await ctx.channel.send("Previewing **{}**".format(all_bgs[str(bg_id)]["name"]))
+        await ctx.channel.send(file=profile_image)
         
 def setup(bot):
     bot.add_cog(Profiles(bot))

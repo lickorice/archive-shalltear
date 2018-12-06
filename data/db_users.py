@@ -73,6 +73,14 @@ class UserHelper(db_helper.DBHelper):
             item_equipped=item_equipped
         )
 
+    def add_bg(self, user_id, bg_id):
+        """Adds a background to the user account, given an id."""
+        self.insert_row(
+            table_name="backgrounds",
+            owner_id=user_id,
+            bg_id=bg_id
+        )
+
     def remove_item(self, user_id, item_id):
         """Removes an item from the user account, given an id."""
         self.remove_rows(
@@ -102,6 +110,12 @@ class UserHelper(db_helper.DBHelper):
         if is_equipped:
             return self.fetch_rows("inventory", True, owner_id=user_id, item_equipped=1)
         return self.fetch_rows("inventory", True, owner_id=user_id)
+
+    def get_backgrounds(self, user_id):
+        """
+        Fetches all backgrounds the user owns.
+        """
+        return self.fetch_rows("backgrounds", True, owner_id=user_id)
 
     def toggle_item(self, user_id, item_id):
         """Toggles the equipped status of an item."""
