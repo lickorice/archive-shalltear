@@ -1,44 +1,114 @@
 {
     "1": {
-        "img_url": "assets/bgs/1.png"
+        "img_url": "assets/bgs/1.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Abstract Hexagons"
     },
     "2": {
-        "img_url": "assets/bgs/2.png"
+        "img_url": "assets/bgs/2.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Mt. Fuji at Dusk"
     },
     "3": {
-        "img_url": "assets/bgs/3.png"
+        "img_url": "assets/bgs/3.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Grayscale Skyline"
     },
     "4": {
-        "img_url": "assets/bgs/4.png"
+        "img_url": "assets/bgs/4.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Random Cats I"
     },
     "5": {
-        "img_url": "assets/bgs/5.png"
+        "img_url": "assets/bgs/5.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Minimalistic Shore"
     },
     "6": {
-        "img_url": "assets/bgs/6.png"
+        "img_url": "assets/bgs/6.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Warm Water"
     },
     "7": {
-        "img_url": "assets/bgs/7.png"
+        "img_url": "assets/bgs/7.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 100,
+        "price_tag": "100 gil",
+        "name": "Frozen Town"
     },
     "8": {
-        "img_url": "assets/bgs/8.png"
+        "img_url": "assets/bgs/8.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Abstract Grunge I"
     },
     "9": {
-        "img_url": "assets/bgs/9.png"
+        "img_url": "assets/bgs/9.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 100,
+        "price_tag": "100 gil",
+        "name": "Fantasy Background I"
     },
     "10": {
-        "img_url": "assets/bgs/10.png"
+        "img_url": "assets/bgs/10.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Abstract Lights I"
     },
     "11": {
-        "img_url": "assets/bgs/11.png"
+        "img_url": "assets/bgs/11.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 100,
+        "price_tag": "100 gil",
+        "name": "Random Cats II"
     },
     "12": {
-        "img_url": "assets/bgs/12.png"
+        "img_url": "assets/bgs/12.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 50,
+        "price_tag": "50 gil",
+        "name": "Abstract Waves"
     },
     "13": {
-        "img_url": "assets/bgs/13.png"
+        "img_url": "assets/bgs/13.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 100,
+        "price_tag": "100 gil",
+        "name": "Desolate Megapolis"
     },
     "14": {
-        "img_url": "assets/bgs/14.png"
+        "img_url": "assets/bgs/14.png",
+        "is_exclusive": false,
+        "free": false,
+        "price": 100,
+        "price_tag": "100 gil",
+        "name": "Abstract Grunge II"
     }
 }

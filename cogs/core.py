@@ -20,6 +20,7 @@ class Core:
     def __init__(self, bot):
         self.bot = bot
 
+    # TODO: fix this shit nigga
     # async def on_command_error(self, ctx, error):
     #     if type(error) == type(discord.ext.commands.errors.CommandNotFound()):
     #         return
@@ -56,11 +57,11 @@ class Core:
         if member.bot:
             return
         log("[-EVT-] New user joined. ({})".format(member.name))
-        users_db = db_users.UserHelper()
-        if not users_db.connect():
+        user_db = db_users.UserHelper()
+        if not user_db.connect():
             log("[-ERR-] Database failed to connect.")
-        users_db.new_user(member.id)
-        users_db.close()
+        user_db.new_user(member.id)
+        user_db.close()
     
         
 def setup(bot):

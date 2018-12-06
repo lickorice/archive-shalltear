@@ -44,3 +44,5 @@ async def on_message(message):
 
 
 bot.run(input(), bot=True, reconnect=True)
+
+# TODO: change default help command

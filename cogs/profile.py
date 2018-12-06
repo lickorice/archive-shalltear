@@ -23,7 +23,7 @@ class Profiles:
         except ValueError:
             points = 1
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
+        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
         try:
             if user_db.add_xp(message.author.id, points):
                 user_db.next_level(message.author.id)
@@ -57,7 +57,7 @@ class Profiles:
             a = ctx.message.author
 
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
+        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
         equipped_badges = user_db.get_items(a.id, True)
         try:
             current_user = user_db.get_user(a.id)['users']
@@ -83,7 +83,7 @@ class Profiles:
             return
 
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
+        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
         equipped_badges = user_db.get_items(ctx.author.id, is_equipped=True)
         if len(equipped_badges) >= 11:
             await ctx.send(msg_strings["str_badge-full"].format(ctx.author.id))
@@ -109,7 +109,7 @@ class Profiles:
     async def badges(self, ctx):
         """Shows the user's badges."""
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
+        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
         badges = user_db.get_items(ctx.message.author.id)
         equipped_badges = user_db.get_items(ctx.message.author.id, True)
         user_db.close()
@@ -154,7 +154,7 @@ class Profiles:
             if int(bg_id) not in bgs:
                 await ctx.channel.send(msg_strings["str_bg-not-found"])
             user_db = db_users.UserHelper()
-            user_db.connect()
+            user_db.connect() # TODO: outstanding .connect() method. deprecate this please
             user_db.change_bg(ctx.message.author.id, int(bg_id))
         except ValueError:
             await ctx.channel.send(msg_strings["str_invalid-cmd"])

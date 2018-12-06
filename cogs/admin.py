@@ -31,18 +31,18 @@ class Administration:
         """Adds all users (Owner)."""
         if ctx.author.id != config.OWNER_ID:
             await ctx.channel.send(msg_strings["str_insuf-perms"])
-        users_db = db_users.UserHelper()
-        if not users_db.connect():
+        user_db = db_users.UserHelper()
+        if not user_db.connect():
             log("[-ERR-] Database failed to connect.")
         reg_count, bot_count, all_count = 0, 0, 0
         for member in self.bot.get_all_members():
             if not member.bot:
-                users_db.new_user(member.id)
+                user_db.new_user(member.id)
                 reg_count += 1
             else:
                 bot_count += 1
             all_count += 1
-        users_db.close()
+        user_db.close()
 
         await ctx.channel.send(
             msg_strings["str_register-3"].format(all_count, reg_count, bot_count)
