@@ -1,13 +1,13 @@
-import discord, json, datetime, concurrent, random, asyncio
+import discord, json, datetime, concurrent, random, asyncio, conf
 from discord.ext import commands
 from data import db_users, db_helper
 from utils import msg_utils
 
-owner_id = 319285994253975553 # Lickorice
+# TODO: Test all commands to check if config migration is a success.
+
 current_tickets = {}
 
-with open("assets/str_msgs.json") as f:
-    msg_strings = json.load(f)
+config = conf.Config()
 
 # Logging functions here:
 
@@ -79,19 +79,19 @@ class Gambling:
         user_db.connect()
         current_gil = user_db.get_user(ctx.author.id)["users"]["user_gil"]
         
-        try:
+        try: # TODO: Implement integrity check here:
             tickets = int(tickets)
         except ValueError:
-            await ctx.send(msg_strings["str_invalid-cmd"])
+            await ctx.send(config.MSG_INVALID_CMD)
             user_db.close()
             return
 
         if current_gil < (tickets*2):
-            await ctx.send(msg_strings["str_insuf-gil"])
+            await ctx.send(config.MSG_INSUF_GIL)
             return
 
         if tickets <= 0:
-            await ctx.send(msg_strings["str_am-i-a-joke"].format(ctx.author.id))
+            await ctx.send(config.MSG_AM_I_A_JOKE.format(ctx.author.id))
             return
 
         user_db.add_gil(ctx.author.id, -(tickets*2))
@@ -125,13 +125,13 @@ class Gambling:
         except IndexError:
             helper_db.insert_row("lottery", guild_id=ctx.guild.id, pot_amount=0)
             current_pot = 0
-        await ctx.channel.send(msg_strings["str_lottery-pot"].format(current_pot))
+        await ctx.channel.send(config.MSG_SWEEPSTAKES_POT.format(current_pot))
 
     @commands.command(aliases=['ss'])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
     async def sweepstakes(self, ctx, number=None):
         """Take your chances with the sweepstakes!"""
-
+        # TODO: Test out if sweepstakes actually works, print out sweep value.
         author = ctx.message.author
 
         user_db = db_users.UserHelper(False)
@@ -139,7 +139,7 @@ class Gambling:
         gil = user_db.get_user(author.id)["users"]["user_gil"]
 
         if gil <= 2:
-            await ctx.channel.send(msg_strings["str_insuf-gil"])
+            await ctx.channel.send(config.MSG_INSUF_GIL)
             user_db.close()
             return
 
@@ -150,20 +150,21 @@ class Gambling:
                 return False
 
         if number==None:
-            await ctx.channel.send(msg_strings["str_lottery-no"].format(author.display_name))
+            await ctx.channel.send(config.MSG_SWEEPSTAKES_NO.format(author.display_name))
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=10)
             except concurrent.futures._base.TimeoutError:
-                await ctx.channel.send(msg_strings["str_timeout"].format(author.id))
+                await ctx.channel.send(config.MSG_TIMEOUT.format(author.id))
                 return
             lottery_entry = int(msg.content)
         else:
-            try:
+            try: # TODO: Implement integrity check here
                 lottery_entry = int(number)
             except ValueError:
-                await ctx.channel.send(msg_strings["str_invalid-cmd"])
+                await ctx.channel.send(config.MSG_INVALID_CMD)
 
         # generate lottery:
+        # TODO: Assign to JSON/py file, avoid hardcoding.
         numdict = {1:"one", 2:"two", 3: "three", 4:"four",
         5:"five", 6:"six", 7:"seven", 8:"eight", 9:"nine", 0:"zero"}
         string = [i for i in "❓❓❓"]
@@ -189,7 +190,7 @@ class Gambling:
             helper_db.update_column("lottery", "pot_amount", 0, guild_id=ctx.guild.id)
             helper_db.close()
 
-            await ctx.channel.send(msg_strings["str_lottery-win"].format(author.id, current_pot))
+            await ctx.channel.send(config.MSG_SWEEPSTAKES_WIN.format(author.id, current_pot))
 
             user_db = db_users.UserHelper(False)
             user_db.connect()
@@ -212,7 +213,7 @@ class Gambling:
             except IndexError:
                 helper_db.insert_row("lottery", guild_id=ctx.guild.id, pot_amount=2)
             helper_db.close()
-            await ctx.channel.send(msg_strings["str_lottery-loss"].format(author.display_name))
+            await ctx.channel.send(config.MSG_SWEEPSTAKES_LOSS.format(author.display_name))
             
 
         

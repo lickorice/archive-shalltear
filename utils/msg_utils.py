@@ -63,6 +63,6 @@ async def get_target_user(ctx, target_user):
             return ctx.message.mentions[0]
         except IndexError:
             await ctx.channel.send("**<@{}>, No such user found.**".format(ctx.message.author.id))
+            return None
     else:
         return ctx.message.author
-

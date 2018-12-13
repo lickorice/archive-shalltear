@@ -22,7 +22,8 @@
 
             "owner_id": "INTEGER",
             "item_id": "INTEGER",
-            "item_equipped": "BOOLEAN"
+            "item_equipped": "BOOLEAN",
+            "item_order": "INTEGER"
         },
         {
             "TABLE_NAME": "activities",
@@ -47,16 +48,21 @@
             "card_cost": "INTEGER",
             "card_salvage": "INTEGER",
             "card_name": "STRING",
-            "card_url": "STRING",
+            "card_full_url": "STRING",
+            "card_icon_url": "STRING",
             "card_series_id": "INTEGER",
-            "card_is_flagship": "BOOLEAN"
+            "card_is_flagship": "BOOLEAN",
+            "card_acquired": "BOOLEAN",
+            "card_user_id": "INTEGER",
+            "is_exclusive": "BOOLEAN"
         },
         {
             "TABLE_NAME": "inventory",
 
             "owner_id": "INTEGER",
             "item_id": "INTEGER",
-            "item_equipped": "BOOLEAN"
+            "item_equipped": "BOOLEAN",
+            "item_order": "INTEGER"
         },
         {
             "TABLE_NAME": "set_cards",

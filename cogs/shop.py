@@ -3,10 +3,10 @@ from discord.ext import commands
 from data import db_users
 from utils import msg_utils
 
-with open("assets/str_msgs.json") as f:
-    msg_strings = json.load(f)
+# TODO: Test all commands to check if config migration is a success.
 
 config = conf.Config()
+
 stored_messages = {}
 
 # Logging functions here:
@@ -16,7 +16,7 @@ def log(string):
 
 # Start of program logic:
 
-class BadgeItem:
+class BadgeItem: # TODO: Can we generalize this? So it can be used throughout the program
     """
     Instantiates a Badge object given an ID, and given that
     it exists in the JSON file.
@@ -38,7 +38,7 @@ class BadgeItem:
         self.description = badge_shop[item_id]["description"]
 
 
-class BGItem:
+class BGItem: # TODO: Can we generalize this? So it can be used throughout the program
     """
     Instantiates a Background object given an ID, and given that
     it exists in the JSON file.
@@ -89,11 +89,11 @@ class Shop:
             return
         if target_id == stored_messages[user.id][0]:
             p = stored_messages[user.id][1]
-            if reaction.emoji == '◀':
+            if reaction.emoji == config.EMJ_LEFT_PAGE:
                 p.previous_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
-            elif reaction.emoji == '▶':
+            elif reaction.emoji == config.EMJ_RIGHT_PAGE:
                 p.next_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
@@ -104,11 +104,11 @@ class Shop:
             return
         if target_id == stored_messages[user.id][0]:
             p = stored_messages[user.id][1]
-            if reaction.emoji == '◀':
+            if reaction.emoji == config.EMJ_LEFT_PAGE:
                 p.previous_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
-            elif reaction.emoji == '▶':
+            elif reaction.emoji == config.EMJ_RIGHT_PAGE:
                 p.next_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
@@ -119,7 +119,7 @@ class Shop:
         target_item = ' '.join(target_item)
         item = get_target_item(target_item, "badgeshop")
         if item == None:
-            await ctx.send(msg_strings["str_badge-not-found"])
+            await ctx.send(config.MSG_BADGE_NOT_FOUND)
             return
         user_db = db_users.UserHelper(is_logged=False)
         user_db.connect() # TODO: deprecate this please
@@ -127,28 +127,28 @@ class Shop:
         current_gil, current_level = user_info["user_gil"], user_info["user_level"]
         current_items = [item["item_id"] for item in user_db.get_items(ctx.author.id)]
         if item.id in current_items:
-            await ctx.send(msg_strings["str_badge-already-yours"].format(ctx.author.id))
+            await ctx.send(config.MSG_BADGE_ALREADY_YOURS.format(ctx.author.id))
             user_db.close()
             return
         if current_gil < item.price:
-            await ctx.send(msg_strings["str_insuf-gil"])
+            await ctx.send(config.MSG_INSUF_GIL)
             user_db.close()
             return
         if current_level < item.level_needed:
-            await ctx.send(msg_strings["str_insuf-lvl"])
+            await ctx.send(config.MSG_INSUF_LVL)
             user_db.close()
             return
         
         user_db.add_gil(ctx.author.id, -item.price)
         user_db.add_item(ctx.author.id, item.id)
 
-        await ctx.send(msg_strings["str_badge-bought"].format(ctx.author.id, item.name))
+        await ctx.send(config.MSG_BADGE_BOUGHT.format(ctx.author.id, item.name))
 
         # special badges here:
         if item.id == 0: # VIP badge
             await ctx.author.add_roles(ctx.guild.get_role(config.VIP_ROLE_ID))
             vip_channel = self.bot.get_channel(config.VIP_CHANNEL_ID)
-            await vip_channel.send(msg_strings["str_vip-welcome"].format(ctx.author.id))
+            await vip_channel.send(config.MSG_VIP_WELCOME.format(ctx.author.id))
         user_db.close()
 
     @commands.command()
@@ -157,7 +157,7 @@ class Shop:
         target_item = ' '.join(target_item)
         item = get_target_item(target_item, "bgs")
         if item == None:
-            await ctx.send(msg_strings["str_bg-not-found"])
+            await ctx.send(config.MSG_BG_NOT_FOUND)
             return
         
         user_db = db_users.UserHelper(is_logged=False)
@@ -168,18 +168,18 @@ class Shop:
         current_items = [item["bg_id"] for item in user_db.get_backgrounds(ctx.author.id)]
         
         if item.id in current_items:
-            await ctx.send(msg_strings["str_bg-already-yours"].format(ctx.author.id))
+            await ctx.send(config.MSG_BG_ALREADY_YOURS.format(ctx.author.id))
             user_db.close()
             return
         if current_gil < item.price:
-            await ctx.send(msg_strings["str_insuf-gil"])
+            await ctx.send(config.MSG_INSUF_GIL)
             user_db.close()
             return
         
         user_db.add_gil(ctx.author.id, -item.price)
         user_db.add_bg(ctx.author.id, item.id)
 
-        await ctx.send(msg_strings["str_bg-bought"].format(ctx.author.id, item.name, item.price))
+        await ctx.send(config.MSG_BG_BOUGHT.format(ctx.author.id, item.name, item.price))
 
         user_db.close()
 
@@ -211,8 +211,8 @@ class Shop:
         stored_messages[ctx.author.id] = (msg.id, p)
 
         if max_pages > 1:
-            await msg.add_reaction('◀')
-            await msg.add_reaction('▶')
+            await msg.add_reaction(config.EMJ_LEFT_PAGE)
+            await msg.add_reaction(config.EMJ_RIGHT_PAGE)
 
     @commands.command()
     async def bgshop(self, ctx):
@@ -243,8 +243,8 @@ class Shop:
         stored_messages[ctx.author.id] = (msg.id, p)
 
         if max_pages > 1:
-            await msg.add_reaction('◀')
-            await msg.add_reaction('▶')
+            await msg.add_reaction(config.EMJ_LEFT_PAGE)
+            await msg.add_reaction(config.EMJ_RIGHT_PAGE)
 
         
 def setup(bot):

@@ -3,19 +3,59 @@
         "name": "VIP Status",
         "is_exclusive": true,
         "price": 2500,
-        "price_tag": "**IPM-Exclusive**, 2500 gil, Level 20",
+        "price_tag": "[IPM-Exclusive], 2500 gil, Level 20",
         "level_needed": 20,
         "icon_url": "assets/badges/00000.png",
         "description": "(IPM Collective Exclusive) The most exclusive role in the server. Includes secret chat, among others."
     },
     "1": {
         "name": "PAGCOR Badge",
-        "is_exclusive": false,
+        "is_exclusive": true,
         "id": "00001",
-        "price": 1000,
-        "price_tag": "1000 gil",
+        "price": 500,
+        "price_tag": "[IPM-Exclusive], 500 gil",
         "level_needed": 0,
         "icon_url": "assets/badges/00001.png",
         "description": "Show off your wealth by purchasing this badge."
+    },
+    "4":    { 
+        "name": "Russian Communist",
+        "is_exclusive": false,
+        "id": "00004",
+        "price": 500,
+        "price_tag": "500",
+        "level_needed": 5,
+        "icon_url": "assets/badges/00004.png",
+        "description": "You set off to start your journey to find the best form of government."
+    },
+    "5":    {
+        "name": "American Capitalist",
+        "is_exclusive": false,
+        "id": "00005",
+        "price": 1000,
+        "price_tag": "1000",
+        "level_needed": 10,
+        "icon_url": "assets/badges/00005.png",
+        "description": "You have been enlightened. Why work when they can work for you?"
+    },
+    "6":    {
+        "name": "Chinese Socialist",
+        "is_exclusive": false,
+        "id": "00006",
+        "price": 1500,
+        "price_tag": "1500",
+        "level_needed": 20,
+        "icon_url": "assets/badges/00006.png",
+        "description": "After years of trial and error, you have finally evolved to a superior being."
+    },
+    "7":    {
+        "name": "Neet",
+        "is_exclusive": false,
+        "id": "00007",
+        "price": 3000,
+        "price_tag": "3000",
+        "level_needed": 30,
+        "icon_url": "assets/badges/00007.png",
+        "description": "Forget everything. Grants a special feature for its owner."
     }
 }

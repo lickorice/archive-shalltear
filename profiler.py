@@ -95,7 +95,7 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
         with open("assets/obj_bgs.json") as f:
             bgs = json.load(f)
         background = Image.open(bgs[str(bg_id)]["img_url"])
-        background.paste(template, (0, 50), template)
+        background.paste(template, (0, 53), template)
         background.save('temp/profile.png')
     else:
         template.save('temp/profile.png')

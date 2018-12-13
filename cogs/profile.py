@@ -1,11 +1,12 @@
-import discord, json, datetime, math, profiler, requests
+import discord, json, datetime, math, profiler, requests, conf
 from PIL import Image
 from io import BytesIO
 from discord.ext import commands
 from data import db_users
 
-with open("assets/str_msgs.json") as f:
-    msg_strings = json.load(f)
+# TODO: Test all commands to check if config migration is a success.
+
+config = conf.Config()
 
 with open("assets/obj_badges.json") as f:
     obj_badges = json.load(f)
@@ -23,17 +24,14 @@ class Profiles:
         except ValueError:
             points = 1
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
+        user_db.connect()
         try:
             if user_db.add_xp(message.author.id, points):
                 user_db.next_level(message.author.id)
                 
                 # generate the image:
-
                 profiler.level_generate(message.author.avatar_url)
-
-                level_image = discord.File('temp/levelup.png')
-
+                level_image = discord.File(config.DIR_LEVELUP)
                 await message.channel.send(file=level_image, delete_after=10)
                 
         except IndexError:
@@ -51,42 +49,42 @@ class Profiles:
             except IndexError:
                 a = self.bot.get_user(int(target_user))
                 if not a:
-                    await ctx.channel.send(msg_strings['str_user-not-found'])
+                    await ctx.channel.send(config.MSG_USER_NOT_FOUND)
                     return
         else:
-            a = ctx.message.author
+            a = ctx.author
 
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
+        user_db.connect()
         equipped_badges = user_db.get_items(a.id, True)
         try:
             current_user = user_db.get_user(a.id)['users']
         except IndexError:
-            await ctx.channel.send(msg_strings["str_user-not-found"])
+            await ctx.channel.send(config.MSG_USER_NOT_FOUND)
             return
         user_db.close()
 
         bg_id = current_user["user_bg_id"]
-        equipped_badges = list(map(lambda x: str(x["item_id"]), equipped_badges))
+        equipped_badges = sorted(list(map(lambda x: str(x["item_id"]), equipped_badges)))
         level = current_user["user_level"]
         xp = (current_user["user_xp"], current_user["user_xp_to_next"])
 
         profiler.profile_generate(a.name, a.avatar_url, level, xp, equipped_badges, bg_id)
-        profile_image = discord.File("temp/profile.png")
+        profile_image = discord.File(config.DIR_PROFILE)
         await ctx.channel.send(file=profile_image)
 
     @commands.command()
     async def equip(self, ctx, item_id):
         """Followed by the ID, you can equip a badge."""
         if item_id not in list(obj_badges.keys()):
-            await ctx.channel.send(msg_strings["str_badge-not-found"])
+            await ctx.channel.send(config.MSG_BADGE_NOT_FOUND)
             return
 
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
+        user_db.connect()
         equipped_badges = user_db.get_items(ctx.author.id, is_equipped=True)
         if len(equipped_badges) >= 11:
-            await ctx.send(msg_strings["str_badge-full"].format(ctx.author.id))
+            await ctx.send(config.MSG_BADGE_FULL.format(ctx.author.id))
         result = user_db.toggle_item(ctx.author.id, int(item_id))
         user_db.close()
 
@@ -94,52 +92,52 @@ class Profiles:
 
         if result == 1:
             await ctx.channel.send(
-                msg_strings["str_badge-equipped"].format(badge_name)
+                config.MSG_BADGE_EQUIPPED.format(badge_name)
                 )
         elif result == 2:
             await ctx.channel.send(
-                msg_strings["str_badge-unequipped"].format(badge_name)
+                config.MSG_BADGE_UNEQUIPPED.format(badge_name)
                 )
         elif result == 3:
             await ctx.channel.send(
-                msg_strings["str_badge-not-yours"].format(ctx.message.author.id)
+                config.MSG_BADGE_NOT_YOURS.format(ctx.author.id)
                 )
 
     @commands.command()
     async def badges(self, ctx):
         """Shows the user's badges."""
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
-        badges = user_db.get_items(ctx.message.author.id)
-        equipped_badges = user_db.get_items(ctx.message.author.id, True)
-        user_db.close()
+        user_db.connect()
+        badges = user_db.get_items(ctx.author.id)
+        equipped_badges = user_db.get_items(ctx.author.id, True)
+        
 
-        badges = sorted(
-            badges,
-            key = lambda badge: badge["item_id"]
-        )
-
+        badges = sorted(badges, key=lambda badge: badge["item_id"])
         badge_str = ''
         
         if len(badges) == 0:
-            badge_str = "You have no badges yet."
+            badge_str = config.MSG_BADGE_NONE
         else:
             for badge in badges:
-                if badge in equipped_badges:
-                    badge_str += '`ID: {}` **{}**\n'.format(
-                        badge["item_id"],
-                        obj_badges[str(badge["item_id"])]["name"],
-                        )
-                else:
-                    badge_str += '`ID: {}` {}\n'.format(
-                        badge["item_id"],
-                        obj_badges[str(badge["item_id"])]["name"],
-                        )
+                try:
+                    if badge in equipped_badges:
+                        badge_str += '`ID: {}` **{}**\n'.format(
+                            badge["item_id"],
+                            obj_badges[str(badge["item_id"])]["name"],
+                            )
+                    else:
+                        badge_str += '`ID: {}` {}\n'.format(
+                            badge["item_id"],
+                            obj_badges[str(badge["item_id"])]["name"],
+                            )
+                except KeyError:
+                    user_db.remove_item(ctx.author.id, badge["item_id"])
+        user_db.close()
 
         badge_str = badge_str.rstrip()
 
         embed = discord.Embed(
-            title=ctx.message.author.display_name,
+            title=ctx.author.display_name,
             color=0xff1155
         )
         embed.add_field(name="Your Badges", value=badge_str)
@@ -151,33 +149,33 @@ class Profiles:
         try:
             bg_id = int(bg_id)
         except ValueError:
-            await ctx.send(msg_strings["str_invalid-cmd"])
+            await ctx.send(config.MSG_INVALID_CMD)
             return
 
         user_db = db_users.UserHelper()
-        user_db.connect() # TODO: outstanding .connect() method. deprecate this please
+        user_db.connect()
         bgs = [int(bg["bg_id"]) for bg in user_db.get_backgrounds(ctx.author.id)]
         
         with open('assets/obj_bgs.json') as f:
             all_bgs = json.load(f)
         if str(bg_id) not in all_bgs and bg_id != 0:
-            await ctx.channel.send(msg_strings["str_bg-not-found"])
+            await ctx.channel.send(config.MSG_BG_NOT_FOUND)
             return
 
         try:
             if bg_id not in bgs and bg_id != 0:
-                await ctx.channel.send(msg_strings["str_bg-not-yours"].format(ctx.author.name))
+                await ctx.channel.send(config.MSG_BG_NOT_YOURS.format(ctx.author.name))
                 user_db.close()
                 return
-            user_db.change_bg(ctx.message.author.id, bg_id)
+            user_db.change_bg(ctx.author.id, bg_id)
         except ValueError:
-            await ctx.channel.send(msg_strings["str_invalid-cmd"])
+            await ctx.channel.send(config.MSG_INVALID_CMD)
             user_db.close()
             return
         user_db.close()
 
         bg_name = all_bgs[str(bg_id)]["name"] if bg_id != 0 else "the default (none)"
-        await ctx.send(msg_strings["str_bg-changed"].format(ctx.author.display_name, bg_name))
+        await ctx.send(config.MSG_BG_CHANGED.format(ctx.author.display_name, bg_name))
 
     @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command()
@@ -186,17 +184,17 @@ class Profiles:
         try:
             bg_id = int(bg_id)
         except ValueError:
-            await ctx.send(msg_strings["str_invalid-cmd"])
+            await ctx.send(config.MSG_INVALID_CMD)
             return
         
         with open('assets/obj_bgs.json') as f:
             all_bgs = json.load(f)
         
         if str(bg_id) not in all_bgs:
-            await ctx.send(msg_strings["str_bg-not-found"])
+            await ctx.send(config.MSG_BG_NOT_FOUND)
         profiler.profile_generate(ctx.author.name, ctx.author.avatar_url, 20, (1, 2), [], int(bg_id))
-        profile_image = discord.File("temp/profile.png")
-        await ctx.channel.send("Previewing **{}**".format(all_bgs[str(bg_id)]["name"]))
+        profile_image = discord.File(config.DIR_PROFILE)
+        await ctx.channel.send(config.MSG_BG_PREVIEW.format(all_bgs[str(bg_id)]["name"]))
         await ctx.channel.send(file=profile_image)
         
 def setup(bot):

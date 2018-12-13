@@ -2,12 +2,11 @@ import discord, json, datetime, time, conf
 from discord.ext import commands
 from data import db_users
 
-with open("assets/str_msgs.json") as f:
-    msg_strings = json.load(f)
-
 start_time = time.time()
 
 config = conf.Config()
+
+# TODO: Test all commands to check if config migration is a success.
 
 # Logging functions here:
 
@@ -29,28 +28,28 @@ class Core:
     @commands.command()
     async def ping(self, ctx):
         """Shows the latency of the bot."""
-        await ctx.channel.send('Pong! ({}ms)'.format(int(round(self.bot.latency, 3) * 1000)))
+        await ctx.channel.send(config.MSG_PING.format(int(round(self.bot.latency, 3) * 1000)))
 
     @commands.command(aliases=['info'])
     async def about(self, ctx):
         """Shows information about the bot."""
         difference = int(round(time.time() - start_time))
         uptime_str = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(title=msg_strings['str_about-title'], color=0xff1155)
+        embed = discord.Embed(title=config.MSG_ABOUT_TITLE, color=0xff1155)
         embed.add_field(
             name="Author",
-            value=msg_strings['str_author-name']
+            value=config.MSG_AUTHOR_NAME
         )
         embed.add_field(
             name="Source Code",
-            value=msg_strings['str_src-link']
+            value=config.MSG_SRC_LINK
         )
         embed.add_field(
             name="Uptime",
             value=uptime_str,
             inline=False
         )
-        embed.set_footer(text=msg_strings['str_author-info'])
+        embed.set_footer(text=config.MSG_AUTHOR_INFO)
         await ctx.channel.send(embed=embed)
 
     async def on_member_join(self, member):

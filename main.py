@@ -28,11 +28,10 @@ if __name__ == '__main__':
 @bot.event
 async def on_ready():
 
-    print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\ndiscord.py version: {discord.__version__}\n')
+    print(f'\n\nSuccessfully logged in as: {bot.user.name} [ {bot.user.id} ]\ndiscord.py version: {discord.__version__}\n')
 
     # Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
     await bot.change_presence(activity=discord.Game(name='s!help'))
-    print(f'Successfully logged in and booted!')
 
 
 @bot.event
@@ -45,4 +44,4 @@ async def on_message(message):
 
 bot.run(input(), bot=True, reconnect=True)
 
-# TODO: change default help command
+# TODO: Change default help command, make it cleaner.

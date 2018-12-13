@@ -35,8 +35,8 @@
         "description": "You have accepted the state as your lord and savior."
     },
     "7":    {
-        "name": "",
+        "name": "Neet",
         "img-url": "assets/badges/00007.png",
-        "description": ""
+        "description": "You don't even care anymore. Gives you a chance to add your own background (non-nsfw)."
     } 
 }
