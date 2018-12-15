@@ -1,6 +1,5 @@
-import discord, math, conf
-
-config = conf.Config()
+import discord, math
+from conf import *
 
 class PaginatedEmbed:
     def __init__(self, owned_list, content_list, page_number, embed_type, max_pages):
@@ -19,7 +18,7 @@ class PaginatedEmbed:
     def get_embed(self):
         """Paginates your embeds. Returns an embed."""
         if self.embed_type == "bgshop":
-            embed = discord.Embed(title="Backgrounds for Sale:", color=config.CLR_MAIN_COLOR)
+            embed = discord.Embed(title="Backgrounds for Sale:", color=CLR_MAIN_COLOR)
             lower_bound = [i for i in range(0, len(self.content_list), 5)][self.page_number]
             for item in self.content_list[lower_bound:lower_bound+5]:
                 if item.id in self.owned_list:
@@ -38,7 +37,7 @@ class PaginatedEmbed:
                 embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
             return embed
         elif self.embed_type == "badgeshop":
-            embed = discord.Embed(title="Badges for Sale:", color=config.CLR_MAIN_COLOR)
+            embed = discord.Embed(title="Badges for Sale:", color=CLR_MAIN_COLOR)
             lower_bound = [i for i in range(0, len(self.content_list), 5)][self.page_number]
             for item in self.content_list[lower_bound:lower_bound+5]:
                 if item.id in self.owned_list:

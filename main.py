@@ -1,8 +1,7 @@
-import discord, conf
+import discord
+from secrets import *
 from discord.ext import commands
 import sys, traceback
-
-config = conf.Config()
 
 initial_extensions = [
     'cogs.admin',
@@ -42,6 +41,6 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-bot.run(input(), bot=True, reconnect=True)
+bot.run(DISCORD_TOKEN, bot=True, reconnect=True)
 
 # TODO: Change default help command, make it cleaner.

@@ -1,11 +1,10 @@
-import discord, json, datetime, time, conf, math
+import discord, json, datetime, time, math
+from conf import *
 from discord.ext import commands
 from data import db_users
 from utils import msg_utils
 from objects.badge import Badge
 from objects.background import Background
-
-config = conf.Config()
 
 stored_messages = {}
 

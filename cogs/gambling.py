@@ -1,11 +1,10 @@
-import discord, json, datetime, concurrent, random, asyncio, conf
+import discord, json, datetime, concurrent, random, asyncio
+from conf import *
 from discord.ext import commands
 from data import db_users, db_helper
 from utils import msg_utils
 
 current_tickets = {}
-
-config = conf.Config()
 
 # Logging functions here:
 
@@ -62,7 +61,7 @@ class Gambling:
         for i in ticket_dict:
             jackpot += 2*ticket_dict[i]
         # TODO: pagify this
-        embed = discord.Embed(title="Tickets for {}".format(ctx.guild.name), color=config.CLR_MAIN_COLOR)
+        embed = discord.Embed(title="Tickets for {}".format(ctx.guild.name), color=CLR_MAIN_COLOR)
         embed.add_field(name="Jackpot", value='{} 💰 gil'.format(jackpot), inline=False)
         embed.add_field(name="Entries", value='\n'.join(ticket_list))
         await ctx.send(embed=embed)
@@ -80,16 +79,16 @@ class Gambling:
         try:
             tickets = int(tickets)
         except ValueError:
-            await ctx.send(config.MSG_INVALID_CMD)
+            await ctx.send(MSG_INVALID_CMD)
             user_db.close()
             return
 
         if current_gil < (tickets*2):
-            await ctx.send(config.MSG_INSUF_GIL)
+            await ctx.send(MSG_INSUF_GIL)
             return
 
         if tickets <= 0:
-            await ctx.send(config.MSG_AM_I_A_JOKE.format(ctx.author.id))
+            await ctx.send(MSG_AM_I_A_JOKE.format(ctx.author.id))
             return
 
         user_db.add_gil(ctx.author.id, -(tickets*2))
@@ -123,7 +122,7 @@ class Gambling:
         except IndexError:
             helper_db.insert_row("lottery", guild_id=ctx.guild.id, pot_amount=0)
             current_pot = 0
-        await ctx.channel.send(config.MSG_SWEEPSTAKES_POT.format(current_pot))
+        await ctx.channel.send(MSG_SWEEPSTAKES_POT.format(current_pot))
 
     @commands.command(aliases=['ss'])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
@@ -136,7 +135,7 @@ class Gambling:
         gil = user_db.get_user(author.id)["users"]["user_gil"]
 
         if gil <= 2:
-            await ctx.channel.send(config.MSG_INSUF_GIL)
+            await ctx.channel.send(MSG_INSUF_GIL)
             user_db.close()
             return
 
@@ -147,18 +146,18 @@ class Gambling:
                 return False
 
         if number==None:
-            await ctx.channel.send(config.MSG_SWEEPSTAKES_NO.format(author.display_name))
+            await ctx.channel.send(MSG_SWEEPSTAKES_NO.format(author.display_name))
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=10)
             except concurrent.futures._base.TimeoutError:
-                await ctx.channel.send(config.MSG_TIMEOUT.format(author.id))
+                await ctx.channel.send(MSG_TIMEOUT.format(author.id))
                 return
             lottery_entry = int(msg.content)
         else:
             try:
                 lottery_entry = int(number)
             except ValueError:
-                await ctx.channel.send(config.MSG_INVALID_CMD)
+                await ctx.channel.send(MSG_INVALID_CMD)
 
         # generate lottery:
         # TODO: Assign to JSON/py file, avoid hardcoding.
@@ -187,7 +186,7 @@ class Gambling:
             helper_db.update_column("lottery", "pot_amount", 0, guild_id=ctx.guild.id)
             helper_db.close()
 
-            await ctx.channel.send(config.MSG_SWEEPSTAKES_WIN.format(author.id, current_pot))
+            await ctx.channel.send(MSG_SWEEPSTAKES_WIN.format(author.id, current_pot))
 
             user_db = db_users.UserHelper(False)
             user_db.connect()
@@ -210,7 +209,7 @@ class Gambling:
             except IndexError:
                 helper_db.insert_row("lottery", guild_id=ctx.guild.id, pot_amount=2)
             helper_db.close()
-            await ctx.channel.send(config.MSG_SWEEPSTAKES_LOSS.format(author.display_name))
+            await ctx.channel.send(MSG_SWEEPSTAKES_LOSS.format(author.display_name))
             
 
         

@@ -1,10 +1,9 @@
-import discord, json, datetime, math, profiler, requests, conf
+import discord, json, datetime, math, profiler, requests
+from conf import *
 from PIL import Image
 from io import BytesIO
 from discord.ext import commands
 from data import db_users
-
-config = conf.Config()
 
 with open("assets/obj_badges.json") as f:
     obj_badges = json.load(f)
@@ -29,7 +28,7 @@ class Profiles:
                 
                 # generate the image:
                 profiler.level_generate(message.author.avatar_url)
-                level_image = discord.File(config.DIR_LEVELUP)
+                level_image = discord.File(DIR_LEVELUP)
                 await message.channel.send(file=level_image, delete_after=10)
                 
         except IndexError:
@@ -47,7 +46,7 @@ class Profiles:
             except IndexError:
                 a = self.bot.get_user(int(target_user))
                 if not a:
-                    await ctx.channel.send(config.MSG_USER_NOT_FOUND)
+                    await ctx.channel.send(MSG_USER_NOT_FOUND)
                     return
         else:
             a = ctx.author
@@ -58,7 +57,7 @@ class Profiles:
         try:
             current_user = user_db.get_user(a.id)['users']
         except IndexError:
-            await ctx.channel.send(config.MSG_USER_NOT_FOUND)
+            await ctx.channel.send(MSG_USER_NOT_FOUND)
             return
         user_db.close()
 
@@ -68,21 +67,21 @@ class Profiles:
         xp = (current_user["user_xp"], current_user["user_xp_to_next"])
 
         profiler.profile_generate(a.name, a.avatar_url, level, xp, equipped_badges, bg_id)
-        profile_image = discord.File(config.DIR_PROFILE)
+        profile_image = discord.File(DIR_PROFILE)
         await ctx.channel.send(file=profile_image)
 
     @commands.command()
     async def equip(self, ctx, item_id):
         """Followed by the ID, you can equip a badge."""
         if item_id not in list(obj_badges.keys()):
-            await ctx.channel.send(config.MSG_BADGE_NOT_FOUND)
+            await ctx.channel.send(MSG_BADGE_NOT_FOUND)
             return
 
         user_db = db_users.UserHelper(is_logged=False)
         user_db.connect()
         equipped_badges = user_db.get_items(ctx.author.id, is_equipped=True)
         if len(equipped_badges) >= 11:
-            await ctx.send(config.MSG_BADGE_FULL.format(ctx.author.id))
+            await ctx.send(MSG_BADGE_FULL.format(ctx.author.id))
         result = user_db.toggle_item(ctx.author.id, int(item_id))
         user_db.close()
 
@@ -90,15 +89,15 @@ class Profiles:
 
         if result == 1:
             await ctx.channel.send(
-                config.MSG_BADGE_EQUIPPED.format(badge_name)
+                MSG_BADGE_EQUIPPED.format(badge_name)
                 )
         elif result == 2:
             await ctx.channel.send(
-                config.MSG_BADGE_UNEQUIPPED.format(badge_name)
+                MSG_BADGE_UNEQUIPPED.format(badge_name)
                 )
         elif result == 3:
             await ctx.channel.send(
-                config.MSG_BADGE_NOT_YOURS.format(ctx.author.id)
+                MSG_BADGE_NOT_YOURS.format(ctx.author.id)
                 )
 
     @commands.command()
@@ -114,7 +113,7 @@ class Profiles:
         badge_str = ''
         
         if len(badges) == 0:
-            badge_str = config.MSG_BADGE_NONE
+            badge_str = MSG_BADGE_NONE
         else:
             for badge in badges:
                 try:
@@ -136,7 +135,7 @@ class Profiles:
 
         embed = discord.Embed(
             title=ctx.author.display_name,
-            color=config.CLR_MAIN_COLOR
+            color=CLR_MAIN_COLOR
         )
         embed.add_field(name="Your Badges", value=badge_str)
         await ctx.channel.send(embed=embed)
@@ -148,7 +147,7 @@ class Profiles:
         try:
             bg_id = int(bg_id)
         except ValueError:
-            await ctx.send(config.MSG_INVALID_CMD)
+            await ctx.send(MSG_INVALID_CMD)
             return
 
         user_db = db_users.UserHelper()
@@ -158,23 +157,23 @@ class Profiles:
         with open('assets/obj_bgs.json') as f:
             all_bgs = json.load(f)
         if str(bg_id) not in all_bgs and bg_id != 0:
-            await ctx.channel.send(config.MSG_BG_NOT_FOUND)
+            await ctx.channel.send(MSG_BG_NOT_FOUND)
             return
 
         try:
             if bg_id not in bgs and bg_id != 0:
-                await ctx.channel.send(config.MSG_BG_NOT_YOURS.format(ctx.author.name))
+                await ctx.channel.send(MSG_BG_NOT_YOURS.format(ctx.author.name))
                 user_db.close()
                 return
             user_db.change_bg(ctx.author.id, bg_id)
         except ValueError:
-            await ctx.channel.send(config.MSG_INVALID_CMD)
+            await ctx.channel.send(MSG_INVALID_CMD)
             user_db.close()
             return
         user_db.close()
 
         bg_name = all_bgs[str(bg_id)]["name"] if bg_id != 0 else "the default (none)"
-        await ctx.send(config.MSG_BG_CHANGED.format(ctx.author.display_name, bg_name))
+        await ctx.send(MSG_BG_CHANGED.format(ctx.author.display_name, bg_name))
 
     @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command()
@@ -183,17 +182,17 @@ class Profiles:
         try:
             bg_id = int(bg_id)
         except ValueError:
-            await ctx.send(config.MSG_INVALID_CMD)
+            await ctx.send(MSG_INVALID_CMD)
             return
         
         with open('assets/obj_bgs.json') as f:
             all_bgs = json.load(f)
         
         if str(bg_id) not in all_bgs:
-            await ctx.send(config.MSG_BG_NOT_FOUND)
+            await ctx.send(MSG_BG_NOT_FOUND)
         profiler.profile_generate(ctx.author.name, ctx.author.avatar_url, 20, (1, 2), [], int(bg_id))
-        profile_image = discord.File(config.DIR_PROFILE)
-        await ctx.channel.send(config.MSG_BG_PREVIEW.format(all_bgs[str(bg_id)]["name"]))
+        profile_image = discord.File(DIR_PROFILE)
+        await ctx.channel.send(MSG_BG_PREVIEW.format(all_bgs[str(bg_id)]["name"]))
         await ctx.channel.send(file=profile_image)
         
 def setup(bot):
