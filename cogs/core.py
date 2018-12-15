@@ -6,7 +6,9 @@ start_time = time.time()
 
 config = conf.Config()
 
-# TODO: Test all commands to check if config migration is a success.
+allowed_errors = [
+    type(discord.ext.commands.errors.CommandOnCooldown())
+]
 
 # Logging functions here:
 
@@ -20,10 +22,12 @@ class Core:
         self.bot = bot
 
     # TODO: fix this shit nigga
-    # async def on_command_error(self, ctx, error):
-    #     if type(error) == type(discord.ext.commands.errors.CommandNotFound()):
-    #         return
-    #     await ctx.channel.send(msg_strings["str_cmd-error"].format(ctx.message.author.id, error))
+    async def on_command_error(self, ctx, error):
+        print(error)
+        print(type(error), type(error) == type(discord.ext.commands.errors.CommandNotFound()))
+        # if type(error) == type(discord.ext.commands.errors.CommandNotFound()):
+        #     return
+        # await ctx.channel.send(msg_strings["str_cmd-error"].format(ctx.message.author.id, error))
 
     @commands.command()
     async def ping(self, ctx):
@@ -35,7 +39,7 @@ class Core:
         """Shows information about the bot."""
         difference = int(round(time.time() - start_time))
         uptime_str = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(title=config.MSG_ABOUT_TITLE, color=0xff1155)
+        embed = discord.Embed(title=config.MSG_ABOUT_TITLE, color=config.CLR_MAIN_COLOR)
         embed.add_field(
             name="Author",
             value=config.MSG_AUTHOR_NAME

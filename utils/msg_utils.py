@@ -1,4 +1,6 @@
-import discord, math
+import discord, math, conf
+
+config = conf.Config()
 
 class PaginatedEmbed:
     def __init__(self, owned_list, content_list, page_number, embed_type, max_pages):
@@ -17,10 +19,9 @@ class PaginatedEmbed:
     def get_embed(self):
         """Paginates your embeds. Returns an embed."""
         if self.embed_type == "bgshop":
-            embed = discord.Embed(title="Backgrounds for Sale:", color=0xff1155)
+            embed = discord.Embed(title="Backgrounds for Sale:", color=config.CLR_MAIN_COLOR)
             lower_bound = [i for i in range(0, len(self.content_list), 5)][self.page_number]
             for item in self.content_list[lower_bound:lower_bound+5]:
-                print(item.id, self.owned_list, item.id in self.owned_list)
                 if item.id in self.owned_list:
                     embed.add_field(
                         name="{} (Owned)".format(item.name),
@@ -37,7 +38,7 @@ class PaginatedEmbed:
                 embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
             return embed
         elif self.embed_type == "badgeshop":
-            embed = discord.Embed(title="Badges for Sale:", color=0xff1155)
+            embed = discord.Embed(title="Badges for Sale:", color=config.CLR_MAIN_COLOR)
             lower_bound = [i for i in range(0, len(self.content_list), 5)][self.page_number]
             for item in self.content_list[lower_bound:lower_bound+5]:
                 if item.id in self.owned_list:
@@ -66,3 +67,4 @@ async def get_target_user(ctx, target_user):
             return None
     else:
         return ctx.message.author
+    

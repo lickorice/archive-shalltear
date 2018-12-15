@@ -3,8 +3,6 @@ from discord.ext import commands
 from data import db_users, db_helper
 from utils import msg_utils
 
-# TODO: Test all commands to check if config migration is a success.
-
 current_tickets = {}
 
 config = conf.Config()
@@ -64,7 +62,7 @@ class Gambling:
         for i in ticket_dict:
             jackpot += 2*ticket_dict[i]
         # TODO: pagify this
-        embed = discord.Embed(title="Tickets for {}".format(ctx.guild.name), color=0xff1155)
+        embed = discord.Embed(title="Tickets for {}".format(ctx.guild.name), color=config.CLR_MAIN_COLOR)
         embed.add_field(name="Jackpot", value='{} 💰 gil'.format(jackpot), inline=False)
         embed.add_field(name="Entries", value='\n'.join(ticket_list))
         await ctx.send(embed=embed)
@@ -79,7 +77,7 @@ class Gambling:
         user_db.connect()
         current_gil = user_db.get_user(ctx.author.id)["users"]["user_gil"]
         
-        try: # TODO: Implement integrity check here:
+        try:
             tickets = int(tickets)
         except ValueError:
             await ctx.send(config.MSG_INVALID_CMD)
@@ -131,7 +129,6 @@ class Gambling:
     @commands.cooldown(2, 10, type=commands.BucketType.user)
     async def sweepstakes(self, ctx, number=None):
         """Take your chances with the sweepstakes!"""
-        # TODO: Test out if sweepstakes actually works, print out sweep value.
         author = ctx.message.author
 
         user_db = db_users.UserHelper(False)
@@ -158,7 +155,7 @@ class Gambling:
                 return
             lottery_entry = int(msg.content)
         else:
-            try: # TODO: Implement integrity check here
+            try:
                 lottery_entry = int(number)
             except ValueError:
                 await ctx.channel.send(config.MSG_INVALID_CMD)

@@ -45,4 +45,3 @@ async def on_message(message):
 bot.run(input(), bot=True, reconnect=True)
 
 # TODO: Change default help command, make it cleaner.
-# .

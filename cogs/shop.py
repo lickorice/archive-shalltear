@@ -2,8 +2,8 @@ import discord, json, datetime, time, conf, math
 from discord.ext import commands
 from data import db_users
 from utils import msg_utils
-
-# TODO: Test all commands to check if config migration is a success.
+from objects.badge import Badge
+from objects.background import Background
 
 config = conf.Config()
 
@@ -15,48 +15,6 @@ def log(string):
     print("{}{}".format(datetime.datetime.now().strftime("(%Y-%m-%d)[%H:%M:%S]"), string))
 
 # Start of program logic:
-
-class BadgeItem: # TODO: Can we generalize this? So it can be used throughout the program
-    """
-    Instantiates a Badge object given an ID, and given that
-    it exists in the JSON file.
-    
-    Args:
-        item_id (int): The ID of the badge.
-    """
-    def __init__(self, item_id):
-        with open('assets/obj_badgeshop.json') as f:
-            badge_shop = json.load(f)
-        self.id = int(item_id)
-        item_id = str(item_id)
-        self.name = badge_shop[item_id]["name"]
-        self.is_exclusive = badge_shop[item_id]["is_exclusive"]
-        self.price = badge_shop[item_id]["price"]
-        self.price_tag = badge_shop[item_id]["price_tag"]
-        self.level_needed = badge_shop[item_id]["level_needed"]
-        self.icon_url = badge_shop[item_id]["icon_url"]
-        self.description = badge_shop[item_id]["description"]
-
-
-class BGItem: # TODO: Can we generalize this? So it can be used throughout the program
-    """
-    Instantiates a Background object given an ID, and given that
-    it exists in the JSON file.
-    
-    Args:
-        bg_id (int): The ID of the background.
-    """
-    def __init__(self, bg_id):
-        with open('assets/obj_bgs.json') as f:
-            bg_shop = json.load(f)
-        self.id = int(bg_id)
-        bg_id = str(bg_id)
-        self.img_url = bg_shop[bg_id]["img_url"]
-        self.is_exclusive = bg_shop[bg_id]["is_exclusive"]
-        self.price = bg_shop[bg_id]["price"]
-        self.price_tag = bg_shop[bg_id]["price_tag"]
-        self.name = bg_shop[bg_id]["name"]
-
 
 def get_target_item(target_item, json_name):
     with open('assets/obj_{}.json'.format(json_name)) as f:
@@ -74,9 +32,9 @@ def get_target_item(target_item, json_name):
         return None
     else:
         if json_name == "badgeshop":
-            return BadgeItem(target_id)
+            return Badge(target_id)
         elif json_name == "bgs":
-            return BGItem(target_id)
+            return Background(target_id)
 
 
 class Shop:
@@ -122,7 +80,7 @@ class Shop:
             await ctx.send(config.MSG_BADGE_NOT_FOUND)
             return
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect() # TODO: deprecate this please
+        user_db.connect()
         user_info = user_db.get_user(ctx.author.id)["users"]
         current_gil, current_level = user_info["user_gil"], user_info["user_level"]
         current_items = [item["item_id"] for item in user_db.get_items(ctx.author.id)]
@@ -161,7 +119,7 @@ class Shop:
             return
         
         user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect() # TODO: deprecate this please
+        user_db.connect()
         user_info = user_db.get_user(ctx.author.id)["users"]
         
         current_gil, current_level = user_info["user_gil"], user_info["user_level"]
@@ -191,13 +149,14 @@ class Shop:
             badge_shop = json.load(f)
         item_list = []
         for item_id in badge_shop:
-            item = BadgeItem(item_id)
+            item = Badge(item_id)
+            print(item.price_tag)
             # filters out the exclusive IPM-only stuff
             if (item.is_exclusive and ctx.guild.id == config.OWNER_GUILD_ID) or not item.is_exclusive:
                 item_list.append(item)
 
         user_db = db_users.UserHelper()
-        user_db.connect() # TODO: outstanding connect
+        user_db.connect()
         owned_list = [item["item_id"] for item in user_db.get_items(ctx.author.id)]
         user_db.close()
 
@@ -222,13 +181,13 @@ class Shop:
             bg_shop = json.load(f)
         item_list = []
         for item_id in bg_shop:
-            item = BGItem(item_id)
+            item = Background(item_id)
             # filters out the exclusive IPM-only stuff
             if (item.is_exclusive and ctx.guild.id == config.OWNER_GUILD_ID) or not item.is_exclusive:
                 item_list.append(item)
                 
         user_db = db_users.UserHelper()
-        user_db.connect() # TODO: outstanding connect
+        user_db.connect()
         owned_list = [item["bg_id"] for item in user_db.get_backgrounds(ctx.author.id)]
         user_db.close()
 

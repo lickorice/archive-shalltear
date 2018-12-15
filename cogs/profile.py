@@ -4,8 +4,6 @@ from io import BytesIO
 from discord.ext import commands
 from data import db_users
 
-# TODO: Test all commands to check if config migration is a success.
-
 config = conf.Config()
 
 with open("assets/obj_badges.json") as f:
@@ -111,7 +109,7 @@ class Profiles:
         badges = user_db.get_items(ctx.author.id)
         equipped_badges = user_db.get_items(ctx.author.id, True)
         
-
+        # TODO: Change to Badge object.
         badges = sorted(badges, key=lambda badge: badge["item_id"])
         badge_str = ''
         
@@ -138,7 +136,7 @@ class Profiles:
 
         embed = discord.Embed(
             title=ctx.author.display_name,
-            color=0xff1155
+            color=config.CLR_MAIN_COLOR
         )
         embed.add_field(name="Your Badges", value=badge_str)
         await ctx.channel.send(embed=embed)
@@ -146,6 +144,7 @@ class Profiles:
     @commands.command()
     async def changebg(self, ctx, bg_id):
         """Change the background of your profile."""
+        # TODO: Change to background object
         try:
             bg_id = int(bg_id)
         except ValueError:

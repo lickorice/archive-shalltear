@@ -23,7 +23,7 @@
         "is_exclusive": false,
         "id": "00004",
         "price": 500,
-        "price_tag": "500",
+        "price_tag": "500 gil",
         "level_needed": 5,
         "icon_url": "assets/badges/00004.png",
         "description": "You set off to start your journey to find the best form of government."
@@ -33,7 +33,7 @@
         "is_exclusive": false,
         "id": "00005",
         "price": 1000,
-        "price_tag": "1000",
+        "price_tag": "1000 gil",
         "level_needed": 10,
         "icon_url": "assets/badges/00005.png",
         "description": "You have been enlightened. Why work when they can work for you?"
@@ -43,7 +43,7 @@
         "is_exclusive": false,
         "id": "00006",
         "price": 1500,
-        "price_tag": "1500",
+        "price_tag": "1500 gil",
         "level_needed": 20,
         "icon_url": "assets/badges/00006.png",
         "description": "After years of trial and error, you have finally evolved to a superior being."
@@ -53,7 +53,7 @@
         "is_exclusive": false,
         "id": "00007",
         "price": 3000,
-        "price_tag": "3000",
+        "price_tag": "3000 gil",
         "level_needed": 30,
         "icon_url": "assets/badges/00007.png",
         "description": "Forget everything. Grants a special feature for its owner."
