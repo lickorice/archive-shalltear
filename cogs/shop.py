@@ -46,11 +46,11 @@ class Shop:
             return
         if target_id == stored_messages[user.id][0]:
             p = stored_messages[user.id][1]
-            if reaction.emoji == config.EMJ_LEFT_PAGE:
+            if reaction.emoji == EMJ_LEFT_PAGE:
                 p.previous_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
-            elif reaction.emoji == config.EMJ_RIGHT_PAGE:
+            elif reaction.emoji == EMJ_RIGHT_PAGE:
                 p.next_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
@@ -61,11 +61,11 @@ class Shop:
             return
         if target_id == stored_messages[user.id][0]:
             p = stored_messages[user.id][1]
-            if reaction.emoji == config.EMJ_LEFT_PAGE:
+            if reaction.emoji == EMJ_LEFT_PAGE:
                 p.previous_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
-            elif reaction.emoji == config.EMJ_RIGHT_PAGE:
+            elif reaction.emoji == EMJ_RIGHT_PAGE:
                 p.next_page()
                 e = p.get_embed()
                 await reaction.message.edit(embed=e)
@@ -76,7 +76,7 @@ class Shop:
         target_item = ' '.join(target_item)
         item = get_target_item(target_item, "badgeshop")
         if item == None:
-            await ctx.send(config.MSG_BADGE_NOT_FOUND)
+            await ctx.send(MSG_BADGE_NOT_FOUND)
             return
         user_db = db_users.UserHelper(is_logged=False)
         user_db.connect()
@@ -84,28 +84,28 @@ class Shop:
         current_gil, current_level = user_info["user_gil"], user_info["user_level"]
         current_items = [item["item_id"] for item in user_db.get_items(ctx.author.id)]
         if item.id in current_items:
-            await ctx.send(config.MSG_BADGE_ALREADY_YOURS.format(ctx.author.id))
+            await ctx.send(MSG_BADGE_ALREADY_YOURS.format(ctx.author.id))
             user_db.close()
             return
         if current_gil < item.price:
-            await ctx.send(config.MSG_INSUF_GIL)
+            await ctx.send(MSG_INSUF_GIL)
             user_db.close()
             return
         if current_level < item.level_needed:
-            await ctx.send(config.MSG_INSUF_LVL)
+            await ctx.send(MSG_INSUF_LVL)
             user_db.close()
             return
         
         user_db.add_gil(ctx.author.id, -item.price)
         user_db.add_item(ctx.author.id, item.id)
 
-        await ctx.send(config.MSG_BADGE_BOUGHT.format(ctx.author.id, item.name))
+        await ctx.send(MSG_BADGE_BOUGHT.format(ctx.author.id, item.name))
 
         # special badges here:
         if item.id == 0: # VIP badge
-            await ctx.author.add_roles(ctx.guild.get_role(config.VIP_ROLE_ID))
-            vip_channel = self.bot.get_channel(config.VIP_CHANNEL_ID)
-            await vip_channel.send(config.MSG_VIP_WELCOME.format(ctx.author.id))
+            await ctx.author.add_roles(ctx.guild.get_role(VIP_ROLE_ID))
+            vip_channel = self.bot.get_channel(VIP_CHANNEL_ID)
+            await vip_channel.send(MSG_VIP_WELCOME.format(ctx.author.id))
         user_db.close()
 
     @commands.command()
@@ -114,7 +114,7 @@ class Shop:
         target_item = ' '.join(target_item)
         item = get_target_item(target_item, "bgs")
         if item == None:
-            await ctx.send(config.MSG_BG_NOT_FOUND)
+            await ctx.send(MSG_BG_NOT_FOUND)
             return
         
         user_db = db_users.UserHelper(is_logged=False)
@@ -125,18 +125,18 @@ class Shop:
         current_items = [item["bg_id"] for item in user_db.get_backgrounds(ctx.author.id)]
         
         if item.id in current_items:
-            await ctx.send(config.MSG_BG_ALREADY_YOURS.format(ctx.author.id))
+            await ctx.send(MSG_BG_ALREADY_YOURS.format(ctx.author.id))
             user_db.close()
             return
         if current_gil < item.price:
-            await ctx.send(config.MSG_INSUF_GIL)
+            await ctx.send(MSG_INSUF_GIL)
             user_db.close()
             return
         
         user_db.add_gil(ctx.author.id, -item.price)
         user_db.add_bg(ctx.author.id, item.id)
 
-        await ctx.send(config.MSG_BG_BOUGHT.format(ctx.author.id, item.name, item.price))
+        await ctx.send(MSG_BG_BOUGHT.format(ctx.author.id, item.name, item.price))
 
         user_db.close()
 
@@ -151,7 +151,7 @@ class Shop:
             item = Badge(item_id)
             print(item.price_tag)
             # filters out the exclusive IPM-only stuff
-            if (item.is_exclusive and ctx.guild.id == config.OWNER_GUILD_ID) or not item.is_exclusive:
+            if (item.is_exclusive and ctx.guild.id == OWNER_GUILD_ID) or not item.is_exclusive:
                 item_list.append(item)
 
         user_db = db_users.UserHelper()
@@ -169,8 +169,8 @@ class Shop:
         stored_messages[ctx.author.id] = (msg.id, p)
 
         if max_pages > 1:
-            await msg.add_reaction(config.EMJ_LEFT_PAGE)
-            await msg.add_reaction(config.EMJ_RIGHT_PAGE)
+            await msg.add_reaction(EMJ_LEFT_PAGE)
+            await msg.add_reaction(EMJ_RIGHT_PAGE)
 
     @commands.command()
     async def bgshop(self, ctx):
@@ -182,7 +182,7 @@ class Shop:
         for item_id in bg_shop:
             item = Background(item_id)
             # filters out the exclusive IPM-only stuff
-            if (item.is_exclusive and ctx.guild.id == config.OWNER_GUILD_ID) or not item.is_exclusive:
+            if (item.is_exclusive and ctx.guild.id == OWNER_GUILD_ID) or not item.is_exclusive:
                 item_list.append(item)
                 
         user_db = db_users.UserHelper()
@@ -201,8 +201,8 @@ class Shop:
         stored_messages[ctx.author.id] = (msg.id, p)
 
         if max_pages > 1:
-            await msg.add_reaction(config.EMJ_LEFT_PAGE)
-            await msg.add_reaction(config.EMJ_RIGHT_PAGE)
+            await msg.add_reaction(EMJ_LEFT_PAGE)
+            await msg.add_reaction(EMJ_RIGHT_PAGE)
 
         
 def setup(bot):
