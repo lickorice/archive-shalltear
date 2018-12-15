@@ -35,7 +35,11 @@
             "count_free_gil": "INTEGER",
             "count_commands": "INTEGER",
             "count_rolls": "INTEGER",
-            "count_cards": "INTEGER"
+            "count_cards": "INTEGER",
+
+            "followed_twitter": "BOOLEAN",
+            "followed_facebook": "BOOLEAN",
+            "is_patron": "BOOLEAN"
         }
     ],
     "gacha": [

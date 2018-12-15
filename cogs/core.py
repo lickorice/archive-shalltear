@@ -1,5 +1,6 @@
-import discord, json, datetime, time
+import discord, json, datetime, time, concurrent, tweepy
 from conf import *
+from modules.twitter import TwitterHelper
 from discord.ext import commands
 from data import db_users
 
@@ -68,7 +69,42 @@ class Core:
             log("[-ERR-] Database failed to connect.")
         user_db.new_user(member.id)
         user_db.close()
-    
+
+    @commands.command()
+    @commands.cooldown(1, 120, type=commands.BucketType.user)
+    async def twitter(self, ctx):
+        """Follow the developer on Twitter to receive rewards!"""
+
+        def check(m):
+            try:
+                return ctx.author.id == m.author.id and 0<=int(m.content)
+            except:
+                return False
+
+        # TODO: Check if user already claimed rewards.
+        
+        twt = TwitterHelper()
+
+        await ctx.send(f"**{ctx.author.display_name}**, authorize Shalltear in order to follow! {twt.get_url()}")
+        try:
+            await ctx.send("Simply send a message with the **authentication PIN**.")
+            msg = await self.bot.wait_for('message', check=check, timeout=120)
+        except concurrent.futures._base.TimeoutError:
+            await ctx.channel.send(MSG_TIMEOUT.format(ctx.author.id))
+            return
+        try:
+            if twt.authorize(msg.content):
+                await ctx.send(f"<@{ctx.author.id}>, **you have successfully followed the developer!**")
+            else:
+                await ctx.send(f"<@{ctx.author.id}>, **you already follow the developer, processing rewards...**")
+        
+            # TODO: Process rewards here
+        
+        except tweepy.error.TweepError as e:
+            await ctx.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 2 minutes.**")
+            print(e)
+            return
+
         
 def setup(bot):
     bot.add_cog(Core(bot))
