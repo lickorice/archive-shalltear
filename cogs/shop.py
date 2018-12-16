@@ -125,7 +125,7 @@ class Shop:
         if item.id in [bg.id for bg in _user.backgrounds]:
             await ctx.send(MSG_BG_ALREADY_YOURS.format(ctx.author.id))
             return
-        if current_gil < item.price:
+        if _user.gil < item.price:
             await ctx.send(MSG_INSUF_GIL)
             return
         if not item.is_for_sale:
