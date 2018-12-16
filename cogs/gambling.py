@@ -3,6 +3,7 @@ from conf import *
 from discord.ext import commands
 from data import db_users, db_helper
 from utils import msg_utils
+from objects.user import User
 
 current_tickets = {}
 
@@ -37,10 +38,7 @@ class Gambling:
         winner = self.bot.get_user(tickets[0])
         await ctx.send("Congratulations! <@{}> won the lottery and received **{} 💰** gil!".format(winner.id, (10+len(tickets)*2)))
 
-        user_db = db_users.UserHelper(False)
-        user_db.connect()
-        user_db.add_gil(winner.id, (10+(len(tickets)*2)))
-        user_db.close()
+        User(winner.id).add_gil((10+(len(tickets)*2)))
 
         current_tickets[ctx.guild.id] = {}
 
@@ -72,9 +70,7 @@ class Gambling:
         Purchases a number (by default, one) tickets for the server-wide lottery.
         A winner is drawn every ten minutes.
         """
-        user_db = db_users.UserHelper(False)
-        user_db.connect()
-        current_gil = user_db.get_user(ctx.author.id)["users"]["user_gil"]
+        _a = User(ctx.author.id)
         
         try:
             tickets = int(tickets)
@@ -83,7 +79,7 @@ class Gambling:
             user_db.close()
             return
 
-        if current_gil < (tickets*2):
+        if _a.gil < (tickets*2):
             await ctx.send(MSG_INSUF_GIL)
             return
 
@@ -91,7 +87,8 @@ class Gambling:
             await ctx.send(MSG_AM_I_A_JOKE.format(ctx.author.id))
             return
 
-        user_db.add_gil(ctx.author.id, -(tickets*2))
+        _a.add_gil(-(tickets*2))
+
         p = '' if tickets == 1 else 's'
         await ctx.send("**{}**, you successfully bought **{} ticket{}** for **{} 💰 gil**.".format(ctx.author.display_name, tickets, p, tickets*2))
         try:
@@ -106,8 +103,6 @@ class Gambling:
                 current_tickets[ctx.guild.id][ctx.author.id] += tickets
             else:
                 current_tickets[ctx.guild.id][ctx.author.id] = tickets
-        user_db.close()
-
 
     @commands.command(aliases=['sspot'])
     async def stakespot(self, ctx):
@@ -130,11 +125,9 @@ class Gambling:
         """Take your chances with the sweepstakes!"""
         author = ctx.message.author
 
-        user_db = db_users.UserHelper(False)
-        user_db.connect()
-        gil = user_db.get_user(author.id)["users"]["user_gil"]
+        _a = User(author.id)
 
-        if gil <= 2:
+        if _a.gil < 2:
             await ctx.channel.send(MSG_INSUF_GIL)
             user_db.close()
             return
@@ -189,14 +182,11 @@ class Gambling:
             await ctx.channel.send(MSG_SWEEPSTAKES_WIN.format(author.id, current_pot))
 
             user_db = db_users.UserHelper(False)
-            user_db.connect()
-            user_db.add_gil(author.id, current_pot)
-            user_db.close()
+            _a.add_gil(current_pot)
+
         else:
             user_db = db_users.UserHelper(False)
-            user_db.connect()
-            user_db.add_gil(author.id, -2)
-            user_db.close()
+            _a.add_gil(-2)
 
             helper_db = db_helper.DBHelper("data/db/misc.db", False)
             helper_db.connect()
@@ -212,6 +202,5 @@ class Gambling:
             await ctx.channel.send(MSG_SWEEPSTAKES_LOSS.format(author.display_name))
             
 
-        
 def setup(bot):
     bot.add_cog(Gambling(bot))

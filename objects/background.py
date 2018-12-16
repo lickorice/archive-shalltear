@@ -26,3 +26,6 @@ class Background: # TODO: Can we generalize this? So it can be used throughout t
         self.price = bg_shop[bg_id]["price"]
         self.price_tag = bg_shop[bg_id]["price_tag"]
         self.name = bg_shop[bg_id]["name"]
+
+    def __repr__(self):
+        return f"Background({self.id})"

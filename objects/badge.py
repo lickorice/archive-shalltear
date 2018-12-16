@@ -18,15 +18,26 @@ class Badge:
         icon_url (str): The filename of the badge's icon.
         is_exclusive (bool): If the badge is exclusive to IPM.
     """
-    def __init__(self, item_id):
+    def __init__(self, item_id, is_equipped=False):
         with open('assets/obj_badgeshop.json') as f:
             badge_shop = json.load(f)
+        with open('assets/obj_badges.json') as f:
+            badge_json = json.load(f)
         self.id = int(item_id)
         item_id = str(item_id)
-        self.name = badge_shop[item_id]["name"]
-        self.is_exclusive = badge_shop[item_id]["is_exclusive"]
-        self.price = badge_shop[item_id]["price"]
-        self.price_tag = badge_shop[item_id]["price_tag"]
-        self.level_needed = badge_shop[item_id]["level_needed"]
-        self.icon_url = badge_shop[item_id]["icon_url"]
-        self.description = badge_shop[item_id]["description"]
+        self.is_equipped = is_equipped
+        
+        self.name = badge_json[item_id]["name"]
+        if badge_json[item_id]["for_sale"]:
+            self.is_exclusive = badge_shop[item_id]["is_exclusive"]
+            self.price = badge_shop[item_id]["price"]
+            self.price_tag = badge_shop[item_id]["price_tag"]
+            self.level_needed = badge_shop[item_id]["level_needed"]
+            self.icon_url = badge_shop[item_id]["icon_url"]
+            self.description = badge_shop[item_id]["description"]
+        else:
+            self.icon_url = badge_json[item_id]["img-url"]
+            self.description = badge_json[item_id]["description"]
+
+    def __repr__(self):
+        return f"Badge({self.id})"

@@ -79,6 +79,7 @@ MSG_MEME_NOT_ENOUGH = "**Not enough actors!** You need {} actor{} for this meme 
 MSG_MEME_NOT_FOUND = "**Meme not found!**"
 MSG_ON_COOLDOWN = "**{}**, free booster packs are only claimable once per hour. The next interval you can claim one will be in **{}** minute{}."
 MSG_PING = "Pong! (**{}**ms)"
+MSG_PROFILE_BG_RESET = "**All profile backgrounds successfully reset.**"
 MSG_REGISTER_1 = "**Attempting to register users...**"
 MSG_REGISTER_2 = "**Attempting to register users...\n({}/{})**"
 MSG_REGISTER_3 = "**{0}** of **{1}** users successfully registered.\nOut of all **{1}** users, **{2}** are bots."

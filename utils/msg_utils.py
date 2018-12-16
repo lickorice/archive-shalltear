@@ -66,4 +66,3 @@ async def get_target_user(ctx, target_user):
             return None
     else:
         return ctx.message.author
-    

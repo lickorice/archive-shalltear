@@ -4,6 +4,8 @@ from PIL import Image
 from io import BytesIO
 from discord.ext import commands
 from data import db_users
+from objects.user import User
+from objects.background import Background
 
 with open("assets/obj_badges.json") as f:
     obj_badges = json.load(f)
@@ -12,29 +14,29 @@ class Profiles:
     def __init__(self, bot):
         self.bot = bot
 
-    async def on_message(self, message):
-        """Main on_message method on collecting message data."""
-        if message.author.bot:
-            return
-        try:
-            points = int(math.log(len(message.content), 2))
-        except ValueError:
-            points = 1
-        user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
-        try:
-            if user_db.add_xp(message.author.id, points):
-                user_db.next_level(message.author.id)
+    # async def on_message(self, message):
+    #     """Main on_message method on collecting message data."""
+    #     if message.author.bot:
+    #         return
+    #     try:
+    #         points = int(math.log(len(message.content), 2))
+    #     except ValueError:
+    #         points = 1
+    #     user_db = db_users.UserHelper(is_logged=False)
+    #     user_db.connect()
+    #     try:
+    #         if user_db.add_xp(message.author.id, points):
+    #             user_db.next_level(message.author.id)
                 
-                # generate the image:
-                profiler.level_generate(message.author.avatar_url)
-                level_image = discord.File(DIR_LEVELUP)
-                await message.channel.send(file=level_image, delete_after=10)
+    #             # generate the image:
+    #             profiler.level_generate(message.author.avatar_url)
+    #             level_image = discord.File(DIR_LEVELUP)
+    #             await message.channel.send(file=level_image, delete_after=10)
                 
-        except IndexError:
-            user_db.new_user(message.author.id)
-            user_db.add_xp(message.author.id, points)
-        user_db.close()
+    #     except IndexError:
+    #         user_db.new_user(message.author.id)
+    #         user_db.add_xp(message.author.id, points)
+    #     user_db.close()
 
     @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command(aliases=['p'])
@@ -139,41 +141,23 @@ class Profiles:
         )
         embed.add_field(name="Your Badges", value=badge_str)
         await ctx.channel.send(embed=embed)
-
+        
     @commands.command()
     async def changebg(self, ctx, bg_id):
-        """Change the background of your profile."""
-        # TODO: Change to background object
+        """Changes the background of your profile."""
+        _user = User(ctx.author.id)
         try:
-            bg_id = int(bg_id)
+            if int(bg_id) in [bg.id for bg in _user.backgrounds]:
+                _user.bg_id = bg_id
+                await ctx.send(
+                    MSG_BG_CHANGED.format(
+                        ctx.author.display_name, Background(bg_id).name
+                        )
+                )
+            else:
+                await ctx.send(MSG_BG_NOT_YOURS.format(ctx.author.name))
         except ValueError:
             await ctx.send(MSG_INVALID_CMD)
-            return
-
-        user_db = db_users.UserHelper()
-        user_db.connect()
-        bgs = [int(bg["bg_id"]) for bg in user_db.get_backgrounds(ctx.author.id)]
-        
-        with open('assets/obj_bgs.json') as f:
-            all_bgs = json.load(f)
-        if str(bg_id) not in all_bgs and bg_id != 0:
-            await ctx.channel.send(MSG_BG_NOT_FOUND)
-            return
-
-        try:
-            if bg_id not in bgs and bg_id != 0:
-                await ctx.channel.send(MSG_BG_NOT_YOURS.format(ctx.author.name))
-                user_db.close()
-                return
-            user_db.change_bg(ctx.author.id, bg_id)
-        except ValueError:
-            await ctx.channel.send(MSG_INVALID_CMD)
-            user_db.close()
-            return
-        user_db.close()
-
-        bg_name = all_bgs[str(bg_id)]["name"] if bg_id != 0 else "the default (none)"
-        await ctx.send(MSG_BG_CHANGED.format(ctx.author.display_name, bg_name))
 
     @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command()

@@ -1,13 +1,16 @@
 import discord, json, datetime, time, concurrent, tweepy
 from conf import *
+from utils import msg_utils
 from modules.twitter import TwitterHelper
+from objects.user import User
 from discord.ext import commands
 from data import db_users
 
 start_time = time.time()
 
 allowed_errors = [
-    type(discord.ext.commands.errors.CommandOnCooldown(0, 0))
+    discord.ext.commands.errors.CommandOnCooldown,
+    discord.ext.commands.errors.MissingRequiredArgument
 ]
 
 caught_errors = [
@@ -32,6 +35,18 @@ class Core:
             log(f"[-WRN-] {ctx.author.name} raised an error: {error}")
         else:
             raise error
+
+    async def on_member_join(self, member):
+        if member.bot:
+            return
+        log("[-EVT-] New user joined. ({})".format(member.name))
+        u = User(member.id)
+
+    @commands.command()
+    async def test(self, ctx, target_user=None):
+        a = await msg_utils.get_target_user(ctx, target_user)
+        u = User(a.id)
+        print(u.followed_twitter)
 
     @commands.command()
     async def ping(self, ctx):
@@ -59,16 +74,6 @@ class Core:
         )
         embed.set_footer(text=MSG_AUTHOR_INFO)
         await ctx.channel.send(embed=embed)
-
-    async def on_member_join(self, member):
-        if member.bot:
-            return
-        log("[-EVT-] New user joined. ({})".format(member.name))
-        user_db = db_users.UserHelper()
-        if not user_db.connect():
-            log("[-ERR-] Database failed to connect.")
-        user_db.new_user(member.id)
-        user_db.close()
 
     @commands.command()
     @commands.cooldown(1, 120, type=commands.BucketType.user)

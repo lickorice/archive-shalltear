@@ -2,41 +2,49 @@
     "0":    {
         "name": "VIP Badge",
         "img-url": "assets/badges/00000.png",
-        "description": "This member is proudly part of the exclusive VIP group of the server."
+        "description": "This member is proudly part of the exclusive VIP group of the server.",
+        "for_sale": true
     },
     "1":    {
         "name": "PAGCOR Badge",
         "img-url": "assets/badges/00001.png",
-        "description": "This member is hella rich."
+        "description": "This member is hella rich.",
+        "for_sale": true
     },
     "2":    {
         "name": "Lick's Seal of Approval",
         "img-url": "assets/badges/00002.png",
-        "description": "This member has done something that has positively affected the server in a significant way. Lickorice holds this member in high regards."
+        "description": "This member has done something that has positively affected the server in a significant way. Lickorice holds this member in high regards.",
+        "for_sale": false
     },
     "3":    {
         "name": "Automata Engineer",
         "img-url": "assets/badges/00003.png",
-        "description": "This member is a part of the development team for Shalltear!."
+        "description": "This member is a part of the development team for Shalltear!.",
+        "for_sale": false
     },
     "4":    {
         "name": "Russian Communist",
         "img-url": "assets/badges/00004.png",
-        "description": "Seize the means of production!"
+        "description": "Seize the means of production!",
+        "for_sale": true
     },
     "5":    {
         "name": "American Capitalist",
         "img-url": "assets/badges/00005.png",
-        "description": "The only good communist is a dead communist."
+        "description": "The only good communist is a dead communist.",
+        "for_sale": true
     }, 
     "6":    {
         "name": "Chinese Socialist",
         "img-url": "assets/badges/00006.png",
-        "description": "You have accepted the state as your lord and savior."
+        "description": "You have accepted the state as your lord and savior.",
+        "for_sale": true
     },
     "7":    {
         "name": "Neet",
         "img-url": "assets/badges/00007.png",
-        "description": "You don't even care anymore. Gives you a chance to add your own background (non-nsfw)."
+        "description": "You don't even care anymore. Gives you a chance to add your own background (non-nsfw).",
+        "for_sale": true
     } 
 }

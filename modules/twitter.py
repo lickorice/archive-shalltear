@@ -6,7 +6,7 @@ from secrets import *
 class TwitterHelper:
 
     def __init__(self):
-        self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+        self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, "https://twitter.com/cgpanganiban/")
         self.api = None
 
     def get_url(self):

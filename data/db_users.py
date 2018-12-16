@@ -6,6 +6,7 @@ helper inherits functions from the DBHelper class.
 (coded by lickorice, 2018)
 """
 
+import sqlite3
 from data import db_helper
 
 # Level config
@@ -18,34 +19,54 @@ class UserHelper(db_helper.DBHelper):
 
     def new_user(self, user_id, user_level=1, user_xp=0, user_xp_to_next=50, user_gil=10, user_materia=0):
         """Adds a new user to the database (user_id unique)."""
-        self.insert_row(
-            table_name="users",
-            user_id=user_id,
-            user_level=user_level,
-            user_xp=user_xp,
-            user_xp_to_next=user_xp_to_next,
-            user_gil=user_gil,
-            user_materia=0,
-            user_bg_id=0
-            )
-        self.insert_row(
-            table_name="activities",
-            user_id=user_id,
-            can_receive_xp=True,
-            can_free_pack=True,
-            can_daily=True,
-            count_free_gil=0,
-            count_commands=0,
-            count_rolls=0,
-            count_cards=0
-            )
+        try:
+            self.insert_row(
+                table_name="users",
+                user_id=user_id,
+                user_level=user_level,
+                user_xp=user_xp,
+                user_xp_to_next=user_xp_to_next,
+                user_gil=user_gil,
+                user_materia=0,
+                user_bg_id=0
+                )
+        except sqlite3.IntegrityError:
+            pass
+        try:
+            self.insert_row(
+                table_name="activities",
+                user_id=user_id,
+                can_receive_xp=True,
+                can_free_pack=True,
+                can_daily=True,
+                count_free_gil=0,
+                count_commands=0,
+                count_rolls=0,
+                count_cards=0
+                )
+        except sqlite3.IntegrityError:
+            pass
+        try:
+            self.insert_row(
+                table_name="social",
+                user_id=user_id,
+                followed_twitter=False,
+                followed_facebook=False,
+                is_patron=False
+                )
+        except sqlite3.IntegrityError:
+            pass
 
     def get_user(self, user_id):
         """Fetches user data given a user_id."""
-        x = {
-            "users": self.fetch_rows("users", user_id=user_id)[0],
-            "activities": self.fetch_rows("activities", user_id=user_id)[0]
-            }
+        try:
+            x = {
+                "users": self.fetch_rows("users", user_id=user_id)[0],
+                "activities": self.fetch_rows("activities", user_id=user_id)[0],
+                "social": self.fetch_rows("social", user_id=user_id)[0]
+                }
+        except IndexError:
+            return False
         return x
 
     def add_gil(self, user_id, value):
