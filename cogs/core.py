@@ -70,7 +70,7 @@ class Core:
         await ctx.channel.send(embed=embed)
 
     @commands.command()
-    # @commands.cooldown(1, 300, type=commands.BucketType.user)
+    @commands.cooldown(1, 300, type=commands.BucketType.user)
     async def twitter(self, ctx):
         """Follow the developer on Twitter to receive rewards!"""
 
@@ -79,9 +79,6 @@ class Core:
                 return ctx.author.id == m.author.id and 0<=int(m.content)
             except:
                 return False
-
-        # TODO: Check if user already claimed rewards.
-        # TODO: Make this a private message
 
         twt = TwitterHelper()
 
