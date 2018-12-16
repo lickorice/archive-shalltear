@@ -28,7 +28,8 @@ class Badge:
         self.is_equipped = is_equipped
         
         self.name = badge_json[item_id]["name"]
-        if badge_json[item_id]["for_sale"]:
+        self.is_for_sale = badge_json[item_id]["for_sale"]
+        if self.is_for_sale:
             self.is_exclusive = badge_shop[item_id]["is_exclusive"]
             self.price = badge_shop[item_id]["price"]
             self.price_tag = badge_shop[item_id]["price_tag"]

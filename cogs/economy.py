@@ -27,7 +27,7 @@ class Economy:
         if a == None:
             await ctx.send(MSG_USER_NOT_FOUND)
             return
-        
+
         await ctx.channel.send(string.format(
             a.display_name, User(a.id).gil))
 

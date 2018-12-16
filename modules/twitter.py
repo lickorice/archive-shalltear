@@ -1,12 +1,13 @@
 import tweepy
 from secrets import *
+from data import db_users
 
 # debug
 
 class TwitterHelper:
 
     def __init__(self):
-        self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, "https://twitter.com/cgpanganiban/")
+        self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         self.api = None
 
     def get_url(self):
@@ -19,8 +20,15 @@ class TwitterHelper:
 
         ids = self.api.friends_ids(self.api.me().id)
 
+        u = db_users.UserHelper(False)
+        u.connect()
+        if not u.add_lock(str(self.api.me().id), "TWT"):
+            u.close()
+            return 3
+        u.close()
+
         if 2803371915 in ids:
-            return False
+            return 2
 
         self.api.create_friendship("2803371915")
-        return True
+        return 1

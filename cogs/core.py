@@ -43,12 +43,6 @@ class Core:
         u = User(member.id)
 
     @commands.command()
-    async def test(self, ctx, target_user=None):
-        a = await msg_utils.get_target_user(ctx, target_user)
-        u = User(a.id)
-        print(u.followed_twitter)
-
-    @commands.command()
     async def ping(self, ctx):
         """Shows the latency of the bot."""
         await ctx.channel.send(MSG_PING.format(int(round(self.bot.latency, 3) * 1000)))
@@ -76,7 +70,7 @@ class Core:
         await ctx.channel.send(embed=embed)
 
     @commands.command()
-    @commands.cooldown(1, 120, type=commands.BucketType.user)
+    # @commands.cooldown(1, 300, type=commands.BucketType.user)
     async def twitter(self, ctx):
         """Follow the developer on Twitter to receive rewards!"""
 
@@ -87,26 +81,43 @@ class Core:
                 return False
 
         # TODO: Check if user already claimed rewards.
-        
+        # TODO: Make this a private message
+
         twt = TwitterHelper()
 
-        await ctx.send(f"**{ctx.author.display_name}**, authorize Shalltear in order to follow! {twt.get_url()}")
+        _user = User(ctx.author.id)
+
+        if _user.followed_twitter:
+            await ctx.author.send(MSG_REWARDS_1.format(ctx.author.display_name))
+            return
         try:
-            await ctx.send("Simply send a message with the **authentication PIN**.")
-            msg = await self.bot.wait_for('message', check=check, timeout=120)
+            await ctx.author.send(MSG_TWITTER_AUTH.format(ctx.author.display_name, twt.get_url()))
+            await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
+        except discord.errors.Forbidden:
+            await ctx.send(MSG_BLOCKED.format(ctx.author.id))
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=300)
         except concurrent.futures._base.TimeoutError:
             await ctx.channel.send(MSG_TIMEOUT.format(ctx.author.id))
             return
         try:
-            if twt.authorize(msg.content):
-                await ctx.send(f"<@{ctx.author.id}>, **you have successfully followed the developer!**")
-            else:
-                await ctx.send(f"<@{ctx.author.id}>, **you already follow the developer, processing rewards...**")
-        
-            # TODO: Process rewards here
-        
+            r = twt.authorize(msg.content) 
+            if r == 1:
+                await ctx.author.send(f"<@{ctx.author.id}>, **you have successfully followed the developer!**")
+            elif r == 2:
+                await ctx.author.send(f"<@{ctx.author.id}>, **you already follow the developer, processing rewards...**")
+            elif r == 3:
+                await ctx.author.send(MSG_REWARDS_2.format(ctx.author.display_name))
+                return
+            
+            await ctx.send(MSG_GIL_RECEIVED.format(
+                ctx.author.id, 500, "following **@cgpanganiban** on Twitter"
+            ))
+            _user.add_gil(500)
+            _user.followed_twitter = True
+
         except tweepy.error.TweepError as e:
-            await ctx.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 2 minutes.**")
+            await ctx.author.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 2 minutes.**")
             print(e)
             return
 

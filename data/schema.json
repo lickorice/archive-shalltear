@@ -34,6 +34,12 @@
             "is_patron": "BOOLEAN"
         },
         {
+            "TABLE_NAME": "social_lock",
+
+            "user_type": "STRING",
+            "user_id": "STRING UNIQUE"
+        },
+        {
             "TABLE_NAME": "activities",
 
             "user_id": "INTEGER UNIQUE",

@@ -16,12 +16,14 @@ class Background: # TODO: Can we generalize this? So it can be used throughout t
         img_url (str): The filename of the background image.
         is_exclusive (bool): If the background is exclusive to IPM.
     """
+    # TODO: Update documentation for both bg and badges
     def __init__(self, bg_id):
         with open('assets/obj_bgs.json') as f:
             bg_shop = json.load(f)
         self.id = int(bg_id)
         bg_id = str(bg_id)
         self.img_url = bg_shop[bg_id]["img_url"]
+        self.is_for_sale = True
         self.is_exclusive = bg_shop[bg_id]["is_exclusive"]
         self.price = bg_shop[bg_id]["price"]
         self.price_tag = bg_shop[bg_id]["price_tag"]

@@ -3,7 +3,7 @@ from conf import *
 
 class PaginatedEmbed:
     def __init__(self, owned_list, content_list, page_number, embed_type, max_pages):
-        self.owned_list = owned_list
+        self.owned_list = [a.id for a in owned_list]
         self.content_list = content_list
         self.page_number = page_number
         self.embed_type = embed_type

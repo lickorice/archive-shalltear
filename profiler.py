@@ -87,7 +87,7 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
 
     _x, _y = 30, 145
     for badge in badges:
-        badge_img = Image.open(obj_badges[badge]["img-url"])
+        badge_img = Image.open(badge.icon_url)
         template.paste(badge_img, (_x, _y), mask=badge_img)
         _x += 40
     

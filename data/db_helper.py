@@ -66,7 +66,7 @@ class DBHelper():
             return
         except sqlite3.IntegrityError as e:
             log('[-ERR-] ' + str(e).capitalize())
-            return
+            raise e
 
         log("[-DB--] Successfully inserted new row to table '{}'.".format(table_name), self.is_logged)
 

@@ -18,38 +18,67 @@ class User:
     def __init__(self, user_id):
         self.id = user_id
         self.db = db_users.UserHelper(is_logged=False)
-        if self.is_registered():
-            self.set_attr()
+        self.is_registered()
 
     @property
     def bg_id(self):
-        return self.fetch("users", "bg_id")
+        return self.fetch("users", "user_bg_id")
 
     @bg_id.setter
     def bg_id(self, value):
         self.db.connect()
         self.db.change_bg(self.id, value)
         self.db.close()
-    
+
     @property
     def gil(self):
         return self.fetch("users", "user_gil")
-
+    
+    @property
+    def level(self):
+        return self.fetch("users", "user_level")
+    
+    @property
+    def xp(self):
+        return self.fetch("users", "user_xp")
+    
+    @property
+    def xp_to_next(self):
+        return self.fetch("users", "user_xp_to_next")
+    
+    @property
+    def materia(self):
+        return self.fetch("users", "user_materia")
+    
     @property
     def followed_twitter(self):
         return self.fetch("social", "followed_twitter")
 
+    @followed_twitter.setter
+    def followed_twitter(self, value):
+        self.db.connect()
+        self.db.update_column("social", "followed_twitter", True, user_id=self.id)
+        self.db.close()
+
+    @property
+    def followed_facebook(self):
+        return self.fetch("social", "followed_facebook")
+
+    @property
+    def is_patron(self):
+        return self.fetch("social", "is_patron")
+    
     @property
     def badges(self):
         self.db.connect()
-        result = Badge(item["item_id"], item["is_equipped"]) for item in self.db.get_items(self.id)]
+        result = sorted([Badge(item["item_id"], item["item_equipped"]) for item in self.db.get_items(self.id)], key=lambda x: x.id)
         self.db.close()
         return result
-
+    
     @property
     def backgrounds(self):
         self.db.connect()
-        result = Background(bg["bg_id"]) for bg in self.db.get_backgrounds(self.id)]
+        result = [Background(bg["bg_id"]) for bg in self.db.get_backgrounds(self.id)]
         self.db.close()
         return result
 
@@ -58,9 +87,34 @@ class User:
         self.db.add_gil(self.id, value)
         self.db.close()
 
+    def add_xp(self, value):
+        self.db.connect()
+        if self.db.add_xp(self.id, value):
+            self.db.next_level(self.id)
+            self.db.close()
+            return True
+        self.db.close()
+        return False
+
     def add_badge(self, badge_id):
         self.db.connect()
         self.db.add_item(self.id, badge_id, item_equipped=False)
+        self.db.close()
+
+    def add_bg(self, bg_id):
+        self.db.connect()
+        self.db.add_bg(self.id, bg_id)
+        self.db.close()
+
+    def equip_badge(self, badge_id):
+        self.db.connect()
+        result = self.db.toggle_item(self.id, badge_id)
+        self.db.close()
+        return result
+
+    def remove_badge(self, badge_id):
+        self.db.connect()
+        self.db.remove_item(self.id, badge_id)
         self.db.close()
 
     def fetch(self, table_name, column_name):
@@ -84,17 +138,3 @@ class User:
         else:
             return True
         self.db.close()
-
-    def set_attr(self):
-        x = self.db.get_user(self.id)
-        profile, activities, social = x["users"], x["activities"], x["social"]
-
-        self.level = profile["user_level"]
-        self.xp = profile["user_xp"]
-        self.xp_to_next = profile["user_xp_to_next"]
-        self.materia = profile["user_materia"]
-        
-        self.followed_facebook = social["followed_facebook"]
-        self.is_patron = social["is_patron"]
-
-        # TODO: Add gacha

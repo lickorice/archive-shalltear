@@ -76,7 +76,6 @@ class Gambling:
             tickets = int(tickets)
         except ValueError:
             await ctx.send(MSG_INVALID_CMD)
-            user_db.close()
             return
 
         if _a.gil < (tickets*2):
@@ -92,7 +91,7 @@ class Gambling:
         p = '' if tickets == 1 else 's'
         await ctx.send("**{}**, you successfully bought **{} ticket{}** for **{} 💰 gil**.".format(ctx.author.display_name, tickets, p, tickets*2))
         try:
-            test = current_tickets[ctx.guild.id]
+            _trash = current_tickets[ctx.guild.id]
         except KeyError:
             current_tickets[ctx.guild.id] = {}
         if len(current_tickets[ctx.guild.id]) == 0:

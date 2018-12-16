@@ -180,13 +180,32 @@ class UserHelper(db_helper.DBHelper):
 
         Args:
             user_id (int): The user ID of a discord User.
-            table_name (string): The name of the table the column belongs to.
-            column (string): The name of the column to be incremented.
+            table_name (str): The name of the table the column belongs to.
+            column (str): The name of the column to be incremented.
             value (int): The value to be added (if positive) or subtracted (if otherwise).
         """
         # Utility function. Don't call directly.
         first_value = self.get_user(user_id)[table_name][column]
         self.update_column(table_name, column, (first_value+value), user_id=user_id)
+
+    def add_lock(self, social_id, social_type):
+        """
+        Adds a lock to a certain user to prevent multiple Discord accounts
+        from using a single social media account to accumulate rewards.
+
+        Args:
+            social_id (str): The ID of the user for the corresponding network
+            social_type (str): The network of the user. ("TWT"/"FB")
+        """
+        try:
+            self.insert_row(
+                "social_lock",
+                user_type = social_type,
+                user_id = social_id+social_type
+                )
+            return True
+        except sqlite3.IntegrityError:
+            return False
 
 
 def main():

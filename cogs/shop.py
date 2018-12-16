@@ -3,6 +3,7 @@ from conf import *
 from discord.ext import commands
 from data import db_users
 from utils import msg_utils
+from objects.user import User
 from objects.badge import Badge
 from objects.background import Background
 
@@ -79,26 +80,27 @@ class Shop:
         if item == None:
             await ctx.send(MSG_BADGE_NOT_FOUND)
             return
-        user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
-        user_info = user_db.get_user(ctx.author.id)["users"]
-        current_gil, current_level = user_info["user_gil"], user_info["user_level"]
-        current_items = [item["item_id"] for item in user_db.get_items(ctx.author.id)]
-        if item.id in current_items:
+
+        _user = User(ctx.author.id)
+
+        if item.id in [item.id for item in _user.badges]:
             await ctx.send(MSG_BADGE_ALREADY_YOURS.format(ctx.author.id))
-            user_db.close()
             return
-        if current_gil < item.price:
+        if _user.gil < item.price:
             await ctx.send(MSG_INSUF_GIL)
-            user_db.close()
             return
-        if current_level < item.level_needed:
+        if _user.level < item.level_needed:
             await ctx.send(MSG_INSUF_LVL)
-            user_db.close()
+            return
+        if not item.is_for_sale:
+            await ctx.send(MSG_ITEM_NOT_FOR_SALE)
+            return
+        if item.is_exclusive and (ctx.server != OWNER_GUILD_ID):
+            await ctx.send(MSG_ITEM_IS_EXCLUSIVE)
             return
         
-        user_db.add_gil(ctx.author.id, -item.price)
-        user_db.add_item(ctx.author.id, item.id)
+        _user.add_gil(-item.price)
+        _user.add_badge(item.id)
 
         await ctx.send(MSG_BADGE_BOUGHT.format(ctx.author.id, item.name))
 
@@ -118,28 +120,25 @@ class Shop:
             await ctx.send(MSG_BG_NOT_FOUND)
             return
         
-        user_db = db_users.UserHelper(is_logged=False)
-        user_db.connect()
-        user_info = user_db.get_user(ctx.author.id)["users"]
-        
-        current_gil, current_level = user_info["user_gil"], user_info["user_level"]
-        current_items = [item["bg_id"] for item in user_db.get_backgrounds(ctx.author.id)]
-        
-        if item.id in current_items:
+        _user = User(ctx.author.id)
+
+        if item.id in [bg.id for bg in _user.backgrounds]:
             await ctx.send(MSG_BG_ALREADY_YOURS.format(ctx.author.id))
-            user_db.close()
             return
         if current_gil < item.price:
             await ctx.send(MSG_INSUF_GIL)
-            user_db.close()
+            return
+        if not item.is_for_sale:
+            await ctx.send(MSG_ITEM_NOT_FOR_SALE)
+            return
+        if item.is_exclusive and (ctx.server != OWNER_GUILD_ID):
+            await ctx.send(MSG_ITEM_IS_EXCLUSIVE)
             return
         
-        user_db.add_gil(ctx.author.id, -item.price)
-        user_db.add_bg(ctx.author.id, item.id)
+        _user.add_gil(-item.price)
+        _user.add_bg(item.id)
 
         await ctx.send(MSG_BG_BOUGHT.format(ctx.author.id, item.name, item.price))
-
-        user_db.close()
 
     @commands.command()
     async def badgeshop(self, ctx):
@@ -149,20 +148,13 @@ class Shop:
             badge_shop = json.load(f)
         item_list = []
         for item_id in badge_shop:
-            item = Badge(item_id)
-            print(item.price_tag)
-            # filters out the exclusive IPM-only stuff
-            if (item.is_exclusive and ctx.guild.id == OWNER_GUILD_ID) or not item.is_exclusive:
-                item_list.append(item)
+            item_list.append(Badge(item_id))
 
-        user_db = db_users.UserHelper()
-        user_db.connect()
-        owned_list = [item["item_id"] for item in user_db.get_items(ctx.author.id)]
-        user_db.close()
+        _user = User(ctx.author.id)
 
         # generate the embed
         max_pages = math.ceil(len(item_list) / 5)
-        p = msg_utils.PaginatedEmbed(owned_list, item_list, 0, "badgeshop", max_pages)
+        p = msg_utils.PaginatedEmbed(_user.badges, item_list, 0, "badgeshop", max_pages)
         embed = p.get_embed()
 
         msg = await ctx.send(embed=embed)
@@ -181,20 +173,14 @@ class Shop:
             bg_shop = json.load(f)
         item_list = []
         for item_id in bg_shop:
-            item = Background(item_id)
-            # filters out the exclusive IPM-only stuff
-            if (item.is_exclusive and ctx.guild.id == OWNER_GUILD_ID) or not item.is_exclusive:
-                item_list.append(item)
+            item_list.append(Background(item_id))
                 
-        user_db = db_users.UserHelper()
-        user_db.connect()
-        owned_list = [item["bg_id"] for item in user_db.get_backgrounds(ctx.author.id)]
-        user_db.close()
+        _user = User(ctx.author.id)
 
         # generate the embed
         item_list = sorted(item_list, key=lambda x: x.name)
         max_pages = math.ceil(len(item_list) / 5)
-        p = msg_utils.PaginatedEmbed(owned_list, item_list, 0, "bgshop", max_pages)
+        p = msg_utils.PaginatedEmbed(_user.backgrounds, item_list, 0, "bgshop", max_pages)
         embed = p.get_embed()
 
         msg = await ctx.send(embed=embed)
@@ -205,6 +191,5 @@ class Shop:
             await msg.add_reaction(EMJ_LEFT_PAGE)
             await msg.add_reaction(EMJ_RIGHT_PAGE)
 
-        
 def setup(bot):
     bot.add_cog(Shop(bot))
