@@ -12,9 +12,41 @@ from utils import msg_utils
 with open("assets/obj_badges.json") as f:
     obj_badges = json.load(f)
 
+stored_messages = {}
+
 class Profiles:
     def __init__(self, bot):
         self.bot = bot
+
+    async def on_reaction_add(self, reaction, user):
+        target_id = reaction.message.id
+        if user.id not in stored_messages:
+            return
+        if target_id == stored_messages[user.id][0]:
+            p = stored_messages[user.id][1]
+            if reaction.emoji == EMJ_LEFT_PAGE:
+                p.previous_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
+            elif reaction.emoji == EMJ_RIGHT_PAGE:
+                p.next_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
+
+    async def on_reaction_remove(self, reaction, user):
+        target_id = reaction.message.id
+        if user.id not in stored_messages:
+            return
+        if target_id == stored_messages[user.id][0]:
+            p = stored_messages[user.id][1]
+            if reaction.emoji == EMJ_LEFT_PAGE:
+                p.previous_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
+            elif reaction.emoji == EMJ_RIGHT_PAGE:
+                p.next_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
 
     async def on_message(self, message):
         """Main on_message method on collecting message data."""
@@ -87,31 +119,24 @@ class Profiles:
         _user = User(ctx.author.id)
         
         if len(_user.badges) == 0:
-            badge_str = MSG_BADGE_NONE
-        else:
-            badge_str = ''
-            for badge in _user.badges:
-                try:
-                    if badge.is_equipped:
-                        badge_str += '`ID: {}` **{}**\n'.format(
-                            badge.id, badge.name)
-                    else:
-                        badge_str += '`ID: {}` {}\n'.format(
-                            badge.id, badge.name)
-                except KeyError:
-                    _user.remove_badge()
-
-        badge_str = badge_str.rstrip()
-
-        embed = discord.Embed(
-            title=ctx.author.display_name,
-            color=CLR_MAIN_COLOR
+            await ctx.send(MSG_BADGE_NONE.format(ctx.author.display_name))
+            return
+            
+        # generate the embed
+        max_pages = math.ceil(len(_user.badges) / 10)
+        p = msg_utils.PaginatedEmbed(
+            [], _user.badges, 0, "badges",
+            max_pages, name=ctx.author.display_name
         )
+        embed = p.get_embed()
 
-        # TODO: Paginate
+        msg = await ctx.send(embed=embed)
+        
+        stored_messages[ctx.author.id] = (msg.id, p)
 
-        embed.add_field(name="Your Badges", value=badge_str)
-        await ctx.channel.send(embed=embed)
+        if max_pages > 1:
+            await msg.add_reaction(EMJ_LEFT_PAGE)
+            await msg.add_reaction(EMJ_RIGHT_PAGE)
         
     @commands.command()
     async def changebg(self, ctx, bg_id):

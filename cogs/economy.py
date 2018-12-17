@@ -5,8 +5,6 @@ from data import db_users, db_helper
 from utils import msg_utils
 from objects.user import User
 
-# TODO: Test all commands to check if config migration is a success.
-
 # Logging functions here:
 
 def log(string):
@@ -35,7 +33,7 @@ class Economy:
     async def give(self, ctx, target_user, gil):
         """Transfer your gil to another user."""
         a = ctx.message.author
-        try: # TODO: Implement integrity check here:
+        try:
             gil = int(gil)
         except ValueError:
             await ctx.channel.send(MSG_INVALID_CMD)

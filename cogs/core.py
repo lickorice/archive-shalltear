@@ -134,7 +134,7 @@ class Core:
             _user.add_badge(8)
 
         except tweepy.error.TweepError as e:
-            await ctx.author.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 2 minutes.**")
+            await ctx.author.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 5 minutes.**")
             print(e)
             return
 

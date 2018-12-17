@@ -2,12 +2,13 @@ import discord, math
 from conf import *
 
 class PaginatedEmbed:
-    def __init__(self, owned_list, content_list, page_number, embed_type, max_pages):
+    def __init__(self, owned_list, content_list, page_number, embed_type, max_pages, **kwargs):
         self.owned_list = [a.id for a in owned_list]
         self.content_list = content_list
         self.page_number = page_number
         self.embed_type = embed_type
         self.max_pages = max_pages
+        self.kwargs = kwargs
 
     def next_page(self):
         self.page_number = (self.page_number + 1) % self.max_pages
@@ -62,6 +63,39 @@ class PaginatedEmbed:
             for item in self.content_list[lower_bound:lower_bound+10]:
                 embed_str += f"`{item.name}`\n"
             embed.add_field(name="Number of SA roles: {}".format(len(self.content_list)), value=embed_str)
+            if self.max_pages > 1:
+                embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
+            return embed
+        elif self.embed_type == "tix":
+            embed = discord.Embed(title="Tickets for {}".format(self.kwargs["guild"]), color=CLR_MAIN_COLOR)
+            lower_bound = [i for i in range(0, len(self.content_list), 10)][self.page_number]
+            embed_str = '\n'.join(self.content_list[lower_bound:lower_bound+10])
+            embed.add_field(name="Jackpot", value=self.kwargs["jackpot"])
+            embed.add_field(name="Entries", value=embed_str)
+            if self.max_pages > 1:
+                embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
+            return embed
+        elif self.embed_type == "badges":
+            lower_bound = [i for i in range(0, len(self.content_list), 10)][self.page_number]
+            
+            embed_str = ''
+            for badge in self.content_list:
+                try:
+                    if badge.is_equipped:
+                        embed_str += '`ID: {}` **{}**\n'.format(
+                            badge.id, badge.name)
+                    else:
+                        embed_str += '`ID: {}` {}\n'.format(
+                            badge.id, badge.name)
+                except KeyError:
+                    _user.remove_badge()
+            embed_str = embed_str.rstrip()
+            
+            embed = discord.Embed(
+                title=self.kwargs["name"],
+                color=CLR_MAIN_COLOR
+            )
+            embed.add_field(name="Your Badges", value=embed_str)
             if self.max_pages > 1:
                 embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
             return embed

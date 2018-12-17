@@ -36,8 +36,6 @@ def get_target_item(target_item, json_name):
         elif json_name == "bgs":
             return Background(target_id)
 
-# TODO: Show exclusive items in shop, but do not allow purchase outside of home server.
-
 class Shop:
     def __init__(self, bot):
         self.bot = bot

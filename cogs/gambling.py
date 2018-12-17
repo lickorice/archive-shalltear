@@ -1,4 +1,4 @@
-import discord, json, datetime, concurrent, random, asyncio
+import discord, json, datetime, concurrent, random, asyncio, math
 from conf import *
 from discord.ext import commands
 from data import db_users, db_helper
@@ -6,6 +6,7 @@ from utils import msg_utils
 from objects.user import User
 
 current_tickets = {}
+stored_messages = {}
 
 # Logging functions here:
 
@@ -17,6 +18,36 @@ def log(string):
 class Gambling:
     def __init__(self, bot):
         self.bot = bot
+
+    async def on_reaction_add(self, reaction, user):
+        target_id = reaction.message.id
+        if user.id not in stored_messages:
+            return
+        if target_id == stored_messages[user.id][0]:
+            p = stored_messages[user.id][1]
+            if reaction.emoji == EMJ_LEFT_PAGE:
+                p.previous_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
+            elif reaction.emoji == EMJ_RIGHT_PAGE:
+                p.next_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
+
+    async def on_reaction_remove(self, reaction, user):
+        target_id = reaction.message.id
+        if user.id not in stored_messages:
+            return
+        if target_id == stored_messages[user.id][0]:
+            p = stored_messages[user.id][1]
+            if reaction.emoji == EMJ_LEFT_PAGE:
+                p.previous_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
+            elif reaction.emoji == EMJ_RIGHT_PAGE:
+                p.next_page()
+                e = p.get_embed()
+                await reaction.message.edit(embed=e)
 
     async def drawtimer(self, ctx):
         await asyncio.sleep(60*5)
@@ -42,7 +73,7 @@ class Gambling:
 
         current_tickets[ctx.guild.id] = {}
 
-    @commands.command()
+    @commands.command(aliases=['tix'])
     async def tickets(self, ctx):
         """Views the current tickets in the server's lottery."""
         try:
@@ -54,15 +85,26 @@ class Gambling:
             return
         ticket_tuples = [(user_id, ticket_dict[user_id]) for user_id in ticket_dict]
         ticket_tuples = sorted(ticket_tuples, key=lambda x: x[1])[::-1]
-        ticket_list = ['{}\t**{}**'.format(self.bot.get_user(x[0]), x[1]) for x in ticket_tuples]
+        ticket_list = ['{} **{}** tix'.format(self.bot.get_user(x[0]), x[1]) for x in ticket_tuples]
         jackpot = 10
         for i in ticket_dict:
             jackpot += 2*ticket_dict[i]
-        # TODO: pagify this
-        embed = discord.Embed(title="Tickets for {}".format(ctx.guild.name), color=CLR_MAIN_COLOR)
-        embed.add_field(name="Jackpot", value='{} 💰 gil'.format(jackpot), inline=False)
-        embed.add_field(name="Entries", value='\n'.join(ticket_list))
-        await ctx.send(embed=embed)
+
+        # generate the embed
+        max_pages = math.ceil(len(ticket_list) / 10)
+        p = msg_utils.PaginatedEmbed(
+            [], ticket_list, 0, "tix", max_pages,
+            guild=ctx.guild.name, jackpot='{} 💰 gil'.format(jackpot)
+        )
+        embed = p.get_embed()
+
+        msg = await ctx.send(embed=embed)
+        
+        stored_messages[ctx.author.id] = (msg.id, p)
+
+        if max_pages > 1:
+            await msg.add_reaction(EMJ_LEFT_PAGE)
+            await msg.add_reaction(EMJ_RIGHT_PAGE)
 
     @commands.command(aliases=["lt"])
     async def lottery(self, ctx, tickets='1'):
@@ -152,7 +194,6 @@ class Gambling:
                 await ctx.channel.send(MSG_INVALID_CMD)
 
         # generate lottery:
-        # TODO: Assign to JSON/py file, avoid hardcoding.
         numdict = {1:"one", 2:"two", 3: "three", 4:"four",
         5:"five", 6:"six", 7:"seven", 8:"eight", 9:"nine", 0:"zero"}
         string = [i for i in "❓❓❓"]
