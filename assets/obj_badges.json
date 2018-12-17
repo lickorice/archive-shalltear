@@ -46,5 +46,11 @@
         "img-url": "assets/badges/00007.png",
         "description": "You don't even care anymore. Gives you a chance to add your own background (non-nsfw).",
         "for_sale": true
+    },
+    "8":    {
+        "name": "Twitter",
+        "img-url": "assets/badges/00008.png",
+        "description": "You follow Lickorice on Twitter! (@cgpanganiban)",
+        "for_sale": false
     } 
 }

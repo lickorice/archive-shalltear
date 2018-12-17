@@ -55,6 +55,16 @@ class PaginatedEmbed:
             if self.max_pages > 1:
                 embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
             return embed
+        elif self.embed_type == "lsa":
+            embed = discord.Embed(title="Self-assignable roles for this server:", color=CLR_MAIN_COLOR)
+            lower_bound = [i for i in range(0, len(self.content_list), 10)][self.page_number]
+            embed_str = ''
+            for item in self.content_list[lower_bound:lower_bound+10]:
+                embed_str += f"`{item.name}`\n"
+            embed.add_field(name="Number of SA roles: {}".format(len(self.content_list)), value=embed_str)
+            if self.max_pages > 1:
+                embed.set_footer(text="Page {}/{}".format(self.page_number+1, self.max_pages))
+            return embed
 
 async def get_target_user(ctx, target_user):
     """Returns a User object on message mention, returns None if invalid."""

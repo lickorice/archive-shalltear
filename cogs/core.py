@@ -70,6 +70,21 @@ class Core:
         await ctx.channel.send(embed=embed)
 
     @commands.command()
+    async def invite(self, ctx):
+        """Invite Shalltear to your server!"""
+        pass
+
+    @commands.command()
+    async def exclusive(self, ctx):
+        """Get an invite to the exclusive server for Shalltear!"""
+        try:
+            await ctx.author.send(MSG_EXCLUSIVE_SERVER.format(OWNER_GUILD_INVITE))
+            await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
+        except discord.errors.Forbidden:
+            await ctx.send(MSG_BLOCKED.format(ctx.author.id))
+            return
+
+    @commands.command()
     @commands.cooldown(1, 300, type=commands.BucketType.user)
     async def twitter(self, ctx):
         """Follow the developer on Twitter to receive rewards!"""
@@ -92,6 +107,7 @@ class Core:
             await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
         except discord.errors.Forbidden:
             await ctx.send(MSG_BLOCKED.format(ctx.author.id))
+            return
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=300)
         except concurrent.futures._base.TimeoutError:
@@ -110,8 +126,12 @@ class Core:
             await ctx.send(MSG_GIL_RECEIVED.format(
                 ctx.author.id, 500, "following **@cgpanganiban** on Twitter"
             ))
+            await ctx.send(MSG_BADGE_RECEIVED.format(
+                ctx.author.id, "Twitter"
+            ))
             _user.add_gil(500)
             _user.followed_twitter = True
+            _user.add_badge(8)
 
         except tweepy.error.TweepError as e:
             await ctx.author.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 2 minutes.**")

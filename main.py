@@ -9,7 +9,8 @@ initial_extensions = [
     'cogs.economy',
     'cogs.gambling',
     'cogs.shop',
-    'cogs.profile'
+    'cogs.profile',
+    'cogs.roles'
     ]
 
 bot = commands.Bot(command_prefix='s!')

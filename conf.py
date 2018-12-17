@@ -2,6 +2,8 @@
 # Set for Lickorice, (Carlos Panganiban) and for IPM Collective server.
 OWNER_ID = 319285994253975553
 OWNER_GUILD_ID = 378540712653750274
+OWNER_GUILD_INVITE = "https://discord.gg/XmC7fht" # #rules-info
+BOT_INVITE_LINK = "https://discordapp.com/oauth2/authorize?client_id=490453816978702336&scope=bot&permissions=1580592192"
 # OWNER_GUILD_ID = 442676019774750731 # uncomment for development
 
 # Some important constants:
@@ -36,6 +38,7 @@ MSG_BADGE_GRANT_SUCCESS = "**Badge successfully granted.**"
 MSG_BADGE_NONE = "You have no badges yet."
 MSG_BADGE_NOT_FOUND = "**That badge doesn't exist.**"
 MSG_BADGE_NOT_YOURS = "<@{}>, you don't have that badge."
+MSG_BADGE_RECEIVED = "<@{}>, you have received the **{}** badge!"
 MSG_BADGE_UNEQUIPPED = "**{}** successfully unequipped."
 MSG_BALANCE = "<@{}>, you currently have **{} 💰** Gil."
 MSG_BG_ALREADY_YOURS = "<@{}>, you already have that background. Change into it with `s!changebg`."
@@ -48,6 +51,7 @@ MSG_BG_RESET = "**All user backgrounds successfully reset to default.**"
 MSG_BLOCKED = "<@{}>, it seems that you may have **blocked** me! Kindly unblock me so I could send you *secret messages!* :wink:"
 MSG_CMD_ERROR = "**<@{}>, try again.** *({})*"
 MSG_DM_SENT = "**{}, DM sent!**"
+MSG_EXCLUSIVE_SERVER = "**Join my exclusive server at IPM Collective!** Get access to countless backgrounds, gacha items, badges, and more at {} !"
 MSG_GACHA_CARD_DNE = "**{}**, that card does not exist."
 MSG_GACHA_FUNDS_DEDUCT = "**{}**, **{}** gil have been deducted from your account."
 MSG_GACHA_INSUF_FUNDS = "**{}**, you do not have enough Gil to afford a booster pack. A pack costs **{}** Gil."
@@ -90,6 +94,14 @@ MSG_REGISTER_2 = "**Attempting to register users...\n({}/{})**"
 MSG_REGISTER_3 = "**{0}** of **{1}** users successfully registered.\nOut of all **{1}** users, **{2}** are bots."
 MSG_REWARDS_1 = "**{}**, you can only receive these rewards only once per lifetime!"
 MSG_REWARDS_2 = "**{}**, that account is already used to redeem rewards!"
+MSG_ROLE_ASSIGNED = "**{}**, you have successfully assigned yourself **{}**."
+MSG_ROLE_DNE = "**That role does not exist.** Make sure you spelled the role name correctly."
+MSG_ROLE_NONE = "**There are no self-assignable roles for this server.**"
+MSG_ROLE_NOT_ASSIGNABLE = "<@{}>, that role is **not self-assignable**. Contact your server moderator/administrator if you wish for this role to be self-assignable."
+MSG_ROLE_TOGGLE_1 = "**{}** successfully set as self-assignable."
+MSG_ROLE_TOGGLE_2 = "**{}** successfully removed as self-assignable."
+MSG_ROLE_TOGGLE_3 = "**{}** is a higher role than my top role, please elevate my role before setting this as self-assignable."
+MSG_ROLE_UNASSIGNED = "**{}**, you have successfully removed **{}**."
 MSG_SRC_LINK = "http://bit.ly/shalltearBOT"
 MSG_TIMEOUT = "<@{}>, **you timed out.**"
 MSG_TWITTER_AUTH = "**{}**, authorize me in order to follow! {}\nSimply send a message with the **authentication PIN,** then, I will automatically follow https://twitter.com/cgpanganiban for you!\n(This will time out after five minutes)"

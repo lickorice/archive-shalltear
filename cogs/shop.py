@@ -111,6 +111,8 @@ class Shop:
             await vip_channel.send(MSG_VIP_WELCOME.format(ctx.author.id))
         user_db.close()
 
+        # TODO: Make NEET exclusive + add its function here
+
     @commands.command()
     async def bgbuy(self, ctx, *target_item):
         """This will buy a profile background given its ID or its name (exact)."""

@@ -114,6 +114,14 @@
 
             "guild_id": "INTEGER UNIQUE",
             "pot_amount": "INTEGER"
+        },
+        {
+            "TABLE_NAME": "assignables",
+
+            "guild_id": "INTEGER",
+            "role_id": "INTEGER",
+            "tag": "STRING",
+            "hash": "STRING UNIQUE"
         }
     ]
 }
