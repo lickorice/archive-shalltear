@@ -53,7 +53,7 @@
         "is_exclusive": false,
         "id": "00007",
         "price": 3000,
-        "price_tag": "3000 gil",
+        "price_tag": "[IPM-Exclusive], 2500 gil, Level 30",
         "level_needed": 30,
         "icon_url": "assets/badges/00007.png",
         "description": "Forget everything. Grants a special feature for its owner."

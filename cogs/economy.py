@@ -16,34 +16,23 @@ class Economy:
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['g', 'bal', 'money', '$'])
-    async def gil(self, ctx, target_user=None):
+    @commands.command(aliases=['g', 'bal', 'balance', 'money', '$'])
+    async def gil(self, ctx, target_user: discord.Member=None):
         """Check your own gil, or another user's gil."""
-        string = MSG_GIL_CHECK if target_user == None else MSG_GIL_CHECK2
-        a = await msg_utils.get_target_user(ctx, target_user)
-        
-        if a == None:
-            await ctx.send(MSG_USER_NOT_FOUND)
-            return
+        if target_user == None:
+            target_user = ctx.author
 
+        string = MSG_GIL_CHECK if target_user == None else MSG_GIL_CHECK2
         await ctx.channel.send(string.format(
-            a.display_name, User(a.id).gil))
+            target_user.display_name, User(target_user.id).gil))
 
     @commands.command()
-    async def give(self, ctx, target_user, gil):
+    async def give(self, ctx, target_user: discord.Member, gil: int):
         """Transfer your gil to another user."""
         a = ctx.message.author
-        try:
-            gil = int(gil)
-        except ValueError:
-            await ctx.channel.send(MSG_INVALID_CMD)
-            return
-        b = await msg_utils.get_target_user(ctx, target_user)
+        b = target_user
         if b.id == a.id or gil <= 0:
             await ctx.channel.send(MSG_AM_I_A_JOKE.format(a.id))
-            return
-        if b == None:
-            await ctx.channel.send(MSG_USER_NOT_FOUND)
             return
 
         _a = User(a.id)

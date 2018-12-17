@@ -10,11 +10,13 @@ start_time = time.time()
 
 allowed_errors = [
     discord.ext.commands.errors.CommandOnCooldown,
-    discord.ext.commands.errors.MissingRequiredArgument
+    discord.ext.commands.errors.MissingRequiredArgument,
+    discord.ext.commands.errors.BadArgument
 ]
 
 caught_errors = [
-    type(discord.ext.commands.errors.CommandNotFound())
+    discord.ext.commands.errors.CommandNotFound,
+    discord.ext.commands.errors.CheckFailure
 ]
 
 # Logging functions here:
@@ -30,7 +32,10 @@ class Core:
 
     async def on_command_error(self, ctx, error):
         if type(error) in allowed_errors:
-            await ctx.send(MSG_CMD_ERROR.format(ctx.author.id, error))
+            if type(error) == discord.ext.commands.errors.CommandOnCooldown:
+                await ctx.send(MSG_CMD_ERROR.format(ctx.author.id, error))
+            else:
+                await ctx.send(MSG_INVALID_CMD)
         elif type(error) in caught_errors:
             log(f"[-WRN-] {ctx.author.name} raised an error: {error}")
         else:
@@ -46,6 +51,34 @@ class Core:
     async def ping(self, ctx):
         """Shows the latency of the bot."""
         await ctx.channel.send(MSG_PING.format(int(round(self.bot.latency, 3) * 1000)))
+
+    @commands.command()
+    async def help(self, ctx, command=None):
+        """Shows all the features the bot is able to do."""
+        all_commands = [cmd for cmd in self.bot.commands]
+        if command == None:
+            embed = discord.Embed(title="Commands for Shalltear", color=0xff1155)
+            for cog in self.bot.cogs:
+                commands_for_cog = [f'`{c.name}`' for c in all_commands if not c.hidden and c.cog_name == cog]
+                s = ' '.join(commands_for_cog)
+                embed.add_field(name=cog, inline=False, value=s)
+            await ctx.send("Do `s!help <command>` for more information.")
+        else:
+            if command not in [c.name for c in all_commands]:
+                await ctx.send(MSG_CMD_NOT_FOUND.format(ctx.author.id))
+                return
+            cmd = [c for c in all_commands if c.name == command][0]
+            if cmd.aliases:
+                name = f'{cmd.name} [{"/".join(cmd.aliases)}]'
+            else:
+                name = cmd.name
+            if cmd.clean_params:
+                name += f' <{", ".join(cmd.clean_params)}>'
+            name = '`{}`'.format(name)
+            embed = discord.Embed(title=cmd.cog_name, color=0xff1155)
+            embed.add_field(name=name, value=cmd.help)
+        await ctx.send(embed=embed)
+            
 
     @commands.command(aliases=['info'])
     async def about(self, ctx):

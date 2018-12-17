@@ -74,6 +74,7 @@ class Gambling:
         current_tickets[ctx.guild.id] = {}
 
     @commands.command(aliases=['tix'])
+    @commands.cooldown(2, 10, type=commands.BucketType.user)
     async def tickets(self, ctx):
         """Views the current tickets in the server's lottery."""
         try:
@@ -107,18 +108,13 @@ class Gambling:
             await msg.add_reaction(EMJ_RIGHT_PAGE)
 
     @commands.command(aliases=["lt"])
-    async def lottery(self, ctx, tickets='1'):
+    @commands.cooldown(2, 10, type=commands.BucketType.user)
+    async def lottery(self, ctx, tickets: int=1):
         """
         Purchases a number (by default, one) tickets for the server-wide lottery.
         A winner is drawn every ten minutes.
         """
         _a = User(ctx.author.id)
-        
-        try:
-            tickets = int(tickets)
-        except ValueError:
-            await ctx.send(MSG_INVALID_CMD)
-            return
 
         if _a.gil < (tickets*2):
             await ctx.send(MSG_INSUF_GIL)
@@ -146,6 +142,7 @@ class Gambling:
                 current_tickets[ctx.guild.id][ctx.author.id] = tickets
 
     @commands.command(aliases=['sspot'])
+    @commands.cooldown(2, 10, type=commands.BucketType.user)
     async def stakespot(self, ctx):
         """Shows the current lottery jackpot."""
         helper_db = db_helper.DBHelper("data/db/misc.db", False)
@@ -162,7 +159,7 @@ class Gambling:
 
     @commands.command(aliases=['ss'])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
-    async def sweepstakes(self, ctx, number=None):
+    async def sweepstakes(self, ctx, number: int=None):
         """Take your chances with the sweepstakes!"""
         author = ctx.message.author
 
@@ -188,10 +185,7 @@ class Gambling:
                 return
             lottery_entry = int(msg.content)
         else:
-            try:
-                lottery_entry = int(number)
-            except ValueError:
-                await ctx.channel.send(MSG_INVALID_CMD)
+            lottery_entry = number
 
         # generate lottery:
         numdict = {1:"one", 2:"two", 3: "three", 4:"four",
