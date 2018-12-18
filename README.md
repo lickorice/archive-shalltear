@@ -1,4 +1,4 @@
-![Shalltear Logo](assets/header.png)
+<img align="center" src="assets/header.png" alt="Shalltear Logo">
 
 About
 =====
