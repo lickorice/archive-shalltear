@@ -1,3 +1,6 @@
+Scripts/
+Lib/
+__pycache__/
 secrets.py
 .vscode
 data/db/
