@@ -57,26 +57,31 @@
             "TABLE_NAME": "cards",
 
             "card_id": "INTEGER UNIQUE",
+            "card_name": "STRING",
             "card_type": "INTEGER",
             "card_rating": "INTEGER",
+            "card_points": "INTEGER",
             "card_cost": "INTEGER",
-            "card_salvage": "INTEGER",
-            "card_name": "STRING",
+            "card_disenchant": "INTEGER",
             "card_full_url": "STRING",
             "card_icon_url": "STRING",
             "card_series_id": "INTEGER",
             "card_is_flagship": "BOOLEAN",
             "card_acquired": "BOOLEAN",
-            "card_user_id": "INTEGER",
+            "card_user": "STRING",
+            "card_submitter": "STRING",
             "is_exclusive": "BOOLEAN"
         },
         {
             "TABLE_NAME": "inventory",
 
             "owner_id": "INTEGER",
-            "item_id": "INTEGER",
-            "item_equipped": "BOOLEAN",
-            "item_order": "INTEGER"
+            "card_id": "INTEGER",
+            "card_level": "INTEGER",
+            "card_materia_cost": "INTEGER",
+            "card_worth": "INTEGER",
+            "card_equipped": "BOOLEAN",
+            "card_order": "INTEGER"
         },
         {
             "TABLE_NAME": "set_cards",
@@ -85,20 +90,24 @@
             "target_id": "INTEGER"
         },
         {
-            "TABLE_NAME": "progress",
+            "TABLE_NAME": "series_cards",
 
-            "user_id": "INTEGER",
             "series_id": "INTEGER",
-            "is_complete": "BOOLEAN",
-            "current_cards": "INTEGER",
-            "target_cards": "INTEGER"
+            "card_id": "INTEGER"
+        },
+        {
+            "TABLE_NAME": "series",
+
+            "series_id": "INTEGER",
+            "series_name": "STRING",
+            "series_icon_url": "STRING"
         },
         {
             "TABLE_NAME": "rank",
 
             "user_id": "INTEGER UNIQUE",
-            "unique_cards": "INTEGER",
-            "equivalent_rank": "INTEGER"
+            "user_points": "INTEGER",
+            "unique_cards": "INTEGER"
         }
     ],
     "utils": [

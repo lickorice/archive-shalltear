@@ -4,16 +4,17 @@ from discord.ext import commands
 import sys, traceback
 
 initial_extensions = [
-    'cogs.admin',
-    'cogs.core',
-    'cogs.economy',
-    'cogs.gambling',
-    'cogs.shop',
-    'cogs.profile',
-    'cogs.roles'
+    "cogs.admin",
+    "cogs.core",
+    "cogs.economy",
+    "cogs.gacha",
+    "cogs.gambling",
+    "cogs.shop",
+    "cogs.profile",
+    "cogs.roles"
     ]
 
-bot = commands.Bot(command_prefix='s!')
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('s!'))
 
 
 def main():
@@ -22,16 +23,16 @@ def main():
         bot.load_extension(extension)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 
 @bot.event
 async def on_ready():
 
-    print(f'\n\nSuccessfully logged in as: {bot.user.name} [ {bot.user.id} ]\ndiscord.py version: {discord.__version__}\n')
+    print(f"\n\nSuccessfully logged in as: {bot.user.name} [ {bot.user.id} ]\ndiscord.py version: {discord.__version__}\n")
 
-    await bot.change_presence(activity=discord.Game(name='s!help'))
+    await bot.change_presence(activity=discord.Game(name="s!help"))
     
 
 @bot.event

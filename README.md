@@ -14,8 +14,7 @@ Installation
 
 License
 =======
-**Shalltear** is under a [CC-BY 4.0 License][3].
+**Shalltear** is under a **MIT License**.
 
 [1]: https://discord.gg/XmC7fht
 [2]: https://discordapp.com/oauth2/authorize?client_id=490453816978702336&scope=bot&permissions=1580592192
-[3]: https://creativecommons.org/licenses/by/4.0/

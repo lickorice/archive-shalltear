@@ -73,6 +73,13 @@ class DBHelper():
     def fetch_rows(self, table_name, strict=True, **kwargs):
         """This function returns all the matches of a certain row"""
 
+        if len(kwargs) == 0:
+            exec_str = f"SELECT * FROM {table_name}"
+            c = self.current_db.cursor()
+            c.execute(exec_str, ())
+            results = c.fetchall()
+            return results
+
         if strict:
             exec_str = "SELECT * FROM {} WHERE " + "{} = ? AND " * len(kwargs) + "<<"  # marker for removal
         else:
@@ -128,3 +135,11 @@ class DBHelper():
         c = self.current_db.cursor()
         c.execute(string, column_tuple)
         self.current_db.commit()
+
+    def delete_all_rows(self, table_name):
+        """
+        This function deletes all rows of a table.
+        """
+        exec_str = "DELETE FROM {}".format(table_name)
+        self.commit(exec_str, ())
+        log("[-DB--] Successfully removed all rows in table '{}'".format(table_name), self.is_logged)

@@ -1,7 +1,10 @@
 Scripts/
 Lib/
 __pycache__/
-secrets.py
 .vscode
+
 data/db/
 data/gacha
+
+secrets.py
+google_secret.json
