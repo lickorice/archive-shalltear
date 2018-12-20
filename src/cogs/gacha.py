@@ -88,6 +88,7 @@ class Gacha:
             return
         e = card.make_embed()
         await ctx.send(embed=e)
+        # TODO: Pagify, add enchant/craft info on other page
         
     @commands.command(aliases=['vs'])
     async def viewseries(self, ctx, *series):
@@ -104,6 +105,30 @@ class Gacha:
             await msg.add_reaction(EMJ_RIGHT_PAGE)
             stored_messages[ctx.author.id] = (msg.id, 0, msg, series)
 
+    @commands.command(aliases=['fc'])
+    async def freecards(self, ctx):
+        """Claim free cards every 1 hour, takes note of streaks!"""
+        pass
+
+    @commands.command(aliases=['sc'])
+    async def summoncards(self):
+        """Use up materia to summon cards."""
+        pass
+
+    @commands.command()
+    async def craftcard(self, ctx, *card):
+        """Craft a card using its corresponding ingredients."""
+        pass
+
+    @commands.command()
+    async def banishcard(self, ctx, *card):
+        """Banish a card and gain materia."""
+        pass
+
+    @commands.command(aliases=['ec'])
+    async def enchant(self, ctx, *card)
+        """Enchant a card using materia and duplicates."""
+        pass
     
 def setup(bot):
     bot.add_cog(Gacha(bot))

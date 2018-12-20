@@ -4,9 +4,9 @@ from objects.series import Series
 import discord
 
 types = {
-    1: "Obtainable",
-    2: "Merge-Only",
-    3: "Series-Completion"
+    1: "Summoned",
+    2: "Crafted",
+    3: "Limited"
 }
 
 class Card:
@@ -42,10 +42,13 @@ class Card:
 
         # v = f"From **{self.series.name}**\n" # TODO: Make series objects
         v = f"From **placeholder series**\n"
-        v += f"`ID: {self.id}`\n"
+        
+        if self.is_exclusive:
+            v += "**[IPM-Exclusive]**"
+
         v += f"Card Type: **{types[self.type]}**\n"
-        v += f"Disenchant Cost: **{self.disenchant}** 💎 | Creation Cost: **{self.cost}** 💎\n"
-        a = f"First by {self.first_user}" if self.acquired else "No"
+        v += f"Banish Gain: **{self.disenchant}** 💎 | Summon Cost: **{self.cost}** 💎\n"
+        a = f"Yes, first by {self.first_user}" if self.acquired else "No"
         v += f"Acquired? **{a}**"
 
         e.add_field(name=self.rating*'⭐', value=v)
