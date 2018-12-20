@@ -30,16 +30,16 @@ class Core:
     def __init__(self, bot):
         self.bot = bot
 
-    # async def on_command_error(self, ctx, error):
-    #     if type(error) in allowed_errors:
-    #         if type(error) == discord.ext.commands.errors.CommandOnCooldown:
-    #             await ctx.send(MSG_CMD_ERROR.format(ctx.author.id, error))
-    #         else:
-    #             await ctx.send(MSG_INVALID_CMD)
-    #     elif type(error) in caught_errors:
-    #         log(f"[-WRN-] {ctx.author.name} raised an error: {error}")
-    #     else:
-    #         raise error
+    async def on_command_error(self, ctx, error):
+        if type(error) in allowed_errors:
+            if type(error) == discord.ext.commands.errors.CommandOnCooldown:
+                await ctx.send(MSG_CMD_ERROR.format(ctx.author.id, error))
+            else:
+                await ctx.send(MSG_INVALID_CMD)
+        elif type(error) in caught_errors:
+            log(f"[-WRN-] {ctx.author.name} raised an error: {error}")
+        else:
+            raise error
 
     async def on_member_join(self, member):
         if member.bot:

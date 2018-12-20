@@ -14,4 +14,15 @@ def get_all_cards():
     cards = sheet.get_all_records()
     return cards
 
-get_all_cards()
+def get_all_series():
+    scope = [
+        'https://spreadsheets.google.com/feeds',
+        'https://www.googleapis.com/auth/drive'
+        ]
+    creds = ServiceAccountCredentials.from_json_keyfile_name('google_secret.json', scope)
+    client = gspread.authorize(creds)
+
+    sheet = client.open("Gacha").worksheet('series')
+
+    series = sheet.get_all_records()
+    return series

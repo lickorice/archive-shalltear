@@ -116,8 +116,6 @@ class Card:
         Args:
             card_id (int): ID of the Card you wish to fetch.
         """
-        cls.id = card_id
-
         db = db_gacha.GachaHelper(False)
         db.connect()
         result = db.get_card(card_id)
@@ -132,8 +130,6 @@ class Card:
         Args:
             card_name (str): Name of the Card you wish to fetch.
         """
-        cls.name = card_name
-
         db = db_gacha.GachaHelper(False)
         db.connect()
         result = db.get_card_from_name(card_name)

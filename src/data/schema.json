@@ -73,6 +73,13 @@
             "is_exclusive": "BOOLEAN"
         },
         {
+            "TABLE_NAME": "series",
+
+            "series_id": "INTEGER",
+            "series_name": "STRING",
+            "series_icon_url": "STRING"
+        },
+        {
             "TABLE_NAME": "inventory",
 
             "owner_id": "INTEGER",
@@ -88,19 +95,6 @@
 
             "shard_id": "INTEGER",
             "target_id": "INTEGER"
-        },
-        {
-            "TABLE_NAME": "series_cards",
-
-            "series_id": "INTEGER",
-            "card_id": "INTEGER"
-        },
-        {
-            "TABLE_NAME": "series",
-
-            "series_id": "INTEGER",
-            "series_name": "STRING",
-            "series_icon_url": "STRING"
         },
         {
             "TABLE_NAME": "rank",

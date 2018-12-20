@@ -10,6 +10,7 @@ from data import db_helper
 from errors import *
 from modules import google
 from objects.card import Card
+from objects.series import Series
 
 class GachaHelper(db_helper.DBHelper):
     def __init__(self, is_logged=True):
@@ -37,27 +38,49 @@ class GachaHelper(db_helper.DBHelper):
             is_exclusive=card.is_exclusive
             )
 
+    def new_series(self, series):
+        """Adds a new series to the database (series_id unique)"""
+        self.insert_row(
+            table_name="series",
+            series_id=series.id,
+            series_name=series.name,
+            series_icon_url=series.icon_url
+        )
+
     def consolidate_cards(self):
-        """Recreate the database according to Google Sheets content."""
+        """Recreate the cards table according to Google Sheets content."""
         cards = google.get_all_cards()
-        # set_config = google.get_all_sets() # TODO: Concretize this
-        # TODO: Create a backup of the database
         self.delete_all_rows('cards')
         for card in cards:
             self.new_card(Card.get_from_dict(card))
         return len(cards)
 
+    def consolidate_series(self):
+        """Recreate the series table according to Google Sheets content."""
+        series = google.get_all_series()
+        self.delete_all_rows('series')
+        for s in series:
+            self.new_series(Series.get_from_dict(s))
+        return len(series)
+
     def get_card(self, card_id):
+        """Get a Card object given its ID."""
         x = self.fetch_rows('cards', True, card_id=card_id)
         if len(x) == 0:
             raise CardNotFound(f"{card_id} not found in the database")
         return Card.get_from_db(x[0])
 
     def get_card_from_name(self, card_name):
-        x = self.fetch_rows('cards', False, card_name=card_name)
+        """Get a Card object given its name."""
+        x = self.fetch_rows('cards', False, card_name=f'%{card_name}%')
         if len(x) == 0:
             raise CardNotFound(f"{card_name} not found in the database")
         return Card.get_from_db(x[0])
+
+    def get_cards_from_series(self, card_series_id):
+        """Get a list of Cards given the series ID."""
+        x = self.fetch_rows('cards', True, card_series_id=card_series_id)
+        return [Card.get_from_db(c) for c in x]
 
     def get_all_cards(self, key=lambda x: x.id):
         """Returns a list of all cards, sorted with a key."""
@@ -65,6 +88,20 @@ class GachaHelper(db_helper.DBHelper):
         x = [Card.get_from_db(row) for row in x]
         x = sorted(x, key=key)
         return x 
+
+    def get_series(self, series_id):
+        """Get a Series object given its ID."""
+        x = self.fetch_rows('series', True, series_id=series_id)
+        if len(x) == 0:
+            raise SeriesNotFound(f"{series_id} not found in the database")
+        return Series.get_from_db(x[0])
+
+    def get_series_from_name(self, series_name):
+        """Get a Card object given its name."""
+        x = self.fetch_rows('series', False, series_name=f'%{series_name}%')
+        if len(x) == 0:
+            raise SeriesNotFound(f"{series_name} not found in the database")
+        return Series.get_from_db(x[0])
 
     # def add_card(self, user_id, card_id):
     #     """Adds a card to a user's inventory."""
