@@ -1,18 +1,26 @@
+import discord, random
 from errors import *
 from data import db_gacha
 from objects.series import Series
-import discord
 
 types = {
     1: "Summoned",
     2: "Crafted",
     3: "Limited"
+} # TODO: move this shit in config
+rating = {
+    1: "Common",
+    2: "Uncommon",
+    3: "Rare",
+    4: "Mythical",
+    5: "Legendary",
+    6: "Divine"
 }
 
 class Card:
     """
     A Card object to store information about a Card within
-    a User's gacha inventory.    
+    a User's gacha inventory.
     """
     def __init__(
         self, _id, _name, _acquired, _cost, _disenchant,
@@ -36,26 +44,40 @@ class Card:
         self.series_id = _series_id
         self.submitter = _submitter
 
+    @property
+    def series(self):
+        return Series.get_from_id(self.series_id)
+
     def make_embed(self):
         e = discord.Embed(title=self.name, color=0xff1155)
         e.set_image(url=self.full_url)
 
         # v = f"From **{self.series.name}**\n" # TODO: Make series objects
-        v = f"From **placeholder series**\n"
+        v = f"From **{self.series.name}**\n"
         
         if self.is_exclusive:
-            v += "**[IPM-Exclusive]**"
+            v += "**[IPM-Exclusive]**\n"
 
         v += f"Card Type: **{types[self.type]}**\n"
         v += f"Banish Gain: **{self.disenchant}** 💎 | Summon Cost: **{self.cost}** 💎\n"
         a = f"Yes, first by {self.first_user}" if self.acquired else "No"
         v += f"Acquired? **{a}**"
 
-        e.add_field(name=self.rating*'⭐', value=v)
+        e.add_field(name=rating[self.rating], value=v)
         return e
 
     def __repr__(self):
-        return f"Card({self.id})"
+        return f'Card: {self.name}, {"*"*self.rating}'
+
+    def register_first(self, user):
+        """Registers a user who has acquired a Card for the first time."""
+        db = db_gacha.GachaHelper(False)
+        db.connect()
+        db.update_column('cards', 'card_acquired', True, card_id=self.id)
+        db.update_column('cards', 'card_user', str(user), card_id=self.id)
+        db.close()
+        self.first_user = str(user)
+        self.acquired = True
 
     @classmethod
     def get_from_dict(cls, dictionary):
@@ -138,3 +160,24 @@ class Card:
         result = db.get_card_from_name(card_name)
         db.close()
         return result
+
+    @staticmethod
+    def make_booster_pack(rating_list):
+        """
+        Initializes a Card object from a name.
+
+        Args:
+            card_name (str): Name of the Card you wish to fetch.
+        """
+        db = db_gacha.GachaHelper(False)
+        card_list = []
+
+        db.connect()
+        for rating in rating_list:
+            all_cards = [_c for _c in db.get_cards_from_rating(rating) if _c.type == 1]
+            if len(all_cards) == 0:
+                continue
+            random.shuffle(all_cards)
+            card_list.append(all_cards[0])
+        db.close()
+        return card_list

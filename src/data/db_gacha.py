@@ -6,11 +6,19 @@ helper inherits functions from the DBHelper class.
 (coded by lickorice, 2018)
 """
 
+import datetime
 from data import db_helper
 from errors import *
 from modules import google
 from objects.card import Card
 from objects.series import Series
+
+# Logging functions here:
+
+def log(string):
+    print("{}{}".format(datetime.datetime.now().strftime("(%Y-%m-%d)[%H:%M:%S]"), string ))
+
+# Start of program logic:
 
 class GachaHelper(db_helper.DBHelper):
     def __init__(self, is_logged=True):
@@ -47,6 +55,19 @@ class GachaHelper(db_helper.DBHelper):
             series_icon_url=series.icon_url
         )
 
+    def add_card_to_inventory(self, card, owner_id):
+        """Adds a Card to a user's inventory."""
+        self.insert_row(
+            table_name="inventory",
+            owner_id=owner_id,
+            card_id=card.id,
+            card_level=1,
+            card_materia_cost=card.disenchant*2,
+            card_worth=card.disenchant,
+            card_equipped=False,
+            card_order=0
+        )
+        
     def consolidate_cards(self):
         """Recreate the cards table according to Google Sheets content."""
         cards = google.get_all_cards()
@@ -82,6 +103,11 @@ class GachaHelper(db_helper.DBHelper):
         x = self.fetch_rows('cards', True, card_series_id=card_series_id)
         return [Card.get_from_db(c) for c in x]
 
+    def get_cards_from_rating(self, card_rating):
+        """Get a list of Cards given the rating."""
+        x = self.fetch_rows('cards', True, card_rating=card_rating)
+        return [Card.get_from_db(c) for c in x]
+
     def get_all_cards(self, key=lambda x: x.id):
         """Returns a list of all cards, sorted with a key."""
         x = self.fetch_rows('cards')
@@ -102,6 +128,11 @@ class GachaHelper(db_helper.DBHelper):
         if len(x) == 0:
             raise SeriesNotFound(f"{series_name} not found in the database")
         return Series.get_from_db(x[0])
+
+    def get_user_cards(self, owner_id):
+        """Get a list of Cards given the owner's ID."""
+        x = self.fetch_rows('inventory', True, owner_id=owner_id)
+        return [Card.get_from_db(c) for c in x]
 
     # def add_card(self, user_id, card_id):
     #     """Adds a card to a user's inventory."""

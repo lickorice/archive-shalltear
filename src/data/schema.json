@@ -46,6 +46,7 @@
             "can_receive_xp": "BOOLEAN",
             "can_free_pack": "BOOLEAN",
             "can_daily": "BOOLEAN",
+            "streak_count": "INTEGER",
             "count_free_gil": "INTEGER",
             "count_commands": "INTEGER",
             "count_rolls": "INTEGER",
@@ -87,8 +88,7 @@
             "card_level": "INTEGER",
             "card_materia_cost": "INTEGER",
             "card_worth": "INTEGER",
-            "card_equipped": "BOOLEAN",
-            "card_order": "INTEGER"
+            "card_equipped": "BOOLEAN"
         },
         {
             "TABLE_NAME": "set_cards",

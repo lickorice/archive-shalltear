@@ -1,4 +1,4 @@
-from data import db_users
+from data import db_users, db_gacha
 from objects.background import Background
 from objects.badge import Badge
 from objects.gacha import Gacha
@@ -20,7 +20,10 @@ class User:
         self.id = user_id
         self.db = db_users.UserHelper(is_logged=False)
         self.is_registered()
-        self.gacha = Gacha(self)
+
+    @property
+    def gacha(self):
+        return Gacha(self)
 
     @property
     def bg_id(self):
