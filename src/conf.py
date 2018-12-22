@@ -1,3 +1,5 @@
+# Bot details
+CURRENT_VERSION = "1.0.0b"
 
 # Set for Lickorice, (Carlos Panganiban) and for IPM Collective server.
 OWNER_ID = 319285994253975553
@@ -52,6 +54,7 @@ MSG_BG_NOT_YOURS = "**{}**, you don't own that background. Browse the shop with 
 MSG_BG_PREVIEW = "Previewing **{}**"
 MSG_BG_RESET = "**All user backgrounds successfully reset to default.**"
 MSG_BLOCKED = "<@{}>, it seems that you may have **blocked** me! Kindly unblock me so I could send you *secret messages!* :wink:"
+MSG_BOT_INVITE = "**Get Shalltear to join your server!** Use this link: {}"
 MSG_CMD_ERROR = "<@{}>, **try again.** *({})*"
 MSG_CMD_NOT_FOUND = "<@{}>, **that command does not exist.**"
 MSG_DM_SENT = "**{}, DM sent!**"

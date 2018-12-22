@@ -99,13 +99,22 @@ class Core:
             value=uptime_str,
             inline=False
         )
+        embed.add_field(
+            name="Version",
+            value=CURRENT_VERSION
+        )
         embed.set_footer(text=MSG_AUTHOR_INFO)
         await ctx.channel.send(embed=embed)
 
     @commands.command()
     async def invite(self, ctx):
         """Invite Shalltear to your server!"""
-        pass
+        try:
+            await ctx.author.send(MSG_BOT_INVITE.format(BOT_INVITE_LINK))
+            await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
+        except discord.errors.Forbidden:
+            await ctx.send(MSG_BLOCKED.format(ctx.author.id))
+            return
 
     @commands.command()
     async def exclusive(self, ctx):
@@ -135,12 +144,14 @@ class Core:
         if _user.followed_twitter:
             await ctx.author.send(MSG_REWARDS_1.format(ctx.author.display_name))
             return
+
         try:
             await ctx.author.send(MSG_TWITTER_AUTH.format(ctx.author.display_name, twt.get_url()))
             await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
         except discord.errors.Forbidden:
             await ctx.send(MSG_BLOCKED.format(ctx.author.id))
             return
+
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=300)
         except concurrent.futures._base.TimeoutError:
