@@ -1,4 +1,4 @@
-<img align="center" src="assets/header.png" alt="Shalltear Logo">
+<img align="center" src="src/assets/header.png" alt="Shalltear Logo">
 
 About
 =====
