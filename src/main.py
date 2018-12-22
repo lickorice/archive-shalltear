@@ -7,11 +7,11 @@ initial_extensions = [
     "cogs.admin",
     "cogs.core",
     "cogs.economy",
-    "cogs.gacha",
     "cogs.gambling",
-    "cogs.shop",
+    "cogs.memes",
     "cogs.profile",
-    "cogs.roles"
+    "cogs.roles",
+    "cogs.shop"
     ]
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or('s!'))

@@ -12,8 +12,8 @@
         "name": "PAGCOR Badge",
         "is_exclusive": true,
         "id": "00001",
-        "price": 500,
-        "price_tag": "[IPM-Exclusive], 500 gil",
+        "price": 50000,
+        "price_tag": "[IPM-Exclusive], 50,000 gil",
         "level_needed": 0,
         "icon_url": "assets/badges/00001.png",
         "description": "Show off your wealth by purchasing this badge."
@@ -24,7 +24,7 @@
         "id": "00004",
         "price": 500,
         "price_tag": "500 gil",
-        "level_needed": 5,
+        "level_needed": 0,
         "icon_url": "assets/badges/00004.png",
         "description": "You set off to start your journey to find the best form of government."
     },
@@ -34,7 +34,7 @@
         "id": "00005",
         "price": 1000,
         "price_tag": "1000 gil",
-        "level_needed": 10,
+        "level_needed": 0,
         "icon_url": "assets/badges/00005.png",
         "description": "You have been enlightened. Why work when they can work for you?"
     },
@@ -44,17 +44,17 @@
         "id": "00006",
         "price": 1500,
         "price_tag": "1500 gil",
-        "level_needed": 20,
+        "level_needed": 0,
         "icon_url": "assets/badges/00006.png",
         "description": "After years of trial and error, you have finally evolved to a superior being."
     },
     "7":    {
-        "name": "Neet",
-        "is_exclusive": false,
+        "name": "NEET",
+        "is_exclusive": true,
         "id": "00007",
         "price": 3000,
         "price_tag": "[IPM-Exclusive], 2500 gil, Level 30",
-        "level_needed": 30,
+        "level_needed": 0,
         "icon_url": "assets/badges/00007.png",
         "description": "Forget everything. Grants a special feature for its owner."
     }

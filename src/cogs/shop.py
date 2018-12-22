@@ -93,7 +93,7 @@ class Shop:
         if not item.is_for_sale:
             await ctx.send(MSG_ITEM_NOT_FOR_SALE)
             return
-        if item.is_exclusive and (ctx.server != OWNER_GUILD_ID):
+        if item.is_exclusive and (ctx.guild.id != OWNER_GUILD_ID):
             await ctx.send(MSG_ITEM_IS_EXCLUSIVE)
             return
         
@@ -107,9 +107,29 @@ class Shop:
             await ctx.author.add_roles(ctx.guild.get_role(VIP_ROLE_ID))
             vip_channel = self.bot.get_channel(VIP_CHANNEL_ID)
             await vip_channel.send(MSG_VIP_WELCOME.format(ctx.author.id))
-        user_db.close()
+        elif item.id == 7:
+            role_name = None
+            _x = ctx.author.id
+            while True:
+                def check(m):
+                    return len(m.content) <= 32 and m.author.id == ctx.author.id
 
-        # TODO: Make NEET exclusive + add its function here
+                await ctx.send(MSG_NEET_ROLE_NAME_WAIT.format(_x))
+                role_name = await self.bot.wait_for('message', check=check)
+                role_name = role_name.content
+
+                def check2(m):
+                    return (m.content.lower() == 'y' or m.content.lower() == 'n') and m.author.id == ctx.author.id
+        
+                await ctx.send(MSG_NEET_ROLE_CONFIRM.format(_x, role_name))
+                confirmation = await self.bot.wait_for('message', check=check2)
+                confirmation = confirmation.content
+                if confirmation == 'y':
+                    break
+            
+            new_role = await ctx.guild.create_role(name=role_name, color=discord.Color(0xff1155))
+            await ctx.send(MSG_NEET_ROLE_CREATE.format(_x, role_name))
+            await ctx.author.add_roles(new_role)
 
     @commands.command()
     async def bgbuy(self, ctx, *target_item):
@@ -131,7 +151,7 @@ class Shop:
         if not item.is_for_sale:
             await ctx.send(MSG_ITEM_NOT_FOR_SALE)
             return
-        if item.is_exclusive and (ctx.server != OWNER_GUILD_ID):
+        if item.is_exclusive and (ctx.guild.id != OWNER_GUILD_ID):
             await ctx.send(MSG_ITEM_IS_EXCLUSIVE)
             return
         

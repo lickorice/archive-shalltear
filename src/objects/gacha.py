@@ -25,4 +25,4 @@ class Gacha:
     @property
     def make_inventory_embed(self, page):
         card_list = self.cards
-        e = discord.Embed(title="Your cards:", color)
+        e = discord.Embed(title="Your cards:", color=0xff1155)

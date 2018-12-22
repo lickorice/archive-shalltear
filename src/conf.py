@@ -6,7 +6,7 @@ OWNER_GUILD_INVITE = "https://discord.gg/XmC7fht" # #rules-info
 BOT_INVITE_LINK = "https://discordapp.com/oauth2/authorize?client_id=490453816978702336&scope=bot&permissions=1580592192"
 MY_PAYPAL = "https://paypal.me/lickorice"
 MY_PATREON = "https://www.patreon.com/lickorice"
-# OWNER_GUILD_ID = 442676019774750731 # uncomment for development
+OWNER_GUILD_ID = 442676019774750731 # uncomment for development
 
 # Some important constants:
 CLR_MAIN_COLOR = 0xff1155
@@ -18,6 +18,7 @@ VIP_CHANNEL_ID = 444150135664934912
 # Set defaults for profile image generation
 DIR_LEVELUP = "temp/levelup.png"
 DIR_PROFILE = "temp/profile.png"
+DIR_MEME = "temp/meme_temp.png"
 
 # Set emojis for paginated embeds:
 EMJ_LEFT_PAGE = "◀"
@@ -88,6 +89,9 @@ MSG_MATERIA_CHECK = "**{}**, you currently have **{}** 💎 materia."
 MSG_MATERIA_CHECK2 = "**{}** currently has **{}** 💎 materia."
 MSG_MEME_NOT_ENOUGH = "**Not enough actors!** You need {} actor{} for this meme to be generated."
 MSG_MEME_NOT_FOUND = "**Meme not found!**"
+MSG_NEET_ROLE_NAME_WAIT = "<@{}>, please reply with the **custom role name** you want for you!\nThe name could only be **32 characters long**, and please refrain from using any profanity in the name."
+MSG_NEET_ROLE_CONFIRM = "<@{}>, **{}** is your chosen role name. Is this correct? (Reply with Y/N)"
+MSG_NEET_ROLE_CREATE = "<@{}>, you have been assigned **{}**! Have fun!"
 MSG_ON_COOLDOWN = "**{}**, free booster packs are only claimable once per hour. The next interval you can claim one will be in **{}** minute{}."
 MSG_PING = "Pong! (**{}**ms)"
 MSG_PROFILE_BG_RESET = "**All profile backgrounds successfully reset.**"
