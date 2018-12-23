@@ -27,16 +27,9 @@ def level_generate(avatar_url):
     pass
 
 
-def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
+def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id, is_premium):
     """
-    This is a profile image generator, dev'd by Carlos Panganiban. 2018.
-    It takes in the following arguments:
-    generate(
-        user_name= (str) The user's name;
-        avatar_url= (str) The user's avatar URL;
-        user_level= (int) The user's level;
-        user_xp = (int, int) The user's current, and next level xp
-    )
+    Generate a user's profile.
     """
 
     if user_level >= 30:
@@ -44,7 +37,10 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id):
     else:
         user_title = str_titles[str(user_level)]
 
-    template = Image.open('assets/img_profile-template.png')
+    if is_premium:
+        template = Image.open('assets/img_profile-template-premium.png')
+    else:
+        template = Image.open('assets/img_profile-template.png')
 
     avatar_file = requests.get(avatar_url)
     avatar = Image.open(BytesIO(avatar_file.content))

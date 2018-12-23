@@ -10,6 +10,9 @@ MY_PAYPAL = "https://paypal.me/lickorice"
 MY_PATREON = "https://www.patreon.com/lickorice"
 OWNER_GUILD_ID = 442676019774750731 # uncomment for development
 
+# Some set images:
+DONATE_IMG = "" # TODO: add donation details
+
 # Some important constants:
 CLR_MAIN_COLOR = 0xff1155
 
@@ -54,6 +57,7 @@ MSG_BG_NOT_YOURS = "**{}**, you don't own that background. Browse the shop with 
 MSG_BG_PREVIEW = "Previewing **{}**"
 MSG_BG_RESET = "**All user backgrounds successfully reset to default.**"
 MSG_BLOCKED = "<@{}>, it seems that you may have **blocked** me! Kindly unblock me so I could send you *secret messages!* :wink:"
+MSG_BOT_DONATE = f"**Donate to the developer and get amazing rewards!** Details here: {DONATE_IMG} \n**Patreon:** {MY_PATREON}\n**PayPal:** {MY_PAYPAL}"
 MSG_BOT_INVITE = "**Get Shalltear to join your server!** Use this link: {}"
 MSG_CMD_ERROR = "<@{}>, **try again.** *({})*"
 MSG_CMD_NOT_FOUND = "<@{}>, **that command does not exist.**"
@@ -84,6 +88,8 @@ MSG_ITEM_IS_EXCLUSIVE = "**That item is exclusive only to the IPM Collective.** 
 MSG_ITEM_NOT_FOUND = "**No such item found.**"
 MSG_ITEM_NOT_FOR_SALE = "**That item is not for sale.**"
 MSG_LOGGING_OUT = "**Logging out...**"
+MSG_SET_PREMIUM1 = "Successfully set **{}** as a premium user."
+MSG_SET_PREMIUM2 = "Successfully set **{}** as a non-premium user."
 MSG_SWEEPSTAKES_LOSS = "**{}**, sadly, you lost."
 MSG_SWEEPSTAKES_NO = "**{}**, please enter a number from 0-999."
 MSG_SWEEPSTAKES_POT = "The current jackpot for the lottery is **{} 💰** gil."

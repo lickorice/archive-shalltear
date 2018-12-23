@@ -74,7 +74,7 @@ class Profiles:
 
         profiler.profile_generate(
             target_user.name, target_user.avatar_url,
-            _u.level, (_u.xp, _u.xp_to_next), equipped_badges, _u.bg_id
+            _u.level, (_u.xp, _u.xp_to_next), equipped_badges, _u.bg_id, _u.is_premium
             )
         profile_image = discord.File(DIR_PROFILE)
         await ctx.channel.send(file=profile_image)
@@ -160,7 +160,9 @@ class Profiles:
         
         if str(bg_id) not in all_bgs:
             await ctx.send(MSG_BG_NOT_FOUND)
-        profiler.profile_generate(ctx.author.name, ctx.author.avatar_url, 20, (1, 2), [], bg_id)
+
+        _u = User(ctx.author.id)
+        profiler.profile_generate(ctx.author.name, ctx.author.avatar_url, 20, (1, 2), [], bg_id, _u.is_premium)
         profile_image = discord.File(DIR_PROFILE)
         await ctx.channel.send(MSG_BG_PREVIEW.format(all_bgs[str(bg_id)]["name"]))
         await ctx.channel.send(file=profile_image)

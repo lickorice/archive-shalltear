@@ -22,6 +22,25 @@ class User:
         self.is_registered()
 
     @property
+    def is_premium(self):
+        self.db.connect()
+        x = self.db.check_premium(self.id)
+        self.db.close()
+        return x
+
+    def toggle_premium(self):
+        if self.is_premium:
+            self.db.connect()
+            self.db.rm_premium(self.id)
+            self.db.close()
+            return False
+        else:
+            self.db.connect()
+            self.db.add_premium(self.id)
+            self.db.close()
+            return True
+
+    @property
     def gacha(self):
         return Gacha(self)
 

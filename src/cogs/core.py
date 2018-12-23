@@ -117,6 +117,12 @@ class Core:
             return
 
     @commands.command()
+    async def donate(self, ctx):
+        """Donate to the developer!"""
+        await ctx.send(MSG_BOT_DONATE.format(BOT_INVITE_LINK))
+        return
+
+    @commands.command()
     async def exclusive(self, ctx):
         """Get an invite to the exclusive server for Shalltear!"""
         try:

@@ -94,7 +94,18 @@ class Administration:
         User(target_user.id).add_gil(gil_amount)
         send_str = MSG_GRANT_POSITIVE if int(gil_amount) > 0 else MSG_GRANT_NEGATIVE
         await ctx.channel.send(send_str.format(target_user.id, gil_amount))
+    
+    @commands.command(hidden=True)
+    @limiters.is_owner()
+    async def setpremium(self, ctx, target_user: discord.Member=None):
+        """Sets a user's premium status (Owner)."""
+        if target_user == None:
+            target_user = ctx.author
 
-        
+        _u = User(target_user.id)
+        _x = _u.toggle_premium()
+        string = MSG_SET_PREMIUM1 if _x else MSG_SET_PREMIUM2
+        await ctx.send(string.format(ctx.author.display_name))
+
 def setup(bot):
     bot.add_cog(Administration(bot))

@@ -207,6 +207,19 @@ class UserHelper(db_helper.DBHelper):
         except sqlite3.IntegrityError:
             return False
 
+    def check_premium(self, user_id):
+        x = self.fetch_rows("premium_users", True, user_id=user_id)
+        return len(x) >= 1
+
+    def add_premium(self, user_id):
+        try:
+            self.insert_row("premium_users", user_id=user_id)
+            return True
+        except sqlite3.IntegrityError:
+            return False
+
+    def rm_premium(self, user_id):
+        self.remove_rows("premium_users", user_id=user_id)
 
 def main():
     test = UserHelper("db/user.db")

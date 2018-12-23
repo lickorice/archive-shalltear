@@ -40,6 +40,11 @@
             "user_id": "STRING UNIQUE"
         },
         {
+            "TABLE_NAME": "premium_users",
+
+            "user_id": "INTEGER UNIQUE"
+        },
+        {
             "TABLE_NAME": "activities",
 
             "user_id": "INTEGER UNIQUE",
