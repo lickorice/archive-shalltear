@@ -8,7 +8,7 @@ OWNER_GUILD_INVITE = "https://discord.gg/XmC7fht" # #rules-info
 BOT_INVITE_LINK = "https://discordapp.com/oauth2/authorize?client_id=490453816978702336&scope=bot&permissions=1580592192"
 MY_PAYPAL = "https://paypal.me/lickorice"
 MY_PATREON = "https://www.patreon.com/lickorice"
-OWNER_GUILD_ID = 442676019774750731 # uncomment for development
+# OWNER_GUILD_ID = 442676019774750731 # uncomment for development
 
 # Some set images:
 DONATE_IMG = "" # TODO: add donation details
