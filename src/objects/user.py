@@ -95,7 +95,16 @@ class User:
     @property
     def badges(self):
         self.db.connect()
-        result = sorted([Badge(item["item_id"], item["item_equipped"]) for item in self.db.get_items(self.id)], key=lambda x: x.id)
+
+        raw_result = []
+        for item in self.db.get_items(self.id):
+            try:
+                raw_result.append(Badge(item["item_id"], item["item_equipped"]))
+            except KeyError:
+                self.db.remove_item(self.id, item["item_id"])
+                continue
+
+        result = sorted(raw_result, key=lambda x: x.id)
         self.db.close()
         return result
     
