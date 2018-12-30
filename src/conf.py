@@ -1,5 +1,5 @@
 # Bot details
-CURRENT_VERSION = "1.0.0b"
+CURRENT_VERSION = "1.0.1b"
 
 # Set for Lickorice, (Carlos Panganiban) and for IPM Collective server.
 OWNER_ID = 319285994253975553
@@ -60,6 +60,7 @@ MSG_BLOCKED = "<@{}>, it seems that you may have **blocked** me! Kindly unblock 
 MSG_BOT_DONATE = f"**Donate to the developer and get amazing rewards!** Details here: {DONATE_IMG} \n**Patreon:** {MY_PATREON}\n**PayPal:** {MY_PAYPAL}"
 MSG_BOT_INVITE = "**Get Shalltear to join your server!** Use this link: {}"
 MSG_CMD_ERROR = "<@{}>, **try again.** *({})*"
+MSG_CMD_NODMS = "**You can't use that command in private messages.**"
 MSG_CMD_NOT_FOUND = "<@{}>, **that command does not exist.**"
 MSG_DM_SENT = "**{}, DM sent!**"
 MSG_EXCLUSIVE_SERVER = "**Join my exclusive server at IPM Collective!** Get access to countless backgrounds, gacha items, badges, and more at {} !"

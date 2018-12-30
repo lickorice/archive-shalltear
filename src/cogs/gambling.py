@@ -5,6 +5,7 @@ from data import db_users, db_helper
 from utils import msg_utils
 from objects.user import User
 
+refund_dict = {}
 current_tickets = {}
 stored_messages = {}
 
@@ -50,31 +51,76 @@ class Gambling:
                 await reaction.message.edit(embed=e)
 
     async def drawtimer(self, ctx):
-        await asyncio.sleep(60*5)
-        await ctx.send("**Five minutes left until the lottery draw!**")
-        await asyncio.sleep(60*2)
-        await ctx.send("**Three minutes left until the lottery draw!**")
-        await asyncio.sleep(60*2)
-        await ctx.send("**One minute left until the lottery draw!**")
-        await asyncio.sleep(50)
-        await ctx.send("**Ten seconds left until the lottery draw!**")
-        await asyncio.sleep(5)
-        await ctx.send("**Five seconds left until the lottery draw!**")
+        count = 0
+        while True:
+            await asyncio.sleep(1)
+            if count == 300:
+                await ctx.send("**Five minutes left until the lottery draw!**")
+            elif count == 420:
+                await ctx.send("**Three minutes left until the lottery draw!**")
+            elif count == 540:
+                await ctx.send("**One minute left until the lottery draw!**")
+            elif count == 590:
+                await ctx.send("**Ten seconds left until the lottery draw!**")
+            elif count == 595:
+                await ctx.send("**Five seconds left until the lottery draw!**")
+            elif count >= 600:
+                break
+            if current_tickets[ctx.guild.id] == {}:
+                return # check for refunded tickets every second
+            count += 1
         raw_tickets = current_tickets[ctx.guild.id]
+        if current_tickets[ctx.guild.id] == {}:
+            return
         tickets = []
         for ticket in raw_tickets:
             entry = [ticket for i in range(raw_tickets[ticket])]
             tickets += entry
         random.shuffle(tickets)
         winner = self.bot.get_user(tickets[0])
-        await ctx.send("Congratulations! <@{}> won the lottery and received **{} 💰** gil!".format(winner.id, (10+len(tickets)*2)))
+        await ctx.send("Congratulations! <@{}> won the lottery and received **{} 💰** gil!".format(winner.id, (3+len(tickets)*2)))
 
-        User(winner.id).add_gil((10+(len(tickets)*2)))
+        User(winner.id).add_gil((3+(len(tickets)*2)))
 
         current_tickets[ctx.guild.id] = {}
+        refund_dict[ctx.guild.id]  = []
+
+    @commands.command(aliases=['vr'])
+    @commands.guild_only()
+    async def voterefund(self, ctx):
+        global current_tickets
+        global refund_dict
+        try:
+            ticket_dict = current_tickets[ctx.guild.id]
+        except KeyError:
+            await ctx.send("**No one has sent any tickets yet in this server**")
+        if ctx.author.id not in ticket_dict:
+            await ctx.send(f"**{ctx.author.display_name}, you don't even have tickets in this server.**")
+            return
+        try:
+            if ctx.author.id in refund_dict[ctx.guild.id]:
+                await ctx.send(f"**You already voted for a refund for this server.**")
+                return
+            else:
+                refund_dict[ctx.guild.id].append(ctx.author.id)
+        except KeyError:
+            refund_dict[ctx.guild.id] = [ctx.author.id]
+        if len(refund_dict[ctx.guild.id]) >= len(ticket_dict):
+            await ctx.send("**Lottery successfully cancelled. Refunding tickets...**")
+            for user_id in ticket_dict:
+                _u = User(user_id)
+                _u.add_gil((ticket_dict[user_id]*2))
+            current_tickets[ctx.guild.id]  = {}
+            refund_dict[ctx.guild.id]  = []
+            return
+        else:
+            votecount = f'{len(refund_dict[ctx.guild.id])} / {len(ticket_dict)} votes'
+            await ctx.send(f"**{ctx.author.display_name}, you have successfully voted for a refund.** `{votecount}`")
+            return
 
     @commands.command(aliases=['tix'])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
+    @commands.guild_only()
     async def tickets(self, ctx):
         """Views the current tickets in the server's lottery."""
         try:
@@ -87,7 +133,7 @@ class Gambling:
         ticket_tuples = [(user_id, ticket_dict[user_id]) for user_id in ticket_dict]
         ticket_tuples = sorted(ticket_tuples, key=lambda x: x[1])[::-1]
         ticket_list = ['{} **{}** tix'.format(self.bot.get_user(x[0]), x[1]) for x in ticket_tuples]
-        jackpot = 10
+        jackpot = 3
         for i in ticket_dict:
             jackpot += 2*ticket_dict[i]
 
@@ -109,6 +155,7 @@ class Gambling:
 
     @commands.command(aliases=["lt"])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
+    @commands.guild_only()
     async def lottery(self, ctx, tickets: int=1):
         """
         Purchases a number (by default, one) tickets for the server-wide lottery.
@@ -143,6 +190,7 @@ class Gambling:
 
     @commands.command(aliases=['sspot'])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
+    @commands.guild_only()
     async def stakespot(self, ctx):
         """Shows the current lottery jackpot."""
         helper_db = db_helper.DBHelper("data/db/misc.db", False)
@@ -159,6 +207,7 @@ class Gambling:
 
     @commands.command(aliases=['ss'])
     @commands.cooldown(2, 10, type=commands.BucketType.user)
+    @commands.guild_only()
     async def sweepstakes(self, ctx, number: int=None):
         """Take your chances with the sweepstakes!"""
         author = ctx.message.author

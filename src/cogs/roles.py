@@ -49,6 +49,7 @@ class Roles:
                 await reaction.message.edit(embed=e)
 
     @commands.command(aliases=['ta'])
+    @commands.guild_only()
     async def toggleassignable(self, ctx, *role_name):
         """Sets self-assignable roles. (Manage Roles)"""
         if not ctx.author.guild_permissions.manage_roles:
@@ -81,6 +82,7 @@ class Roles:
             return
 
     @commands.command()
+    @commands.guild_only()
     async def iam(self, ctx, *role_name):
         """Gives you a self-assignable role."""
 
@@ -103,6 +105,7 @@ class Roles:
         await ctx.author.add_roles(target_role, reason="Self-assignable role")
 
     @commands.command()
+    @commands.guild_only()
     async def iamnot(self, ctx, *role_name):
         """Removes a self-assignable role."""
 
@@ -125,6 +128,7 @@ class Roles:
         await ctx.author.remove_roles(target_role, reason="Self-assignable role")
 
     @commands.command(aliases=['lsa'])
+    @commands.guild_only()
     async def listassignables(self, ctx):
         """Lists self-assignables."""
         db = db_roles.RoleHelper()

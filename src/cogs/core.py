@@ -11,7 +11,8 @@ start_time = time.time()
 allowed_errors = [
     discord.ext.commands.errors.CommandOnCooldown,
     discord.ext.commands.errors.MissingRequiredArgument,
-    discord.ext.commands.errors.BadArgument
+    discord.ext.commands.errors.BadArgument,
+    discord.ext.commands.errors.NoPrivateMessage
 ]
 
 caught_errors = [
@@ -34,6 +35,8 @@ class Core:
         if type(error) in allowed_errors:
             if type(error) == discord.ext.commands.errors.CommandOnCooldown:
                 await ctx.send(MSG_CMD_ERROR.format(ctx.author.id, error))
+            elif type(error) == discord.ext.commands.errors.NoPrivateMessage:
+                await ctx.send(MSG_CMD_NODMS)
             else:
                 await ctx.send(MSG_INVALID_CMD)
         elif type(error) in caught_errors:
@@ -48,6 +51,7 @@ class Core:
         u = User(member.id)
 
     @commands.command()
+    @commands.guild_only()
     async def ping(self, ctx):
         """Shows the latency of the bot."""
         await ctx.channel.send(MSG_PING.format(int(round(self.bot.latency, 3) * 1000)))

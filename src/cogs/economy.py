@@ -27,6 +27,7 @@ class Economy:
             target_user.display_name, User(target_user.id).gil))
 
     @commands.command()
+    @commands.guild_only()
     async def give(self, ctx, target_user: discord.Member, gil: int):
         """Transfer your gil to another user."""
         a = ctx.message.author

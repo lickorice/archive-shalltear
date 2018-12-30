@@ -71,6 +71,7 @@ class Shop:
                 await reaction.message.edit(embed=e)
 
     @commands.command()
+    @commands.guild_only()
     async def badgebuy(self, ctx, *target_item):
         """This will buy a badge given its ID or its name (exact)."""
         target_item = ' '.join(target_item)
@@ -132,6 +133,7 @@ class Shop:
             await ctx.author.add_roles(new_role)
 
     @commands.command()
+    @commands.guild_only()
     async def bgbuy(self, ctx, *target_item):
         """This will buy a profile background given its ID or its name (exact)."""
         target_item = ' '.join(target_item)
@@ -161,6 +163,7 @@ class Shop:
         await ctx.send(MSG_BG_BOUGHT.format(ctx.author.id, item.name, item.price))
 
     @commands.command()
+    @commands.guild_only()
     async def badgeshop(self, ctx):
         """Shows the shop screen for badges."""
         a = ctx.message.author
@@ -186,6 +189,7 @@ class Shop:
             await msg.add_reaction(EMJ_RIGHT_PAGE)
 
     @commands.command()
+    @commands.guild_only()
     async def bgshop(self, ctx):
         """Shows the shop screen for profile backgrounds."""
         a = ctx.message.author

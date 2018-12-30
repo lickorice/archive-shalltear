@@ -9,6 +9,11 @@ from objects.background import Background
 from objects.badge import Badge
 from utils import msg_utils
 
+# Logging functions here:
+
+def log(string):
+    print("{}{}".format(datetime.datetime.now().strftime("(%Y-%m-%d)[%H:%M:%S]"), string))
+
 with open("assets/obj_badges.json") as f:
     obj_badges = json.load(f)
 
@@ -50,6 +55,8 @@ class Profiles:
 
     async def on_message(self, message):
         """Main on_message method on collecting message data."""
+        if message.guild is None:
+            return
         if message.author.bot:
             return
         try:
@@ -60,10 +67,14 @@ class Profiles:
             # generate the image:
             profiler.level_generate(message.author.avatar_url)
             level_image = discord.File(DIR_LEVELUP)
-            await message.channel.send(file=level_image, delete_after=10)
+            try:
+                await message.channel.send(file=level_image, delete_after=10)
+            except discord.errors.Forbidden:
+                log(f"[ERR] Forbidden to send a message in this channel: {msg.channel.name} @ {msg.guild.name}")
 
     @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command(aliases=['p'])
+    @commands.guild_only()
     async def profile(self, ctx, target_user: discord.Member=None):
         """Shows the user profile of yourself, or a target user."""
         if target_user == None:
@@ -80,6 +91,7 @@ class Profiles:
         await ctx.channel.send(file=profile_image)
 
     @commands.command()
+    @commands.guild_only()
     async def equip(self, ctx, badge_id: int):
         """Followed by the ID, you can equip a badge."""
         if str(badge_id) not in list(obj_badges.keys()):
@@ -110,6 +122,7 @@ class Profiles:
                 )
 
     @commands.command()
+    @commands.guild_only()
     async def badges(self, ctx):
         """Shows the user's badges."""
         _user = User(ctx.author.id)
@@ -135,6 +148,7 @@ class Profiles:
             await msg.add_reaction(EMJ_RIGHT_PAGE)
         
     @commands.command()
+    @commands.guild_only()
     async def changebg(self, ctx, bg_id):
         """Changes the background of your profile."""
         _user = User(ctx.author.id)
@@ -153,6 +167,7 @@ class Profiles:
 
     @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command()
+    @commands.guild_only()
     async def previewbg(self, ctx, bg_id: int):
         """Previews a background given its ID."""
         with open('assets/obj_bgs.json') as f:
