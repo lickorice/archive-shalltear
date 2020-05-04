@@ -43,7 +43,7 @@ def get_series(arg):
     except ValueError:
         return Series.get_from_name(arg)
 
-class Gacha:
+class Gacha(commands.Cog):
 
     async def detect_turn(self, reaction, user):
         target_id = reaction.message.id

@@ -14,7 +14,7 @@ stored_messages = {}
 
 # Start of program logic:
 
-class Roles:
+class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

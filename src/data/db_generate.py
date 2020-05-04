@@ -11,6 +11,7 @@ corresponding .db file will also be named "numbers.db".
 """
 
 import sqlite3, json
+from conf import DATABASE_PATH
 
 db_directory = 'db/'
 

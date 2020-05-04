@@ -8,3 +8,5 @@ src/data/db/
 
 secrets.py
 google_secret.json
+
+env

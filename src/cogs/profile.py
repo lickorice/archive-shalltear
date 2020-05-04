@@ -14,12 +14,12 @@ from utils import msg_utils
 def log(string):
     print("{}{}".format(datetime.datetime.now().strftime("(%Y-%m-%d)[%H:%M:%S]"), string))
 
-with open("assets/obj_badges.json") as f:
+with open(ASSETS_DIRECTORY+"obj_badges.json") as f:
     obj_badges = json.load(f)
 
 stored_messages = {}
 
-class Profiles:
+class Profiles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -170,7 +170,7 @@ class Profiles:
     @commands.guild_only()
     async def previewbg(self, ctx, bg_id: int):
         """Previews a background given its ID."""
-        with open('assets/obj_bgs.json') as f:
+        with open(ASSETS_DIRECTORY+'obj_bgs.json') as f:
             all_bgs = json.load(f)
         
         if str(bg_id) not in all_bgs:

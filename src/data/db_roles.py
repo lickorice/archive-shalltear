@@ -1,11 +1,13 @@
 
 import sqlite3, hashlib
 from data import db_helper
+from conf import DATABASE_PATH
+
 base_exp, factor = 50, 1.5
 
 class RoleHelper(db_helper.DBHelper):
     def __init__(self, is_logged=True):
-        self.database_path = 'data/db/misc.db'
+        self.database_path = DATABASE_PATH+'/misc.db'
         self.is_logged = is_logged
 
     def new_assignable(self, guild_id, role_id, tag="none"):

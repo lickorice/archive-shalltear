@@ -36,7 +36,7 @@ def get_target_item(target_item, json_name):
         elif json_name == "bgs":
             return Background(target_id)
 
-class Shop:
+class Shop(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

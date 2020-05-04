@@ -12,7 +12,7 @@ def log(string):
 
 # Start of program logic:
 
-class Economy:
+class Economy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

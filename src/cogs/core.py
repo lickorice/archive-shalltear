@@ -27,7 +27,7 @@ def log(string):
 
 # Start of program logic:
 
-class Core:
+class Core(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -136,61 +136,61 @@ class Core:
             await ctx.send(MSG_BLOCKED.format(ctx.author.id))
             return
 
-    @commands.command()
-    @commands.cooldown(1, 300, type=commands.BucketType.user)
-    async def twitter(self, ctx):
-        """Follow the developer on Twitter to receive rewards!"""
+    # @commands.command()
+    # @commands.cooldown(1, 300, type=commands.BucketType.user)
+    # async def twitter(self, ctx):
+    #     """Follow the developer on Twitter to receive rewards!"""
 
-        def check(m):
-            try:
-                return ctx.author.id == m.author.id and 0<=int(m.content)
-            except:
-                return False
+    #     def check(m):
+    #         try:
+    #             return ctx.author.id == m.author.id and 0<=int(m.content)
+    #         except:
+    #             return False
 
-        twt = TwitterHelper()
+    #     twt = TwitterHelper()
 
-        _user = User(ctx.author.id)
+    #     _user = User(ctx.author.id)
 
-        if _user.followed_twitter:
-            await ctx.author.send(MSG_REWARDS_1.format(ctx.author.display_name))
-            return
+    #     if _user.followed_twitter:
+    #         await ctx.author.send(MSG_REWARDS_1.format(ctx.author.display_name))
+    #         return
 
-        try:
-            await ctx.author.send(MSG_TWITTER_AUTH.format(ctx.author.display_name, twt.get_url()))
-            await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
-        except discord.errors.Forbidden:
-            await ctx.send(MSG_BLOCKED.format(ctx.author.id))
-            return
+    #     try:
+    #         await ctx.author.send(MSG_TWITTER_AUTH.format(ctx.author.display_name, twt.get_url()))
+    #         await ctx.send(MSG_DM_SENT.format(ctx.author.display_name))
+    #     except discord.errors.Forbidden:
+    #         await ctx.send(MSG_BLOCKED.format(ctx.author.id))
+    #         return
 
-        try:
-            msg = await self.bot.wait_for('message', check=check, timeout=300)
-        except concurrent.futures._base.TimeoutError:
-            await ctx.channel.send(MSG_TIMEOUT.format(ctx.author.id))
-            return
-        try:
-            r = twt.authorize(msg.content) 
-            if r == 1:
-                await ctx.author.send(f"<@{ctx.author.id}>, **you have successfully followed the developer!**")
-            elif r == 2:
-                await ctx.author.send(f"<@{ctx.author.id}>, **you already follow the developer, processing rewards...**")
-            elif r == 3:
-                await ctx.author.send(MSG_REWARDS_2.format(ctx.author.display_name))
-                return
+    #     try:
+    #         msg = await self.bot.wait_for('message', check=check, timeout=300)
+    #     except concurrent.futures._base.TimeoutError:
+    #         await ctx.channel.send(MSG_TIMEOUT.format(ctx.author.id))
+    #         return
+    #     try:
+    #         r = twt.authorize(msg.content) 
+    #         if r == 1:
+    #             await ctx.author.send(f"<@{ctx.author.id}>, **you have successfully followed the developer!**")
+    #         elif r == 2:
+    #             await ctx.author.send(f"<@{ctx.author.id}>, **you already follow the developer, processing rewards...**")
+    #         elif r == 3:
+    #             await ctx.author.send(MSG_REWARDS_2.format(ctx.author.display_name))
+    #             return
             
-            await ctx.send(MSG_GIL_RECEIVED.format(
-                ctx.author.id, 500, "following **@cgpanganiban** on Twitter"
-            ))
-            await ctx.send(MSG_BADGE_RECEIVED.format(
-                ctx.author.id, "Twitter"
-            ))
-            _user.add_gil(500)
-            _user.followed_twitter = True
-            _user.add_badge(8)
+    #         await ctx.send(MSG_GIL_RECEIVED.format(
+    #             ctx.author.id, 500, "following **@cgpanganiban** on Twitter"
+    #         ))
+    #         await ctx.send(MSG_BADGE_RECEIVED.format(
+    #             ctx.author.id, "Twitter"
+    #         ))
+    #         _user.add_gil(500)
+    #         _user.followed_twitter = True
+    #         _user.add_badge(8)
 
-        except tweepy.error.TweepError as e:
-            await ctx.author.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 5 minutes.**")
-            print(e)
-            return
+    #     except tweepy.error.TweepError as e:
+    #         await ctx.author.send(f"<@{ctx.author.id}>, **you have sent an invalid PIN. Try again after 5 minutes.**")
+    #         print(e)
+    #         return
 
         
 def setup(bot):

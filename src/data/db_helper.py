@@ -7,6 +7,7 @@ for another database helper.
 """
 
 import sqlite3, json, time, datetime, os
+from conf import DATABASE_PATH
 
 # Logging functions here:
 
@@ -31,7 +32,8 @@ class DBHelper():
             is_logged (:obj:`bool`, optional): shows verbose logs of the operations.
         """
         self.database_path = database_path
-        self.is_logged = is_logged
+        # self.is_logged = is_logged
+        self.is_logged = True
 
     def connect(self):
         """This function connects to a database."""

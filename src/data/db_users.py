@@ -8,13 +8,14 @@ helper inherits functions from the DBHelper class.
 
 import sqlite3
 from data import db_helper
+from conf import DATABASE_PATH
 
 # Level config
 base_exp, factor = 50, 1.5
 
 class UserHelper(db_helper.DBHelper):
     def __init__(self, is_logged=True):
-        self.database_path = 'data/db/user.db'
+        self.database_path = './data/db/user.db'
         self.is_logged = is_logged
 
     def new_user(self, user_id, user_level=1, user_xp=0, user_xp_to_next=50, user_gil=10, user_materia=0):
@@ -222,8 +223,8 @@ class UserHelper(db_helper.DBHelper):
         self.remove_rows("premium_users", user_id=user_id)
 
 def main():
-    test = UserHelper("db/user.db")
-    test.connect()
+    test = UserHelper(DATABASE_PATH+"user.db")
+    x = test.connect()
     test.new_user(11)
     print(test.get_user(11)["users"])
     test.change_bg(11, 2)

@@ -12,6 +12,7 @@ from errors import *
 from modules import google
 from objects.card import Card
 from objects.series import Series
+from conf import DATABASE_PATH
 
 # Logging functions here:
 
@@ -22,7 +23,7 @@ def log(string):
 
 class GachaHelper(db_helper.DBHelper):
     def __init__(self, is_logged=True):
-        self.database_path = 'data/db/gacha.db'
+        self.database_path = DATABASE_PATH+'gacha.db'
         self.is_logged = is_logged
 
     def new_card(self, card):

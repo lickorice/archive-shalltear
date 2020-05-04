@@ -1,5 +1,8 @@
 # Bot details
-CURRENT_VERSION = "1.0.1b"
+CURRENT_VERSION = "1.1.0a"
+
+ASSETS_DIRECTORY = "./assets/"
+DATABASE_PATH = "./data/db/"
 
 # Set for Lickorice, (Carlos Panganiban) and for IPM Collective server.
 OWNER_ID = 319285994253975553

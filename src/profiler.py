@@ -1,21 +1,22 @@
 
 
 from PIL import Image, ImageFont, ImageDraw
+from conf import ASSETS_DIRECTORY
 import requests, json
 from io import BytesIO
 
-with open('assets/str_titles.json') as f:
+with open(ASSETS_DIRECTORY+'str_titles.json') as f:
     str_titles = json.load(f)
 
-with open('assets/obj_badges.json') as f:
+with open(ASSETS_DIRECTORY+'obj_badges.json') as f:
     obj_badges = json.load(f)
 
 
 def level_generate(avatar_url):
     img_offset = 24, 24
-    img_temp = Image.open('assets/img_level-up-template.png')
+    img_temp = Image.open(ASSETS_DIRECTORY+'img_level-up-template.png')
     bg_temp = Image.new('RGBA', (52, 52), (44, 47, 51, 255))
-    bg2_temp = Image.open('assets/background-1.png')
+    bg2_temp = Image.open(ASSETS_DIRECTORY+'background-1.png')
 
     imgfile = requests.get(avatar_url)
     pfp = Image.open(BytesIO(imgfile.content))
@@ -38,9 +39,9 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id, 
         user_title = str_titles[str(user_level)]
 
     if is_premium:
-        template = Image.open('assets/img_profile-template-premium.png')
+        template = Image.open(ASSETS_DIRECTORY+'img_profile-template-premium.png')
     else:
-        template = Image.open('assets/img_profile-template.png')
+        template = Image.open(ASSETS_DIRECTORY+'img_profile-template.png')
 
     avatar_file = requests.get(avatar_url)
     avatar = Image.open(BytesIO(avatar_file.content))
@@ -48,8 +49,8 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id, 
     template.paste(avatar, (20, 30))
 
     fillcolor, strokecolor, strokecolor_2, name_size = "white", "black", (100, 100, 100, 255), 50
-    font_username = ImageFont.truetype('assets/ttf_rob-username.ttf', name_size)
-    font_title = ImageFont.truetype('assets/ttf_title.ttf', 20)
+    font_username = ImageFont.truetype(ASSETS_DIRECTORY+'ttf_rob-username.ttf', name_size)
+    font_title = ImageFont.truetype(ASSETS_DIRECTORY+'ttf_title.ttf', 20)
     draw = ImageDraw.Draw(template)
     _x, _y = 130, 20
 
@@ -59,7 +60,7 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id, 
         else:
             _y += 5
             name_size -= 5
-            font_username = ImageFont.truetype('assets/ttf_rob-username.ttf', name_size)
+            font_username = ImageFont.truetype(ASSETS_DIRECTORY+'ttf_rob-username.ttf', name_size)
 
     draw.text((_x+1, _y), user_name, font=font_username, fill=strokecolor)
     draw.text((_x-1, _y), user_name, font=font_username, fill=strokecolor)
@@ -88,7 +89,7 @@ def profile_generate(user_name, avatar_url, user_level, user_xp, badges, bg_id, 
         _x += 40
     
     if bg_id != 0:    
-        with open("assets/obj_bgs.json") as f:
+        with open(ASSETS_DIRECTORY+"obj_bgs.json") as f:
             bgs = json.load(f)
         background = Image.open(bgs[str(bg_id)]["img_url"])
         background.paste(template, (0, 53), template)

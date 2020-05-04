@@ -5,7 +5,7 @@ from discord.utils import get
 from io import BytesIO
 from conf import *
 
-with open('assets/obj_memes.json') as f:
+with open(ASSETS_DIRECTORY+'obj_memes.json') as f:
     obj_memes = json.load(f)
 
 class Actor:
@@ -20,7 +20,7 @@ class Meme:
         self.url = meme_dict["FILE_URL"]
         self.actors = [Actor(a) for a in meme_dict["ACTORS"]]
  
-class Memes():
+class Memes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -49,7 +49,7 @@ class Memes():
         _m = Meme(obj_memes[meme_type])
 
         # generate meme image
-        meme_img = Image.open(f'assets/memes/{_m.url}')
+        meme_img = Image.open(ASSETS_DIRECTORY+f'memes/{_m.url}')
 
         required_actors = len(_m.actors)
         plurality = '' if required_actors == 1 else 's'

@@ -16,7 +16,7 @@ def log(string):
 
 # Start of program logic:
 
-class Gambling:
+class Gambling(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

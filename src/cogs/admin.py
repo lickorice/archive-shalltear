@@ -12,7 +12,7 @@ def log(string):
 
 # Start of program logic:
 
-class Administration:
+class Administration(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
